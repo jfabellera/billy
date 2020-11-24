@@ -1,2 +1,2 @@
-# expense-tracker
-Semester project for CS 6314
+# Billy
+An expense tracker created for the semester project in CS 6314
