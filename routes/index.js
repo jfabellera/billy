@@ -65,19 +65,19 @@ router.post('/login', (req, res) => {
     username: req.body.username.toLowerCase()
   }, async (err, user) => {
     if(err) throw err;
-    console.log(user.username)
     try {
-      if(await bcrypt.compare(req.body.password, user.password_hash)) {
+      if(user != null && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
+        res.redirect('/');
       } else {
         console.log("Not allowed");
+        res.render('login', { error: "invalid", formData: req.body });
       }
     } catch {
       console.log("error");
       res.status(500).send();
     }
   });
-  res.redirect('/');
 });
 
 module.exports = router;
