@@ -26,24 +26,36 @@ router.post('/register', async (req, res) => {
   try {
     var collection = db.get('users');
     var hashedPassword = await bcrypt.hash(req.body.password, 10);
-    collection.insert({
-      username: String(req.body.username).toLowerCase(),
-      email: req.body.email,
-      password_hash: hashedPassword,
-      name: {
-        first: req.body.firstName,
-        middle: req.body.MI,
-        last: req.body.lastName
-      },
-      phone_number: req.body.phone,
-      account_type: "user"
-    }, function(err, user) {
-      // something
+
+    // check if user exists already
+    collection.findOne({
+      username: req.body.username.toLowerCase()
+    }, (err, user) => {
+      if(req.body.email.toLowerCase() == req.body.confirmEmail.toLowerCase() &&
+          req.body.password == req.body.confirmPassword && user == null) {
+        collection.insert({
+          username: String(req.body.username).toLowerCase(),
+          email: req.body.email,
+          password_hash: hashedPassword,
+          name: {
+            first: req.body.firstName,
+            middle: req.body.MI,
+            last: req.body.lastName
+          },
+          phone_number: req.body.phone,
+          account_type: "user"
+        }, function(err, user) {
+          // new user created
+          res.redirect('/');
+        });
+      } else {
+        console.log("Registration failed");
+      }
     });
+
   } catch {
     res.status(500).send();
   }
-  res.redirect('/');
 });
 
 router.post('/login', (req, res) => {

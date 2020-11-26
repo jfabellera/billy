@@ -8,53 +8,53 @@
 
           <div class="form-group col-5">
             <label for="username">First name</label>
-            <input type="text" class="form-control" name="firstName" placeholder="John">
+            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="John" required>
           </div>
 
           <div class="form-group col-2">
             <label for="MI">MI</label>
-            <input type="text" maxlength="1" class="form-control" name="MI" placeholder="F">
+            <input type="text" maxlength="1" class="form-control" name="MI" id="MI" placeholder="F">
           </div>
 
           <div class="form-group col-5">
             <label for="lastName">Last name</label>
-            <input type="text" class="form-control" name="lastName" placeholder="Doe">
+            <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Doe" required>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-6">
             <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" placeholder="johndoe">
+            <input type="text" class="form-control" name="username" id="username" placeholder="johndoe" required>
           </div>
           <div class="form-group col-6">
             <label for="phone">Phone number (optional)</label>
-            <input input type="text" class="form-control" name="phone" placeholder="(123)-456-7890">
+            <input input type="text" class="form-control" name="phone" id="phone" placeholder="(123)-456-7890">
           </div>
         </div>
         <div class="row">
           <div class="form-group col-6">
             <label for="email">Email address</label>
-            <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="example@billy.com">
+            <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="example@billy.com" required>
             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
           </div>
 
             <div class="form-group col-6">
               <label for="confirmEmail">Confirm email</label>
-              <input type="email" class="form-control" name="confirmEmail" placeholder="example@billy.com"">
+              <input type="email" class="form-control" name="confirmEmail" id="confirmEmail" placeholder="example@billy.com" required>
             </div>
         </div>
         <div class="row">
           <div class="form-group col-6">
             <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Password">
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
           </div>
           <div class="form-group col-6">
             <label for="confirmPassword">Confirm password</label>
-            <input type="password" class="form-control" name="confirmPassword" placeholder="Password">
+            <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Password" required>
           </div>
         </div>
         <div class="form-check text-center">
-          <input type="checkbox" class="form-check-input" name="terms">
+          <input type="checkbox" class="form-check-input" name="terms" id="terms" required>
           <label class="form-check-label" for="terms">I agree to the terms and conditions</label>
         </div>
         <div class="d-flex justify-content-center">
