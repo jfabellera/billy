@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
     var collection = db.get('users');
     var hashedPassword = await bcrypt.hash(req.body.password, 10);
     collection.insert({
-      username: req.body.username,
+      username: String(req.body.username).toLowerCase(),
       email: req.body.email,
       password_hash: hashedPassword,
       name: {
@@ -45,4 +45,27 @@ router.post('/register', async (req, res) => {
   }
   res.redirect('/');
 });
+
+router.post('/login', (req, res) => {
+  // Authenticate the user
+  var collection = db.get('users');
+  collection.findOne({
+    username: req.body.username.toLowerCase()
+  }, async (err, user) => {
+    if(err) throw err;
+    console.log(user.username)
+    try {
+      if(await bcrypt.compare(req.body.password, user.password_hash)) {
+        console.log("Success");
+      } else {
+        console.log("Not allowed");
+      }
+    } catch {
+      console.log("error");
+      res.status(500).send();
+    }
+  });
+  res.redirect('/');
+});
+
 module.exports = router;
