@@ -36,9 +36,24 @@
                 <a class="nav-link" href="#">Link</a>
               </li>
             </ul>
-            <div class="form-inline my-2 my-lg-0">
-              <a class="btn btn-outline-secondary my-2 my-sm-0 mr-2" href="/register">Create Account</a>
-              <a class="btn btn-success my-2 my-sm-0" href="/login">Login</a>
+            <div class="form-inline my-2 my-lg-0 justify-content-right">
+              <% if(!session.user) { %>
+                <a class="btn btn-outline-secondary my-2 my-sm-0 mr-2" href="/register">Create Account</a>
+                <a class="btn btn-success my-2 my-sm-0" href="/login">Login</a>
+              <% } else { %>
+
+                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%= "Hi, " + session.user.name.first + " " + session.user.name.last %>
+                  </a>
+                  <div style="position:relative">
+                  <div class="dropdown-menu dropdown-menu-right text-left" aria-labelledby="navbarDropdown" style="top: 10px;">
+                    <a class="dropdown-item" href="/profile">Profile</a>
+                    <a class="dropdown-item" href="/settings">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/logout">Logout</a>
+                  </div>
+                </div>
+              <% } %>
             </div>
           </div>
         </nav>
