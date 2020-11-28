@@ -11,15 +11,29 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/index', function(req, res) {
-  res.render('index');
+  res.render('index', { session: req.session });
 });
 
 router.get('/login', function(req, res) {
-  res.render('login')
+  if(req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  res.render('login', { session: req.session })
+});
+
+router.get('/logout', function(req, res) {
+  if(req.session.user)
+    req.session.user = null;
+  res.redirect('/');
 });
 
 router.get('/register', function(req, res) {
-  res.render('register');
+  if(req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  res.render('register', { session: req.session });
 });
 
 router.post('/register', async (req, res) => {
@@ -68,10 +82,12 @@ router.post('/login', (req, res) => {
     try {
       if(user != null && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
+        req.session.user = user;
         res.redirect('/');
       } else {
         console.log("Not allowed");
-        res.render('login', { error: "invalid", formData: req.body });
+        res.render('login', { error: "invalid", formData: req.body, session: req.session });
+        res.status(401).send();
       }
     } catch {
       console.log("error");
