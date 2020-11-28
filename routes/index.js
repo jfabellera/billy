@@ -60,6 +60,7 @@ router.post('/register', async (req, res) => {
           account_type: "user"
         }, function(err, user) {
           // new user created
+          req.session.user = user;
           res.redirect('/');
         });
       } else {
