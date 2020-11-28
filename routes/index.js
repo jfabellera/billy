@@ -7,7 +7,10 @@ var db = monk('localhost:27017/billy');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.redirect('/index');
+  if(req.session.user)
+    res.redirect('/summary');
+  else
+    res.redirect('/index');
 });
 
 router.get('/index', function(req, res) {
@@ -34,6 +37,10 @@ router.get('/register', function(req, res) {
     return;
   }
   res.render('register', { session: req.session });
+});
+
+router.get('/about', (req, res) => {
+    res.render('about', { session: req.session })
 });
 
 router.get('/about/terms', (req, res) => {
@@ -99,6 +106,24 @@ router.post('/login', (req, res) => {
       res.status(500).send();
     }
   });
+});
+
+router.get('/summary', (req, res) => {
+  if(!req.session.user) {
+    res.redirect('/');
+  } else {
+    res.render('summary', { session: req.session })
+    // TODO
+  }
+});
+
+router.get('/history', (req, res) => {
+  if(!req.session.user) {
+    res.redirect('/');
+  } else {
+    res.render('history', { session: req.session })
+    // TODO
+  }
 });
 
 module.exports = router;
