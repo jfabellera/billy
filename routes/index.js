@@ -22,6 +22,10 @@ router.get('/register', function(req, res) {
   res.render('register');
 });
 
+router.get('/about/terms', (req, res) => {
+  res.render('terms');
+});
+
 router.post('/register', async (req, res) => {
   try {
     var collection = db.get('users');
