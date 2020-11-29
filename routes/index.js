@@ -48,7 +48,7 @@ router.get('/about/terms', (req, res) => {
 });
 
 router.get('/forgot', function(req, res) {
-  res.render('forgot');
+  res.render('forgot', { session: req.session });
 });
 
 router.post('/register', async (req, res) => {
