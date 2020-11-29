@@ -40,11 +40,11 @@ router.get('/register', function(req, res) {
 });
 
 router.get('/about', (req, res) => {
-    res.render('about', { session: req.session })
+    res.render('about/about', { session: req.session })
 });
 
 router.get('/about/terms', (req, res) => {
-  res.render('terms');
+  res.render('about/terms', { session: req.session });
 });
 
 router.post('/register', async (req, res) => {
@@ -112,7 +112,7 @@ router.get('/summary', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
   } else {
-    res.render('summary', { session: req.session })
+    res.render('user/summary', { session: req.session })
     // TODO
   }
 });
@@ -121,7 +121,7 @@ router.get('/history', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
   } else {
-    res.render('history', { session: req.session })
+    res.render('user/history', { session: req.session })
     // TODO
   }
 });

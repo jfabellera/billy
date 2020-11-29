@@ -4,7 +4,7 @@ var router = express.Router();
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   if(req.session.user && req.session.user.account_type == "admin") {
-    res.render('users', { session: req.session });
+    res.render('admin/users', { session: req.session });
   } else {
     res.status(401).send("Unauthorized");
   }
