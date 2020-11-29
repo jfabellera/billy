@@ -23,22 +23,44 @@
     <div class="p-0 container-fluid d-flex flex-column h-100 ">
       <div class="row no-gutters flex-column">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="/index">Billy</a>
+          <a class="navbar-brand" href="/">Billy</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+              <% if(session.user) { %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/history">History</a>
+                </li>
+                <% if(session.user.account_type == "admin") { %>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/users">Users</a>
+                  </li>
+                <% } %>
+              <% } %>
               <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="/about">About</a>
               </li>
             </ul>
-            <div class="form-inline my-2 my-lg-0">
-              <a class="btn btn-outline-secondary my-2 my-sm-0 mr-2" href="/register">Create Account</a>
-              <a class="btn btn-success my-2 my-sm-0" href="/login">Login</a>
+            <div class="form-inline my-2 my-lg-0 justify-content-right">
+              <% if(!session.user) { %>
+                <a class="btn btn-outline-secondary my-2 my-sm-0 mr-2" href="/register">Create Account</a>
+                <a class="btn btn-success my-2 my-sm-0" href="/login">Login</a>
+              <% } else { %>
+
+                  <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%= "Hi, " + session.user.name.first + " " + session.user.name.last %>
+                  </a>
+                  <div style="position:relative">
+                  <div class="dropdown-menu dropdown-menu-right text-left" aria-labelledby="navbarDropdown" style="top: 10px;">
+                    <a class="dropdown-item" href="/profile">Profile</a>
+                    <a class="dropdown-item" href="/settings">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/logout">Logout</a>
+                  </div>
+                </div>
+              <% } %>
             </div>
           </div>
         </nav>

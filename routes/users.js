@@ -3,7 +3,11 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  if(req.session.user && req.session.user.account_type == "admin") {
+    res.render('users', { session: req.session });
+  } else {
+    res.status(401).send("Unauthorized");
+  }
 });
 
 module.exports = router;

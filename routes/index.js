@@ -7,19 +7,44 @@ var db = monk('localhost:27017/billy');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.redirect('/index');
+  if(req.session.user)
+    res.redirect('/summary');
+  else
+    res.redirect('/index');
 });
 
 router.get('/index', function(req, res) {
-  res.render('index');
+  res.render('index', { session: req.session });
 });
 
 router.get('/login', function(req, res) {
-  res.render('login')
+  if(req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  res.render('login', { session: req.session })
+});
+
+router.get('/logout', function(req, res) {
+  if(req.session.user)
+    req.session.user = null;
+  res.redirect('/');
 });
 
 router.get('/register', function(req, res) {
-  res.render('register');
+  if(req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  res.render('register', { session: req.session });
+});
+
+router.get('/about', (req, res) => {
+    res.render('about', { session: req.session })
+});
+
+router.get('/about/terms', (req, res) => {
+  res.render('terms');
 });
 
 router.get('/forgot', function(req, res) {
@@ -50,6 +75,7 @@ router.post('/register', async (req, res) => {
           account_type: "user"
         }, function(err, user) {
           // new user created
+          req.session.user = user;
           res.redirect('/');
         });
       } else {
@@ -72,16 +98,36 @@ router.post('/login', (req, res) => {
     try {
       if(user != null && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
+        req.session.user = user;
         res.redirect('/');
       } else {
         console.log("Not allowed");
-        res.render('login', { error: "invalid", formData: req.body });
+        res.render('login', { error: "invalid", formData: req.body, session: req.session });
+        res.status(401).send();
       }
     } catch {
       console.log("error");
       res.status(500).send();
     }
   });
+});
+
+router.get('/summary', (req, res) => {
+  if(!req.session.user) {
+    res.redirect('/');
+  } else {
+    res.render('summary', { session: req.session })
+    // TODO
+  }
+});
+
+router.get('/history', (req, res) => {
+  if(!req.session.user) {
+    res.redirect('/');
+  } else {
+    res.render('history', { session: req.session })
+    // TODO
+  }
 });
 
 module.exports = router;
