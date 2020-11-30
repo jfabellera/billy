@@ -112,6 +112,7 @@ router.post('/login', (req, res) => {
   });
 });
 
+
 router.get('/summary', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
@@ -121,11 +122,20 @@ router.get('/summary', (req, res) => {
   }
 });
 
-router.get('/history', (req, res) => {
+router.get('/profile', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
   } else {
-    res.render('user/history', { session: req.session })
+    res.render('user/profile', { session: req.session })
+    // TODO
+  }
+});
+
+router.get('/settings', (req, res) => {
+  if(!req.session.user) {
+    res.redirect('/');
+  } else {
+    res.render('user/settings', { session: req.session })
     // TODO
   }
 });
