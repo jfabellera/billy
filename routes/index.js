@@ -1,9 +1,11 @@
 var express = require('express');
 var bcrypt = require('bcrypt');
 var router = express.Router();
+var dotenv = require('dotenv');
 
 var monk = require('monk');
-var db = monk('localhost:27017/billy');
+dotenv.config();
+var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.mongodb.net/billy?retryWrites=true&w=majority');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
