@@ -142,4 +142,26 @@ router.get('/settings', (req, res) => {
   }
 });
 
+router.put('/users/:id', (req, res) => {
+  var collection = db.get('users');
+
+  collection.update({
+    _id: req.params.id
+  },
+  { $set: {
+    username: String(req.body.username).toLowerCase(),
+    email: req.body.email,
+    name: {
+      first: req.body.firstName,
+      middle: req.body.MI,
+      last: req.body.lastName
+    },
+    phone_number: req.body.phone,
+  }}, function(err, user) {
+    if (err) throw err;
+      res.redirect("/settings");
+  });
+});
+
+
 module.exports = router;

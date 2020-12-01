@@ -4,14 +4,14 @@
   <h1 class="display-3">User Settings</h1>
   <hr class="my-4">
 
-  <form class="m-3" action="/settings" method="POST"></form>
+  <form class="m-3" action="/settings<%= session.user._id %>?_method=PUT" method="POST">
   
   <h3 class="display-6">User Info</h3>
 
   <div class="row">
 
     <div class="form-group col-5">
-      <label for="username">First name</label>
+      <label for="firstName">First name</label>
       <input type="text" class="form-control" name="firstName" id="firstName" value="<%=
       session.user.name.first %>" required>
     </div>
@@ -54,28 +54,28 @@
   <h3 class="display-6">Password</h3>
   <div class="row">
     <div class="form-group col-6">
-      <label for="password">Old Password</label>
-      <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+      <label for="oldPassword">Old Password</label>
+      <input type="password" class="form-control" name="oldPassword" id="oldPassword" placeholder="Password">
     </div>
   </div>
   <div class="row">
     <div class="form-group col-6">
-      <label for="password">New Password</label>
-      <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+      <label for="newPassword">New Password</label>
+      <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Password">
     </div>
     <div class="form-group col-6">
-      <label for="confirmPassword">Confirm New Password</label>
-      <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Password" required>
+      <label for="confirmNewPassword">Confirm New Password</label>
+      <input type="password" class="form-control" name="confirmNewPassword" id="confirmNewPassword" placeholder="Password">
     </div>
   </div>
 
   <div class="d-flex justify-content-between">
     <div class="p-2"><button type="submit" class="btn btn-primary btn-lg">Update</button></div>
     <div class="p-2"></div>
-    <div class="p-2"><button type="submit" class="btn btn-danger">Delete User</button></div>
+    <!-- <div class="p-2"><button type="submit" class="btn btn-danger">Delete User</button></div> -->
 
   </div>
-  
+</form>
 </div>
 
 <%- include ('../partials/footer') %>

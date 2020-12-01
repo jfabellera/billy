@@ -10,4 +10,13 @@ router.get('/', function(req, res, next) {
   }
 });
 
+router.get('/:id', function(req, res) {
+  var collection = db.get('users');
+  collection.findOne({_id: req.params.id},
+    function(err, user){
+      if (err) throw err;
+      res.redirect("/settings");
+    });
+  });
+
 module.exports = router;
