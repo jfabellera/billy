@@ -20,6 +20,16 @@ router.get('/', function(req, res, next) {
   }
 });
 
+router.put('/', (req, res, next) => {
+  var collection = db.get('users');
+  req.body.forEach((user) => {
+    collection.update({ _id: user._id }, { $set: {
+      username: user.username,
+      account_type: user.account_type
+    }});
+  });
+});
+
 router.get('/:id', (req, res, next) => {
 
 });

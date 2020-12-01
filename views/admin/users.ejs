@@ -1,32 +1,43 @@
-<%- include ('../partials/header') %>
+<%- include ('../partials/header', { scripts: ["edit-users.js"] }) %>
 
 <div class="container jumbotron">
   <h1 class="display-3">Users</h1>
 
   <div class="d-flex justify-content-end">
-  <button class="btn btn-success mb-3 ml-2" type="submit">Edit</button>
+  <button class="btn btn-success mb-3 ml-2" type="submit" id="btnEdit">Edit</button>
   <button class="btn btn-success mb-3 ml-2" type="submit">Refresh</button>
   </div>
-  <table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Username</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Account Type</th>
-    </tr>
-  </thead>
-    <tbody>
-      <% users.forEach(function(user){ %>
+
+    <table class="table table-striped">
+    <thead>
       <tr>
-        <td scope="row"><%= user.username %></th>
-        <td><%= user.name.first %></td>
-        <td><%= user.name.last %></td>
-        <td><%= user.account_type %></td>
+        <th scope="col">Username</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Account Type</th>
       </tr>
-      <% }); %>
-    </tbody>
-  </table>
+    </thead>
+      <tbody>
+        <% users.forEach(function(user) { %>
+        <tr class="user" id="<%= user._id %>">
+          <td scope="row">
+            <input type="text" value="<%= user.username %>" disabled></input>
+          </td>
+          <td><%= user.name.first %></td>
+          <td><%= user.name.last %></td>
+          <td>
+            <select disabled>
+              <option selected><%= user.account_type %></option>
+              <option><%= (user.account_type == "admin") ? "user" : "admin" %></option
+            </select>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+      <button id="btnSave" class="btn btn-success my-3" style="visibility: hidden">Save</button>
+    </div>
 
 </div>
 
