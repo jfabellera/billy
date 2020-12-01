@@ -40,7 +40,8 @@ router.post('/', async (req, res) => {
             last: req.body.lastName
           },
           phone_number: req.body.phone,
-          account_type: req.body.account_type
+          account_type: req.body.account_type,
+          disabled: false
         }, function(err, user) {
           // new user created
           res.redirect('/users');
@@ -61,9 +62,11 @@ router.put('/', (req, res, next) => {
   req.body.forEach((user) => {
     collection.update({ _id: user._id }, { $set: {
       username: user.username,
-      account_type: user.account_type
+      account_type: user.account_type,
+      disabled: user.disabled
     }});
   });
+  res.send({ redirect: '/users'});
 });
 
 router.get('/:id', (req, res, next) => {
