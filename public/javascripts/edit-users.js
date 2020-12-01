@@ -5,7 +5,6 @@ $(document).ready(function() {
 
   $(document).on("click", "#btnEdit", function() {
     editMode = !editMode;
-
     $("td input, td select").prop("disabled", !editMode);
     $("tr#"+user_id+" td select").prop("disabled", true);
     if(editMode) {
@@ -14,8 +13,13 @@ $(document).ready(function() {
     } else {
       $("#btnSave, #btnNew").animate({ opacity: "0" }, 200, function() {
         $("#btnSave, #btnNew").css({ visibility: "hidden" });
+        window.location.replace('/users');
       });
     }
+  });
+
+  $(document).on("click", "#btnRefresh", function() {
+    window.location.replace('/users');
   });
 
   $(document).on("mouseenter", "tr", function() {
@@ -54,8 +58,39 @@ $(document).ready(function() {
 
   });
 
-  $(document).on("click", "td div a", function() {
-    console.log("delete!");
-    $(this).parents().eq(2).addClass("bg-danger");
+  $(document).on("click", ".bi-trash", function() {
+    if(!$(this).parents().eq(3).hasClass("bg-danger")) {
+      $(this).parents().eq(3).addClass("bg-danger");
+      $(this).parent().find(".bi-arrow-clockwise").show();
+      $(this).hide();
+      $(this).parents().eq(3).find("input, select").each(function(index) {
+        $(this).val($(this).attr("default"));
+        $(this).prop("disabled", true);
+      });
+    }
+  });
+
+  $(document).on("click", ".bi-arrow-clockwise", function() {
+    $(this).parents().eq(3).find("input, select").each(function(index) {
+      $(this).val($(this).attr("default"));
+      $(this).prop("disabled", false);
+    });
+    $(this).parents().eq(3).removeClass("bg-warning bg-danger");
+    $(this).hide();
+    $(this).parent().find(".bi-trash").show();
+  });
+
+  $(document).on("change", "td input, td select", function() {
+    var row = $(this).parents().eq(1);
+    if($(row).find("input").attr("default") != $(row).find("input").val() ||
+    $(row).find("select").attr("default") != $(row).find("select").val()) {
+      row.addClass("bg-warning");
+      row.find(".bi-trash").hide();
+      row.find(".bi-arrow-clockwise").show();
+    } else {
+      row.removeClass("bg-warning");
+      row.find(".bi-trash").show();
+      row.find(".bi-arrow-clockwise").hide();
+    }
   });
 });

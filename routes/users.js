@@ -11,7 +11,7 @@ var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.
 router.get('/', function(req, res, next) {
   var collection = db.get('users');
   if(req.session.user && req.session.user.account_type == "admin") {
-    collection.find({}, { sort: { name: 1 } }, (err, users) => {
+    collection.find({}, { sort: { username: 1 } }, (err, users) => {
       if(err) throw err;
       res.render('admin/users', { session: req.session, users: users });
     });
