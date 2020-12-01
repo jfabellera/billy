@@ -20,6 +20,42 @@ router.get('/', function(req, res, next) {
   }
 });
 
+router.post('/', async (req, res) => {
+  try {
+    var collection = db.get('users');
+    var hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    // check if user exists already
+    collection.findOne({
+      username: req.body.username.toLowerCase()
+    }, (err, user) => {
+      if(req.body.password == req.body.confirmPassword && user == null) {
+        collection.insert({
+          username: String(req.body.username).toLowerCase(),
+          email: req.body.email,
+          password_hash: hashedPassword,
+          name: {
+            first: req.body.firstName,
+            middle: req.body.MI,
+            last: req.body.lastName
+          },
+          phone_number: req.body.phone,
+          account_type: req.body.account_type
+        }, function(err, user) {
+          // new user created
+          res.redirect('/users');
+        });
+      } else {
+        console.log("Registration failed");
+        res.redirect('/users');
+      }
+    });
+
+  } catch {
+    res.status(500).send();
+  }
+});
+
 router.put('/', (req, res, next) => {
   var collection = db.get('users');
   req.body.forEach((user) => {

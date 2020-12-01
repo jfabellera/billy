@@ -4,7 +4,14 @@ $(document).ready(function() {
     editMode = !editMode;
 
     $("td input, td select").prop("disabled", !editMode);
-    $("#btnSave").css({ visibility: (editMode ?  "visible": "hidden") })
+    if(editMode) {
+      $("#btnSave, #btnNew").css({ visibility: "visible" });
+      $("#btnSave, #btnNew").animate({ opacity: "1" }, 200);
+    } else {
+      $("#btnSave, #btnNew").animate({ opacity: "0" }, 200, function() {
+        $("#btnSave, #btnNew").css({ visibility: "hidden" });
+      });
+    }
   });
 
   $(document).on("mouseenter", "tr", function() {
@@ -36,7 +43,7 @@ $(document).ready(function() {
       contentType: "application/json",
       data: JSON.stringify(formData),
       success: function(result) {
-        
+
       }
     });
 

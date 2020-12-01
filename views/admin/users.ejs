@@ -4,41 +4,90 @@
   <h1 class="display-3">Users</h1>
 
   <div class="d-flex justify-content-end">
-  <button class="btn btn-success mb-3 ml-2" type="submit" id="btnEdit">Edit</button>
-  <button class="btn btn-success mb-3 ml-2" type="submit">Refresh</button>
   </div>
 
-    <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">Username</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Account Type</th>
+  <div class="d-flex">
+    <button class="btn btn-success my-3 mr-auto" type="submit" id="btnNew" style="visibility: hidden; opacity: 0" data-toggle="modal" data-target="#exampleModal">New</button>
+    <button class="btn btn-success my-3 ml-2" type="submit" id="btnEdit">Edit</button>
+    <button class="btn btn-success my-3 ml-2" type="submit">Refresh</button>
+  </div>
+  <table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Account Type</th>
+    </tr>
+  </thead>
+    <tbody>
+      <% users.forEach(function(user) { %>
+      <tr class="user" id="<%= user._id %>">
+        <td scope="row">
+          <input type="text" value="<%= user.username %>" disabled></input>
+        </td>
+        <td><%= user.name.first ? user.name.first : "N/A" %></td>
+        <td><%= user.name.last ? user.name.last : "N/A" %></td>
+        <td>
+          <select disabled>
+            <option selected><%= user.account_type %></option>
+            <option><%= (user.account_type == "admin") ? "user" : "admin" %></option
+          </select>
+        </td>
       </tr>
-    </thead>
-      <tbody>
-        <% users.forEach(function(user) { %>
-        <tr class="user" id="<%= user._id %>">
-          <td scope="row">
-            <input type="text" value="<%= user.username %>" disabled></input>
-          </td>
-          <td><%= user.name.first %></td>
-          <td><%= user.name.last %></td>
-          <td>
-            <select disabled>
-              <option selected><%= user.account_type %></option>
-              <option><%= (user.account_type == "admin") ? "user" : "admin" %></option
-            </select>
-          </td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
-    <div class="d-flex justify-content-end">
-      <button id="btnSave" class="btn btn-success my-3" style="visibility: hidden">Save</button>
-    </div>
+      <% }); %>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-end">
+    <button id="btnSave" class="btn btn-success my-3" style="visibility: hidden; opacity: 0">Save</button>
+  </div>
 
+
+  <!-- New user modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add an account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="/users" method="POST">
+          <div class="modal-body">
+              <div class="row">
+                <div class="form-group col-6">
+                  <label for="username">Username</label>
+                  <input type="text" class="form-control" name="username" id="username" placeholder="johndoe" required>
+                </div>
+                <div class="form-group col-6">
+                  <label for="account_type">Account Type</label>
+                  <select class="custom-select" id="account_type" name="account_type" required>
+                    <option selected value="">Choose...</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-6">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                </div>
+                <div class="form-group col-6">
+                  <label for="confirmPassword">Confirm password</label>
+                  <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Password" required>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%- include ('../partials/footer') %>
