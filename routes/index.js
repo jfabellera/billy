@@ -74,7 +74,8 @@ router.post('/register', async (req, res) => {
             last: req.body.lastName
           },
           phone_number: req.body.phone,
-          account_type: "user"
+          account_type: "user",
+          disabled: false
         }, function(err, user) {
           // new user created
           req.session.user = user;
