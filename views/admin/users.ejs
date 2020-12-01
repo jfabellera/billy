@@ -2,9 +2,32 @@
 
 <div class="container jumbotron">
   <h1 class="display-3">Users</h1>
-  <p class="lead">Billy — Expense Tracker</p>
-  <hr class="my-4">
-  <p>something</p>
+
+  <div class="d-flex justify-content-end">
+  <button class="btn btn-success mb-3 ml-2" type="submit">Edit</button>
+  <button class="btn btn-success mb-3 ml-2" type="submit">Refresh</button>
+  </div>
+  <table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Account Type</th>
+    </tr>
+  </thead>
+    <tbody>
+      <% users.forEach(function(user){ %>
+      <tr>
+        <td scope="row"><%= user.username %></th>
+        <td><%= user.name.first %></td>
+        <td><%= user.name.last %></td>
+        <td><%= user.account_type %></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
 </div>
 
 <%- include ('../partials/footer') %>
