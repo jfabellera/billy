@@ -62,8 +62,13 @@ router.post('/register', async (req, res) => {
     collection.findOne({
       username: req.body.username.toLowerCase()
     }, (err, user) => {
-      if(req.body.email.toLowerCase() == req.body.confirmEmail.toLowerCase() &&
-          req.body.password == req.body.confirmPassword && user == null) {
+      if(user != null) {
+        res.render('register', { error: 'taken', formData: req.body, session: req.session });
+      } else if(req.body.email.toLowerCase() != req.body.confirmEmail.toLowerCase()) {
+        res.render('register', { error: 'emailMismatch', formData: req.body, session: req.session });
+      } else if(req.body.password != req.body.confirmPassword) {
+        res.render('register', { error: 'passwordMismatch', formData: req.body, session: req.session });
+      } else {
         collection.insert({
           username: String(req.body.username).toLowerCase(),
           email: req.body.email,
@@ -81,8 +86,6 @@ router.post('/register', async (req, res) => {
           req.session.user = user;
           res.redirect('/');
         });
-      } else {
-        console.log("Registration failed");
       }
     });
 
