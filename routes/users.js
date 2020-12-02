@@ -20,6 +20,7 @@ router.get('/', function(req, res, next) {
   }
 });
 
+// add new account from admin page
 router.post('/', async (req, res) => {
   try {
     var collection = db.get('users');
@@ -57,6 +58,7 @@ router.post('/', async (req, res) => {
   }
 });
 
+// edit users on admin page
 router.put('/', (req, res, next) => {
   var collection = db.get('users');
   req.body.forEach((user) => {
@@ -69,10 +71,7 @@ router.put('/', (req, res, next) => {
   res.send({ redirect: '/users'});
 });
 
-router.get('/:id', (req, res, next) => {
-
-});
-
+// edit individual user from account page
 router.put('/:id', async (req, res, next) => {
   try {
     var collection = db.get('users');
@@ -83,11 +82,11 @@ router.put('/:id', async (req, res, next) => {
         hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
       } else if(!validOldPassword) {
         // invalid old password
-        res.render('user/settings', { error: 'invalid', formData: req.body, session: req.session });
+        res.render('user/account', { error: 'invalid', formData: req.body, session: req.session });
         return;
       } else {
         // new passwords don't match
-        res.render('user/settings', { error: 'mismatch', formData: req.body, session: req.session });
+        res.render('user/account', { error: 'mismatch', formData: req.body, session: req.session });
         return
       }
     }
@@ -114,11 +113,11 @@ router.put('/:id', async (req, res, next) => {
             _id: req.session.user._id
           }, (err, user) => {
             req.session.user = user;
-            res.render('user/settings', { ack: 'success', session: req.session });
+            res.render('user/account', { ack: 'success', session: req.session });
           });
         });
       } else {
-        res.render('user/settings', { error: 'taken', formData: req.body, session: req.session });
+        res.render('user/account', { error: 'taken', formData: req.body, session: req.session });
       }
     });
   } catch {
@@ -126,4 +125,13 @@ router.put('/:id', async (req, res, next) => {
   }
 });
 
+router.delete('/:id', (req, res, next) => {
+  var collection = db.get('users');
+  collection.update({
+    _id: req.session.user._id
+  }, { $set: {
+    disabled: true
+  }});
+  res.redirect("/logout");
+});
 module.exports = router;

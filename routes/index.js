@@ -102,7 +102,7 @@ router.post('/login', (req, res) => {
   }, async (err, user) => {
     if(err) throw err;
     try {
-      if(user != null && await bcrypt.compare(req.body.password, user.password_hash)) {
+      if(user != null && !user.disabled && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
         req.session.user = user;
         res.redirect('/');
