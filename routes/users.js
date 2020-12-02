@@ -73,4 +73,57 @@ router.get('/:id', (req, res, next) => {
 
 });
 
+router.put('/:id', async (req, res, next) => {
+  try {
+    var collection = db.get('users');
+    var hashedPassword = req.session.user.password_hash;
+    var validOldPassword = await bcrypt.compare(req.body.oldPassword, req.session.user.password_hash);
+    if(req.body.newPassword) {
+      if(req.body.newPassword == req.body.confirmNewPassword && validOldPassword) {
+        hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+      } else if(!validOldPassword) {
+        // invalid old password
+        res.render('user/settings', { error: 'invalid', formData: req.body, session: req.session });
+        return;
+      } else {
+        // new passwords don't match
+        res.render('user/settings', { error: 'mismatch', formData: req.body, session: req.session });
+        return
+      }
+    }
+
+    // check if user is not taken and is not empty
+    collection.findOne({
+      username: req.body.username.toLowerCase()
+    }, (err, user) => {
+      if(!user || user._id == req.session.user._id) {
+        collection.update({
+          _id: req.session.user._id
+        }, { $set: {
+          name: {
+            first: req.body.firstName,
+            middle: req.body.MI,
+            last: req.body.lastName
+          },
+          username: req.body.username.toLowerCase(),
+          phone_number: req.body.phone,
+          email: req.body.email,
+          password_hash: hashedPassword
+        }}, function() {
+          collection.findOne({
+            _id: req.session.user._id
+          }, (err, user) => {
+            req.session.user = user;
+            res.render('user/settings', { ack: 'success', session: req.session });
+          });
+        });
+      } else {
+        res.render('user/settings', { error: 'taken', formData: req.body, session: req.session });
+      }
+    });
+  } catch {
+    res.status(500).send();
+  }
+});
+
 module.exports = router;
