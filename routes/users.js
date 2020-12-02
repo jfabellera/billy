@@ -77,9 +77,19 @@ router.put('/:id', async (req, res, next) => {
   try {
     var collection = db.get('users');
     var hashedPassword = req.session.user.password_hash;
-    if(req.body.newPassword && req.body.newPassword == req.body.confirmNewPassword &&
-    await bcrypt.compare(req.body.oldPassword, req.session.user.password_hash)) {
-      hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+    var validOldPassword = await bcrypt.compare(req.body.oldPassword, req.session.user.password_hash);
+    if(req.body.newPassword) {
+      if(req.body.newPassword == req.body.confirmNewPassword && validOldPassword) {
+        hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+      } else if(!validOldPassword) {
+        // invalid old password
+        res.render('user/settings', { error: 'invalid', formData: req.body, session: req.session });
+        return;
+      } else {
+        // new passwords don't match
+        res.render('user/settings', { error: 'mismatch', formData: req.body, session: req.session });
+        return
+      }
     }
 
     // check if user is not taken and is not empty
@@ -104,11 +114,11 @@ router.put('/:id', async (req, res, next) => {
             _id: req.session.user._id
           }, (err, user) => {
             req.session.user = user;
-            res.redirect('/settings');
+            res.render('user/settings', { ack: 'success', session: req.session });
           });
         });
       } else {
-        console.log('fuck!');
+        res.render('user/settings', { error: 'taken', formData: req.body, session: req.session });
       }
     });
   } catch {
