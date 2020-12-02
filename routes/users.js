@@ -74,8 +74,6 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.put('/:id', async (req, res, next) => {
-  console.log(req.body);
-
   try {
     var collection = db.get('users');
     var hashedPassword = req.session.user.password_hash;
@@ -83,30 +81,36 @@ router.put('/:id', async (req, res, next) => {
     await bcrypt.compare(req.body.oldPassword, req.session.user.password_hash)) {
       hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
     }
-    collection.update({
-      _id: req.session.user._id
-    }, { $set: {
-      name: {
-        first: req.body.firstName,
-        middle: req.body.MI,
-        last: req.body.lastName
-      },
-      username: req.body.username,
-      phone_number: req.body.phone,
-      email: req.body.email,
-      password_hash: hashedPassword
-    }}, function() {
-      collection.findOne({
-        _id: req.session.user._id
-      }, (err, user) => {
-        console.log("Success");
-        req.session.user = user;
-        console.log(user);
-        res.redirect('/settings');
-      });
+
+    // check if user is not taken and is not empty
+    collection.findOne({
+      username: req.body.username.toLowerCase()
+    }, (err, user) => {
+      if(!user || user._id == req.session.user._id) {
+        collection.update({
+          _id: req.session.user._id
+        }, { $set: {
+          name: {
+            first: req.body.firstName,
+            middle: req.body.MI,
+            last: req.body.lastName
+          },
+          username: req.body.username.toLowerCase(),
+          phone_number: req.body.phone,
+          email: req.body.email,
+          password_hash: hashedPassword
+        }}, function() {
+          collection.findOne({
+            _id: req.session.user._id
+          }, (err, user) => {
+            req.session.user = user;
+            res.redirect('/settings');
+          });
+        });
+      } else {
+        console.log('fuck!');
+      }
     });
-
-
   } catch {
     res.status(500).send();
   }
