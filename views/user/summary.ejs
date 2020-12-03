@@ -3,15 +3,16 @@
 
 <div class="container jumbotron">
   <h1 class="display-3">Summary</h1>
-  <p class="lead">Billy — Expense Tracker</p>
+  <p class="lead"><%=session.user.name.first %></p>
   <hr class="my-4">
 
   <form class="m-3" action="/expenses" method="POST">
 
-    <div class="d-flex">
-      <button class="btn btn-success my-3 ml-2" type="submit" id="btnEdit">Add</button>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success" type="submit" id="addExpense">Add Expense</button>
     </div>
 
+    <!-- expenses.foreach -->
     <table class="table table-striped">
       <thead>
         <tr>
@@ -22,14 +23,16 @@
         </tr>
       </thead>
       <tbody>
+        <% expenses.forEach(function(expense) { if(!expense.disabled) { %>
         <tr class="expense" id="<%= expense._id %>">
-          <td scope="row">
+          <!-- <td scope="row"> -->
             <td><%= expense.title %></td>
             <td><%= expense.category %></td>
-            <td><%= expense.date %></td>
+            <td><%= expense.date.toDateString() %></td>
             <td><%= expense.amount %></td>
-          </td>
+          <!-- </td> -->
         </tr>
+        <% }}); %>
       </tbody>
     </table>
     
