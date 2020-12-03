@@ -1,6 +1,6 @@
 <%- include ('partials/header') %>
 
-<div class="row no-gutters flex-fill d-flex align-items-center justify-content-center">
+<div class="row no-gutters flex-fill d-flex align-items-center justify-content-center" style="overflow-y: auto">
     <div class="card container" style="max-width:500px;">
       <form class="m-3" method="POST">
         <h3 class="text-center">Forgot username or password?</h3>
@@ -9,7 +9,7 @@
           <label for="username">Enter your email for a password reset: </label>
           <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="example@billy.com" required>
         </div>
-        
+
         <div class="d-flex justify-content-center">
             <button type="submit" class="btn btn-primary my-3">Send</button>
         </div>

@@ -6,10 +6,6 @@ html, body {
   flex: 1;
 }
 
-.fade-in {
-  opacity: 0;
-}
-
 table td {
   position: relative;
 }
