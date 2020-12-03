@@ -1,9 +1,18 @@
 $(document).ready(function() {
   var editMode = false;
   var user_id = $("#user_id").text();
+  var error = $("#error").text();
   $("#user_id").remove();
+  $("#error").remove();
 
-  $(document).on("click", "#btnEdit", function() {
+  if(error != "") {
+    toggleEdit();
+    $("#newUserModal").removeClass('fade');
+    $("#newUserModal").modal('show');
+    $("#newUserModal").addClass('fade');
+  }
+
+  function toggleEdit() {
     editMode = !editMode;
     $("td input, td select").prop("disabled", !editMode);
     $("tr#"+user_id+" td select").prop("disabled", true);
@@ -16,6 +25,10 @@ $(document).ready(function() {
         window.location.replace('/users');
       });
     }
+  }
+
+  $(document).on("click", "#btnEdit", function() {
+    toggleEdit();
   });
 
   $(document).on("click", "#btnRefresh", function() {
