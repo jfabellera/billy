@@ -124,7 +124,28 @@ router.get('/summary', (req, res) => {
   }
 });
 
+<<<<<<< shurong
 router.get('/profile', (req, res) => {
+=======
+router.post('/summary', (req, res) => {
+  var collection = db.get('expenses');
+  try{
+    collection.findOne({
+      user_id: req.session.user._id
+      
+    }) 
+    req.session.expense = expense;
+    console.log("Success");
+  }catch {
+    console.log("error");
+    res.status(500).send();
+  }
+  
+        
+});
+
+router.get('/history', (req, res) => {
+>>>>>>> local
   if(!req.session.user) {
     res.redirect('/');
   } else {

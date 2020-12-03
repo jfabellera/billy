@@ -1,10 +1,39 @@
 <%- include ('../partials/header') %>
+<span id="user_id" hidden><%=session.user._id %></span>
 
 <div class="container jumbotron">
   <h1 class="display-3">Summary</h1>
   <p class="lead">Billy — Expense Tracker</p>
   <hr class="my-4">
-  <p>something</p>
+
+  <form class="m-3" action="/expenses" method="POST">
+
+    <div class="d-flex">
+      <button class="btn btn-success my-3 ml-2" type="submit" id="btnEdit">Add</button>
+    </div>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Category</th>
+          <th scope="col">Date</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="expense" id="<%= expense._id %>">
+          <td scope="row">
+            <td><%= expense.title %></td>
+            <td><%= expense.category %></td>
+            <td><%= expense.date %></td>
+            <td><%= expense.amount %></td>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </form>
 </div>
 
 <%- include ('../partials/footer') %>
