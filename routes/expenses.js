@@ -4,6 +4,8 @@ var router = express.Router();
 var dotenv = require('dotenv');
 
 var monk = require('monk');
+var mongoose = require('mongoose');
+
 dotenv.config();
 var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.mongodb.net/billy?retryWrites=true&w=majority');
 
@@ -17,6 +19,21 @@ router.get('/', function(req, res, next) {
     });
   });
 // router.get('/', (req, res) => res.send('Hello'));
+
+router.post('/', (req, res, next) => {
+    var collection = db.get('expenses');
+    collection.insert({
+        user_id: mongoose.Types.ObjectId(req.session.user._id),
+        title: req.body.title,
+        category: req.body.category,
+        date: new Date(req.body.date),
+        amount: req.body.amount
+
+    })
+    console.log("post expense called");
+    // req.session.expense = expense;
+    res.redirect('/');
+  });
 
 
 module.exports = router;

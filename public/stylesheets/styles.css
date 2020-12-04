@@ -9,3 +9,13 @@ html, body {
 .fade-in {
   opacity: 0;
 }
+
+table a{
+  display: hidden;
+  font-size: 20px;
+}
+
+/* table tr:hover a{
+  display: inline;
+  font-size: 20px;
+} */

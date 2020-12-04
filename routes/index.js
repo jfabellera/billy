@@ -124,6 +124,8 @@ router.get('/summary', (req, res) => {
   }
 });
 
+
+
 router.get('/profile', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
