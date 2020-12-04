@@ -16,6 +16,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "method-override": "^3.0.0",
+    "mongoose": "^5.11.3",
     "monk": "^7.3.2",
     "morgan": "~1.9.1"
   }

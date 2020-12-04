@@ -10,7 +10,7 @@ var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.user)
-    res.redirect('/summary');
+    res.redirect('/expenses');
   else
     res.redirect('/index');
 });
@@ -128,7 +128,7 @@ router.get('/summary', (req, res) => {
   }
 });
 
-router.get('/history', (req, res) => {
+router.get('/profile', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
   } else {

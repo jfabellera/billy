@@ -26,3 +26,13 @@ table td input, table td select {
 table td select:enabled {
   cursor: pointer;
 }
+
+table a{
+  display: hidden;
+  font-size: 20px;
+}
+
+/* table tr:hover a{
+  display: inline;
+  font-size: 20px;
+} */
