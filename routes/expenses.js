@@ -40,12 +40,10 @@ router.post('/', (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
     console.log("hitting delete");
-    console.log(req.params);
-    console.log(req.body);
     var collection = db.get('expenses');
     collection.findOneAndDelete({
         _id: req.params.id
-    }).then(() => res.redirect("/"));
+    }).then(() => {res.end('')})
 });
 
 module.exports = router;
