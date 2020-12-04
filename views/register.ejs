@@ -1,4 +1,4 @@
-<%- include ('partials/header') %>
+<%- include ('partials/header', { scripts: ['register.js'] }) %>
 
   <div class="row no-gutters flex-fill d-flex align-items-center justify-content-center" style="overflow-y: auto">
     <div class="col-4 card container" style="min-width:500px;">
@@ -66,7 +66,10 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Password"
             value="<%= locals.error ? formData.password : ""%>"
-            required>
+            aria-describedby="" required>
+            <small id="insecurePassword" class="form-text text-danger ml-1" style="display: none">Password must be at least 8 characters long,
+              contain at least one lowercase letter, one uppercase letter, one number, and one special character.
+            </small>
           </div>
           <div class="form-group col-6">
             <label for="confirmPassword">Confirm password</label>
@@ -81,7 +84,7 @@
           <label class="form-check-label" for="terms">I agree to the <a href="/about/terms" target="_blank">terms and conditions</a></label>
         </div>
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-primary my-3">Register</button>
+          <button id="btnSubmit" type="submit" class="btn btn-primary my-3">Register</button>
         </div>
       </form>
       <a class="m-3 text-center" href="/login">Already have an account?</a>

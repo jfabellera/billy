@@ -4,7 +4,7 @@ $(document).ready(function() {
   $("#subtitle").css({ opacity: 0 });
 
   $("#title").animate({ opacity: 1 }, 2000, function() {
-    $("#subtitle").show(1000);
+    $("#subtitle").show(500);
     $("#subtitle").animate({ opacity: 1 }, 2000);
   });
 });
