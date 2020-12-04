@@ -62,8 +62,13 @@ router.post('/register', async (req, res) => {
     collection.findOne({
       username: req.body.username.toLowerCase()
     }, (err, user) => {
-      if(req.body.email.toLowerCase() == req.body.confirmEmail.toLowerCase() &&
-          req.body.password == req.body.confirmPassword && user == null) {
+      if(user != null) {
+        res.render('register', { error: 'taken', formData: req.body, session: req.session });
+      } else if(req.body.email.toLowerCase() != req.body.confirmEmail.toLowerCase()) {
+        res.render('register', { error: 'emailMismatch', formData: req.body, session: req.session });
+      } else if(req.body.password != req.body.confirmPassword) {
+        res.render('register', { error: 'passwordMismatch', formData: req.body, session: req.session });
+      } else {
         collection.insert({
           username: String(req.body.username).toLowerCase(),
           email: req.body.email,
@@ -74,14 +79,13 @@ router.post('/register', async (req, res) => {
             last: req.body.lastName
           },
           phone_number: req.body.phone,
-          account_type: "user"
+          account_type: "user",
+          disabled: false
         }, function(err, user) {
           // new user created
           req.session.user = user;
           res.redirect('/');
         });
-      } else {
-        console.log("Registration failed");
       }
     });
 
@@ -98,7 +102,7 @@ router.post('/login', (req, res) => {
   }, async (err, user) => {
     if(err) throw err;
     try {
-      if(user != null && await bcrypt.compare(req.body.password, user.password_hash)) {
+      if(user != null && !user.disabled && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
         req.session.user = user;
         res.redirect('/');
@@ -124,46 +128,30 @@ router.get('/summary', (req, res) => {
   }
 });
 
-
-
 router.get('/profile', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
   } else {
-    res.render('user/profile', { session: req.session })
+    res.render('user/history', { session: req.session })
     // TODO
   }
 });
 
-router.get('/settings', (req, res) => {
+// router.get('/profile', (req, res) => {
+//   if(!req.session.user) {
+//     res.redirect('/');
+//   } else {
+//     res.render('user/profile', { session: req.session })
+//     // TODO
+//   }
+// });
+
+router.get('/account', (req, res) => {
   if(!req.session.user) {
     res.redirect('/');
   } else {
-    res.render('user/settings', { session: req.session })
-    // TODO
+    res.render('user/account', { session: req.session })
   }
 });
-
-router.put('/users/:id', (req, res) => {
-  var collection = db.get('users');
-
-  collection.update({
-    _id: req.params.id
-  },
-  { $set: {
-    username: String(req.body.username).toLowerCase(),
-    email: req.body.email,
-    name: {
-      first: req.body.firstName,
-      middle: req.body.MI,
-      last: req.body.lastName
-    },
-    phone_number: req.body.phone,
-  }}, function(err, user) {
-    if (err) throw err;
-      res.redirect("/settings");
-  });
-});
-
 
 module.exports = router;

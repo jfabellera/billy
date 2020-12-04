@@ -6,8 +6,25 @@ html, body {
   flex: 1;
 }
 
-.fade-in {
-  opacity: 0;
+table td {
+  position: relative;
+}
+
+table td input, table td select {
+  position: absolute;
+  display: block;
+  top:0;
+  left:0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: inherit;
+}
+table td select:enabled {
+  cursor: pointer;
 }
 
 table a{
