@@ -4,24 +4,25 @@
 <div class="container jumbotron">
   <h1 class="display-3">Summary</h1>
   <hr class="my-4">
-  
-  
-  
-  <form id="add-expense-form" class="m-3" action="/expenses" method="POST">
 
-    <h2 class="display-5"><%=session.user.name.first %>'s expenses</h2>
 
-    <!-- expenses.foreach -->
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Title</th>
-          <th scope="col">Category</th>
-          <th scope="col">Date</th>
-          <th scope="col">Amount</th>
-        </tr>
-      </thead>
-      <tbody>
+
+
+
+  <h2 class="display-5"><%=session.user.name.first %>'s expenses</h2>
+
+  <!-- expenses.foreach -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Category</th>
+        <th scope="col">Date</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <form id="add-expense-form" class="m-3" action="/expenses" method="POST">
         <td><input type="text" class="form-control" name="title" id="title" placeholder="title" required></td>
         <td>
           <div class="dropdown show">
@@ -29,22 +30,23 @@
             Category <span class="caret"></span>
             </button>
             <div class="dropdown-menu"> -->
-              <select class="form-control" name="category" id="category" placeholder="category" required>
-                <option>Food</option>
-                <option>Utilities</option>
-                <option>Transportation</option>
-                <option>Entertainment</option>
-                <option>Insurance</option>
-                <option>Shopping</option>
-                <option>Others</option>
-              </select>
-            </div>
+            <select class="form-control" name="category" id="category" placeholder="category" required>
+              <option>Food</option>
+              <option>Utilities</option>
+              <option>Transportation</option>
+              <option>Entertainment</option>
+              <option>Insurance</option>
+              <option>Shopping</option>
+              <option>Others</option>
+            </select>
+          </div>
         </td>
-          
-          <!-- <input type="text" class="form-control" name="category" id="category" placeholder="category" required> -->
-        
+
+        <!-- <input type="text" class="form-control" name="category" id="category" placeholder="category" required> -->
+
         <td><input type="text" class="form-control" name="date" id="date" placeholder="MM-DD-YYYY" required></td>
-        <td><input type="number" step="0.01" class="form-control" name="amount" id="amount" placeholder="00.00" required></td>
+        <td><input type="number" step="0.01" class="form-control" name="amount" id="amount" placeholder="00.00"
+            required></td>
         <td><button type="submit" class="btn btn-primary my-3">Add</button></td>
         <!-- <td><a href=""><svg width="1em" height="1em" viewBox="0 0 16 16" id="add-expense" class="bi bi-plus-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
@@ -52,31 +54,39 @@
         <!-- <div class="d-flex justify-content-end">
           <button class="btn btn-success" type="submit" id="addExpense">Add</button>
         </div> -->
-        <% expenses.forEach(function(expense) { if(!expense.disabled) { %>
+      </form>
+
+      <% expenses.forEach(function(expense) { if(!expense.disabled) { %>
+      <form id="delete-expense-form" class="m-3" action="/expenses/<%= expense._id %>?_method=DELETE" method="POST">
         <tr class="expense" id="<%= expense._id %>">
           <!-- <td scope="row"> -->
-            <td><%= expense.title %></td>
-            <td><%= expense.category %></td>
-            <td><%= expense.date.toDateString() %></td>
-            <td><%= expense.amount %></td>
-            <td><button type="submit" class="btn btn-danger">Delete</button></td>
-            <!-- <td><a href=""><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <td><%= expense.title %></td>
+          <td><%= expense.category %></td>
+          <td><%= expense.date.toDateString() %></td>
+          <td><%= expense.amount %></td>
+          <td><button type="submit" class="btn btn-danger">Delete</button></td>
+          <!-- <td><a href=""><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
             </svg></a></td> -->
           <!-- </td> -->
         </tr>
-        <% }}); %>
-        <tr>
-          <th scope="col">Total</th>
-          <th></th>
-          <th></th>
-          <th scope="col">Total</th>
+      </form>
+      <% }}); %>
 
-        </tr>
-      </tbody>
-    </table>
-    
-  </form>
+
+      <tr>
+        <th scope="col">Total</th>
+        <th></th>
+        <th></th>
+        <th scope="col"><%= total %></th>
+        <th></th>
+      </tr>
+    </tbody>
+  </table>
+
+
 </div>
+
+
 
 <%- include ('../partials/footer') %>
