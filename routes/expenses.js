@@ -14,7 +14,7 @@ var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.
 router.get('/', function(req, res, next) {
     var collection = db.get('expenses');
     var total = 0;
-    collection.find({}, {user_id: req.session.user._id}, (err, expenses) => {
+    collection.find({user_id: mongoose.Types.ObjectId(req.session.user._id)}, { sort: { date: -1 }, skip: (req.query.page * req.session.num_results), limit: req.session.num_results }, (err, expenses) => {
       if(err) throw err;
       expenses.forEach(element => {
           total += parseFloat(element.amount);
@@ -33,13 +33,10 @@ router.post('/', (req, res, next) => {
         date: new Date(req.body.date),
         amount: req.body.amount
     })
-    console.log("post expense called");
-    // req.session.expense = expense;
     res.redirect('/');
   });
 
 router.delete('/:id', (req, res, next) => {
-    console.log("hitting delete");
     var collection = db.get('expenses');
     collection.findOneAndDelete({
         _id: req.params.id

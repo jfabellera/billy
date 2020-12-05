@@ -40,9 +40,9 @@
           <% expenses.forEach(function(expense) { if(!expense.disabled) { %>
           <tr class="expense" id="tr-<%= expense._id %>">
             <td><%= expense.title %></td>
-            <td><%= expense.category %></td>
-            <td><%= expense.date.toDateString() %></td>
             <td><%= expense.amount %></td>
+            <td><%= expense.date.toDateString() %></td>
+            <td><%= expense.category %></td>
             <td><button id="<%= expense._id %>" onclick="deleteExpense(event)" type="submit" class="btn btn-danger">Delete</button></td>
           </tr>
           <% }}); %>

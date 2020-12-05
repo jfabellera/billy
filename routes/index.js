@@ -105,6 +105,7 @@ router.post('/login', (req, res) => {
       if(user != null && !user.disabled && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
         req.session.user = user;
+        req.session.num_results = 10;
         res.redirect('/');
       } else {
         console.log("Not allowed");
