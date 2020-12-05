@@ -8,11 +8,12 @@
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
   <script src="javascripts/animations.js"></script>
-  <script type="text/javascript" src="javascripts/datatables.min.js"></script>
   <% if(locals.scripts) { locals.scripts.forEach(function(script) { %>
   <script src="/javascripts/<%= script %>"></script>
   <% });} %>
-  <link href="stylesheets/datatables.min.css" rel="stylesheet">
+  <% if(locals.styles) { locals.styles.forEach(function(style) { %>
+  <link rel="stylesheet" href="/stylesheets/<%= style %>">
+  <% });} %>
 	<link rel="stylesheet" href="stylesheets/styles.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css">
 
@@ -29,9 +30,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <% if(session.user) { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/history">History</a>
-            </li>
             <% if(session.user.account_type == "admin") { %>
             <li class="nav-item">
               <a class="nav-link" href="/users">Users</a>
@@ -62,9 +60,6 @@
             </a>
             <div style="position:relative">
               <div class="dropdown-menu dropdown-menu-right text-left" aria-labelledby="accountDropdown" style="top: 10px;">
-                <!-- <a class="dropdown-item" href="/profile">Profile</a> -->
-                <a class="dropdown-item" href="/settings">Settings</a>
-                <!-- <a class="dropdown-item" href="/profile">Profile</a> -->
                 <a class="dropdown-item" href="/expenses">Summary</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/about">About</a>

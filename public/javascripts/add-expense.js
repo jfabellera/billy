@@ -2,9 +2,13 @@ $(document).ready(function () {
     $('#expenses-table').DataTable({"ordering": false});
     $('.dataTables_length').addClass('bs-select');
 
+    var today = new Date();
+    today.setHours(today.getHours() - 6);
+    $('#date').val(today.toISOString().substr(0, 10))
+
     $(document).on("click", "#add-btn", function() {
         var expense = {};
- 
+
         expense.title = $('#title').val();
         expense.category = $('#category option:selected').text();
         expense.date = $('#date').val();
