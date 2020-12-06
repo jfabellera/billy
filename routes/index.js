@@ -4,52 +4,72 @@ var router = express.Router();
 var mongoUtil = require('../mongoUtil.js');
 var db = mongoUtil.getDb();
 
-/* GET home page. */
+/* Redirect to summary/landing page */
 router.get('/', function(req, res, next) {
-  if(req.session.user)
+  if (req.session.user)
     res.redirect('/expenses');
   else
     res.redirect('/index');
 });
 
+// Display landing page
 router.get('/index', function(req, res) {
-  res.render('index', { session: req.session });
+  res.render('index', {
+    session: req.session
+  });
 });
 
+// Display login page
 router.get('/login', function(req, res) {
-  if(req.session.user) {
+  if (req.session.user) {
     res.redirect('/');
     return;
   }
-  res.render('login', { session: req.session })
+  res.render('login', {
+    session: req.session
+  })
 });
 
+// Logout
 router.get('/logout', function(req, res) {
-  if(req.session.user)
+  if (req.session.user)
     req.session.user = null;
   res.redirect('/');
 });
 
+// Display register page
 router.get('/register', function(req, res) {
-  if(req.session.user) {
+  if (req.session.user) {
     res.redirect('/');
     return;
   }
-  res.render('register', { session: req.session });
+  res.render('register', {
+    session: req.session
+  });
 });
 
+// Display about page
 router.get('/about', (req, res) => {
-    res.render('about/about', { session: req.session })
+  res.render('about/about', {
+    session: req.session
+  })
 });
 
+// Display terms and conditions
 router.get('/about/terms', (req, res) => {
-  res.render('about/terms', { session: req.session });
+  res.render('about/terms', {
+    session: req.session
+  });
 });
 
+// Display forgot page
 router.get('/forgot', function(req, res) {
-  res.render('forgot', { session: req.session });
+  res.render('forgot', {
+    session: req.session
+  });
 });
 
+// Register a new user to the system
 router.post('/register', async (req, res) => {
   try {
     var collection = db.get('users');
@@ -59,12 +79,24 @@ router.post('/register', async (req, res) => {
     collection.findOne({
       username: req.body.username.toLowerCase()
     }, (err, user) => {
-      if(user != null) {
-        res.render('register', { error: 'taken', formData: req.body, session: req.session });
-      } else if(req.body.email.toLowerCase() != req.body.confirmEmail.toLowerCase()) {
-        res.render('register', { error: 'emailMismatch', formData: req.body, session: req.session });
-      } else if(req.body.password != req.body.confirmPassword) {
-        res.render('register', { error: 'passwordMismatch', formData: req.body, session: req.session });
+      if (user != null) {
+        res.render('register', {
+          error: 'taken',
+          formData: req.body,
+          session: req.session
+        });
+      } else if (req.body.email.toLowerCase() != req.body.confirmEmail.toLowerCase()) {
+        res.render('register', {
+          error: 'emailMismatch',
+          formData: req.body,
+          session: req.session
+        });
+      } else if (req.body.password != req.body.confirmPassword) {
+        res.render('register', {
+          error: 'passwordMismatch',
+          formData: req.body,
+          session: req.session
+        });
       } else {
         collection.insert({
           username: String(req.body.username).toLowerCase(),
@@ -91,15 +123,16 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Login the user and set the session
 router.post('/login', (req, res) => {
   // Authenticate the user
   var collection = db.get('users');
   collection.findOne({
     username: req.body.username.toLowerCase()
   }, async (err, user) => {
-    if(err) throw err;
+    if (err) throw err;
     try {
-      if(user != null && !user.disabled && await bcrypt.compare(req.body.password, user.password_hash)) {
+      if (user != null && !user.disabled && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
         req.session.user = user;
         req.session.num_results = 10;
@@ -107,7 +140,11 @@ router.post('/login', (req, res) => {
         res.redirect('/');
       } else {
         console.log("Not allowed");
-        res.render('login', { error: "invalid", formData: req.body, session: req.session });
+        res.render('login', {
+          error: "invalid",
+          formData: req.body,
+          session: req.session
+        });
         res.status(401).send();
       }
     } catch {
@@ -117,39 +154,14 @@ router.post('/login', (req, res) => {
   });
 });
 
-
-router.get('/summary', (req, res) => {
-  if(!req.session.user) {
-    res.redirect('/');
-  } else {
-    res.render('user/summary', { session: req.session })
-    // TODO
-  }
-});
-
-router.get('/profile', (req, res) => {
-  if(!req.session.user) {
-    res.redirect('/');
-  } else {
-    res.render('user/history', { session: req.session })
-    // TODO
-  }
-});
-
-// router.get('/profile', (req, res) => {
-//   if(!req.session.user) {
-//     res.redirect('/');
-//   } else {
-//     res.render('user/profile', { session: req.session })
-//     // TODO
-//   }
-// });
-
+// Display account settings page
 router.get('/account', (req, res) => {
-  if(!req.session.user) {
+  if (!req.session.user) {
     res.redirect('/');
   } else {
-    res.render('user/account', { session: req.session })
+    res.render('user/account', {
+      session: req.session
+    })
   }
 });
 

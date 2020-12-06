@@ -13,8 +13,8 @@ table td {
 table td input, table td select {
   position: absolute;
   display: block;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   margin: 0;
   height: 100%;
   width: 100%;
@@ -23,11 +23,12 @@ table td input, table td select {
   box-sizing: border-box;
   background-color: inherit;
 }
+
 table td select:enabled {
   cursor: pointer;
 }
 
-table a{
+table a {
   display: hidden;
   font-size: 20px;
 }

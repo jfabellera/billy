@@ -13,45 +13,36 @@
 
           <div class="form-group col-5">
             <label for="firstName">First name</label>
-            <input type="text" class="form-control" name="firstName" id="firstName"
-            value="<%= locals.error ? formData.firstName : session.user.name.first %>"
-            required>
+            <input type="text" class="form-control" name="firstName" id="firstName" value="<%= locals.error ? formData.firstName : session.user.name.first %>" required>
           </div>
 
           <div class="form-group col-2">
             <label for="MI">MI</label>
-            <input type="text" maxlength="1" class="form-control" name="MI" id="MI"
-            value="<%= locals.error ? formData.MI : session.user.name.middle %>">
+            <input type="text" maxlength="1" class="form-control" name="MI" id="MI" value="<%= locals.error ? formData.MI : session.user.name.middle %>">
           </div>
 
           <div class="form-group col-5">
             <label for="lastName">Last name</label>
-            <input type="text" class="form-control" name="lastName" id="lastName"
-            value="<%= locals.error ? formData.lastName : session.user.name.last %>"
-            required>
+            <input type="text" class="form-control" name="lastName" id="lastName" value="<%= locals.error ? formData.lastName : session.user.name.last %>" required>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-6">
             <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" id="username"
-            value="<%= locals.error ? formData.username : session.user.username %>"
-            aria-describedby="taken" required>
+            <input type="text" class="form-control" name="username" id="username" value="<%= locals.error ? formData.username : session.user.username %>" aria-describedby="taken" required>
             <small id="taken" class="form-text text-danger ml-1">
               <%= (locals.error && locals.error == "taken") ? "Username is taken" : "" %>
             </small>
           </div>
           <div class="form-group col-6">
             <label for="phone">Phone number (optional)</label>
-            <input input type="text" class="form-control" name="phone" id="phone"
-            value="<%= locals.error ? formData.phone : session.user.phone_number %>" placeholder="(123)-456-7890">
+            <input input type="text" class="form-control" name="phone" id="phone" value="<%= locals.error ? formData.phone : session.user.phone_number %>" placeholder="(123)-456-7890">
           </div>
         </div>
         <div class="row">
           <div class="form-group col-6">
             <label for="email">Email address</label>
-            <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp"
-            value="<%= locals.error ? formData.email : session.user.email %>" required>
+            <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" value="<%= locals.error ? formData.email : session.user.email %>" required>
           </div>
 
         </div>
@@ -69,8 +60,7 @@
         <div class="row">
           <div class="form-group col-6">
             <label for="newPassword">New Password</label>
-            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Password"
-            value="<%= locals.error ? formData.newPassword : '' %>">
+            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Password" value="<%= locals.error ? formData.newPassword : '' %>">
           </div>
           <div class="form-group col-6">
             <label for="confirmNewPassword">Confirm New Password</label>

@@ -5,7 +5,7 @@ $(document).ready(function() {
   $("#user_id").remove();
   $("#error").remove();
 
-  if(error != "") {
+  if (error != "") {
     toggleEdit();
     $("#newUserModal").removeClass('fade');
     $("#newUserModal").modal('show');
@@ -15,13 +15,21 @@ $(document).ready(function() {
   function toggleEdit() {
     editMode = !editMode;
     $("td input, td select").prop("disabled", !editMode);
-    $("tr#"+user_id+" td select").prop("disabled", true);
-    if(editMode) {
-      $("#btnSave, #btnNew").css({ visibility: "visible" });
-      $("#btnSave, #btnNew").animate({ opacity: "1" }, 200);
+    $("tr#" + user_id + " td select").prop("disabled", true);
+    if (editMode) {
+      $("#btnSave, #btnNew").css({
+        visibility: "visible"
+      });
+      $("#btnSave, #btnNew").animate({
+        opacity: "1"
+      }, 200);
     } else {
-      $("#btnSave, #btnNew").animate({ opacity: "0" }, 200, function() {
-        $("#btnSave, #btnNew").css({ visibility: "hidden" });
+      $("#btnSave, #btnNew").animate({
+        opacity: "0"
+      }, 200, function() {
+        $("#btnSave, #btnNew").css({
+          visibility: "hidden"
+        });
         window.location.replace('/users');
       });
     }
@@ -36,14 +44,18 @@ $(document).ready(function() {
   });
 
   $(document).on("mouseenter", "tr", function() {
-    if(editMode && user_id != $(this).attr('id')) {
-      $(this).find('a').css({ visibility: "visible" });
+    if (editMode && user_id != $(this).attr('id')) {
+      $(this).find('a').css({
+        visibility: "visible"
+      });
     }
   });
 
   $(document).on("mouseleave", "tr", function() {
-    if(editMode) {
-        $(this).find('a').css({ visibility: "hidden" });
+    if (editMode) {
+      $(this).find('a').css({
+        visibility: "hidden"
+      });
     }
   });
 
@@ -55,7 +67,7 @@ $(document).ready(function() {
       object.username = $(this).find("input").val();
       object.account_type = $(this).find("select").val();
       object.disabled = $(this).hasClass('bg-danger');
-      if(object._id)
+      if (object._id)
         formData.push(object);
     });
 
@@ -72,7 +84,7 @@ $(document).ready(function() {
   });
 
   $(document).on("click", ".bi-trash", function() {
-    if(!$(this).parents().eq(3).hasClass("bg-danger")) {
+    if (!$(this).parents().eq(3).hasClass("bg-danger")) {
       $(this).parents().eq(3).addClass("bg-danger");
       $(this).parent().find(".bi-arrow-clockwise").show();
       $(this).hide();
@@ -95,8 +107,8 @@ $(document).ready(function() {
 
   $(document).on("change", "td input, td select", function() {
     var row = $(this).parents().eq(1);
-    if($(row).find("input").attr("default") != $(row).find("input").val() ||
-    $(row).find("select").attr("default") != $(row).find("select").val()) {
+    if ($(row).find("input").attr("default") != $(row).find("input").val() ||
+      $(row).find("select").attr("default") != $(row).find("select").val()) {
       row.addClass("bg-warning");
       row.find(".bi-trash").hide();
       row.find(".bi-arrow-clockwise").show();
