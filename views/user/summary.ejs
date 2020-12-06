@@ -1,6 +1,5 @@
 <%- include ('../partials/header', { scripts: ["add-expense.js"], styles: [] }) %>
 
-<span id="user_id" hidden><%=session.user._id %></span>
 <div class="d-flex flex-fill" style="overflow-y: auto">
   <div class="container">
     <div class="jumbotron py-4">
@@ -9,18 +8,18 @@
       <!-- num results and search bar -->
       <div class="d-flex">
         <div class="mr-auto">
-          <div class="" id="expenses-table_length"><label>Show
-              <select name="expenses-table_length" class="custom-select-sm" style="border-width:0px;">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
+          <div table_length"><label>Show
+              <select id="table_length" class="custom-select-sm" style="border-width:0px;">
+                <option value="10" <%= session.num_results == 10 ? "selected" : "" %>>10</option>
+                <option value="25" <%= session.num_results == 25 ? "selected" : "" %>>25</option>
+                <option value="50" <%= session.num_results == 50 ? "selected" : "" %>>50</option>
+                <option value="100"<%= session.num_results == 100 ? "selected" : "" %>>100</option>
               </select> entries</label>
           </div>
         </div>
         <div class="">
           <div id="expenses-table_filter" class="">
-            <label>Search: <input type="search" class="form-control-sm" placeholder="Search expense" style="border-width:0px;"></label>
+            <label>Search: <input id="search" type="search" class="form-control-sm" placeholder="Search expense" style="border-width:0px;"></label>
           </div>
         </div>
       </div>
@@ -68,22 +67,20 @@
         </tbody>
       </table>
 
-      <nav aria-label="Page navigation example">
-        <div class="d-flex">
-        <p class="mr-auto">Showing 1 to 10 entries out of 24</p>
-        <ul class="pagination">
-          <li class="page-item disabled">
-            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-          </li>
-        </ul>
-        </div>
-      </nav>
+      <div class="d-flex">
+      <p class="mr-auto">Showing <%= (pageInfo.currentPage-1)*10+1 %> to <%= Math.min((pageInfo.currentPage-1)*10+pageInfo.numResults, pageInfo.totalResults) %> entries out of <%= pageInfo.totalResults %></p>
+      <ul class="pagination">
+        <li class="page-item <%= pageInfo.currentPage == 1 ? "disabled" : "" %>">
+          <a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= parseInt(pageInfo.currentPage)-1 %>" tabindex="-1">Previous</a>
+        </li>
+        <% for(var i = 0; i < pageInfo.totalPages; i++) { %>
+        <li class="page-item <%= (i+1) == pageInfo.currentPage ? "active" : "" %>"><a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= i+1 %>"><%= i+1 %></a></li>
+        <% } %>
+        <li class="page-item <%= pageInfo.currentPage == pageInfo.totalPages ? "disabled" : "" %>">
+          <a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= parseInt(pageInfo.currentPage)+1 %>" tabindex="-1">Next</a>
+        </li>
+      </ul>
+      </div>
     </div>
   </div>
 </div>

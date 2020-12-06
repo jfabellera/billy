@@ -1,7 +1,29 @@
 $(document).ready(function () {
+
     var today = new Date();
     today.setHours(today.getHours() - 6);
     $('#date').val(today.toISOString().substr(0, 10))
+
+    $("#search").on("keypress", function(e) {
+      if(e.which == 13) {
+        var searchQuery = "search=" + $(this).val();
+        window.location.replace('/expenses?' + searchQuery);
+      }
+     });
+
+    $(document).on("change", "#table_length", function() {
+      var settings = {};
+      settings.num_results = $(this).val();
+      $.ajax({
+          type: "POST",
+          url: "/expenses?_method=GET",
+          contentType: "application/json",
+          data: JSON.stringify(settings),
+          success: function(result){
+              window.location.replace('/expenses');
+          }
+      });
+    });
 
     $(document).on("click", "#add-btn", function() {
         var expense = {};
@@ -30,7 +52,7 @@ function deleteExpense(e){
         type: "DELETE",
         url: url,
         success: function(result){
-            window.location.replace('/expenses');
+            window.location.replace(window.location.href);
         }
     })
 }

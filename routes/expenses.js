@@ -2,31 +2,54 @@ var express = require('express');
 var bcrypt = require('bcrypt');
 var router = express.Router();
 var mongoUtil = require('../mongoUtil.js');
-var db = mongoUtil.getDb();
-
 var monk = require('monk');
-// dotenv.config();
-// var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.mongodb.net/billy?retryWrites=true&w=majority');
 
+var db = mongoUtil.getDb();
 
 // display summary page
 router.get('/', async function(req, res, next) {
-    var collection = db.get('expenses');
-    var total = 0;
+  if(req.body.num_results)
+    req.session.num_results = parseInt(req.body.num_results);
 
-    await collection.find({user_id: monk.id(req.session.user._id)}, { sort: { date: -1 }, skip: ((req.query.page-1) * req.session.num_results), limit: req.session.num_results }, (err, expenses) => {
-      if(err) throw err;
-      expenses.forEach(element => {
-          total += parseFloat(element.amount);
-      });
-      res.render('user/summary', { session: req.session, expenses: expenses, total: total });
-    });
+  var collection = db.get('expenses');
+  var total = 0;
+  var pageInfo = {};
+
+  var query = {user_id: monk.id(req.session.user._id)};
+  if(req.query.search) {
+    query.title = { $regex: new RegExp(req.query.search), $options: 'i'};
+    pageInfo.search = req.query.search;
+  }
+
+  pageInfo.numResults = req.session.num_results;
+  pageInfo.currentPage = req.query.page ? req.query.page : 1;
+
+  await collection.count(query, (err, cnt) => {
+    pageInfo.totalResults = cnt;
+    pageInfo.totalPages = Math.ceil(parseFloat(cnt / pageInfo.numResults));
+
+    if(req.query.page > pageInfo.totalPages || req.query.page < 1) {
+      res.redirect('/expenses');
+      return;
+    }
   });
+
+  await collection.find(query,
+  { sort: { date: -1 }, skip: ((req.query.page-1) * req.session.num_results),
+  limit: req.session.num_results }, (err, expenses) => {
+    console.log(pageInfo);
+    if(err) throw err;
+    expenses.forEach(element => {
+        total += parseFloat(element.amount);
+    });
+    res.render('user/summary', { session: req.session, expenses: expenses, total: total, pageInfo: pageInfo });
+  });
+});
 
 router.post('/', (req, res, next) => {
     var collection = db.get('expenses');
     collection.insert({
-        user_id: mongoose.Types.ObjectId(req.session.user._id),
+        user_id: monk.id(req.session.user._id),
         title: req.body.title,
         category: req.body.category,
         date: new Date(req.body.date),
