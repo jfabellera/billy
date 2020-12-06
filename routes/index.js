@@ -1,11 +1,8 @@
 var express = require('express');
 var bcrypt = require('bcrypt');
 var router = express.Router();
-var dotenv = require('dotenv');
-
-var monk = require('monk');
-dotenv.config();
-var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.mongodb.net/billy?retryWrites=true&w=majority');
+var mongoUtil = require('../mongoUtil.js');
+var db = mongoUtil.getDb();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -105,6 +102,8 @@ router.post('/login', (req, res) => {
       if(user != null && !user.disabled && await bcrypt.compare(req.body.password, user.password_hash)) {
         console.log("Success");
         req.session.user = user;
+        req.session.num_results = 10;
+        req.session.month = 0;
         res.redirect('/');
       } else {
         console.log("Not allowed");

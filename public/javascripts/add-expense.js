@@ -1,10 +1,47 @@
 $(document).ready(function () {
-    $('#expenses-table').DataTable({"ordering": false});
-    $('.dataTables_length').addClass('bs-select');
+
+    var today = new Date();
+    today.setHours(today.getHours() - 6);
+    $('#date').val(today.toISOString().substr(0, 10))
+
+    $("#search").on("keypress", function(e) {
+      if(e.which == 13) {
+        var searchQuery = "search=" + $(this).val();
+        window.location.replace('/expenses?' + searchQuery);
+      }
+     });
+
+    $(document).on("change", "#table_length", function() {
+      var settings = {};
+      settings.num_results = $(this).val();
+      $.ajax({
+          type: "POST",
+          url: "/expenses?_method=GET",
+          contentType: "application/json",
+          data: JSON.stringify(settings),
+          success: function(result){
+              window.location.replace(window.location.href);
+          }
+      });
+    });
+
+    $(document).on("change", "#month", function() {
+      var settings = {};
+      settings.month = $(this).val();
+      $.ajax({
+          type: "POST",
+          url: "/expenses?_method=GET",
+          contentType: "application/json",
+          data: JSON.stringify(settings),
+          success: function(result){
+              window.location.replace(window.location.href);
+          }
+      });
+    });
 
     $(document).on("click", "#add-btn", function() {
         var expense = {};
- 
+
         expense.title = $('#title').val();
         expense.category = $('#category option:selected').text();
         expense.date = $('#date').val();
@@ -29,7 +66,7 @@ function deleteExpense(e){
         type: "DELETE",
         url: url,
         success: function(result){
-            window.location.replace('/expenses');
+            window.location.replace(window.location.href);
         }
     })
 }
