@@ -56,17 +56,51 @@ $(document).ready(function () {
                 window.location.replace('/expenses');
             }
         });
-    })
+    });
+
+    $(document).on("click", "tr .bi-trash", function() {
+        var url = '/expenses/' + $(this).parents().eq(2).attr('id') + '?_method=DELETE';
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(result){
+                window.location.replace(window.location.href);
+            }
+        });
+    });
+
+    $(document).on("click", "tr .bi-pencil", function() {
+        $(this).hide();
+        $(this).parent().find(".bi-check2").show();
+        console.log($(this).parents().eq(2));
+        $(this).parents().eq(2).find(".title, .amount, .date, .category").prop("disabled", false);
+    });
+
+    $(document).on("click", "tr .bi-check2", function() {
+        $(this).hide();
+        $(this).parent().find(".bi-pencil").show();
+        $(this).parents().eq(2).find(".title, .amount, .date, .category").prop("disabled", true);
+
+        var url = '/expenses/' + $(this).parents().eq(2).attr('id') + '?_method=PUT';
+        var expense = {};
+
+        expense.title = $(this).parents().eq(2).find(".title").val();
+        expense.category = $(this).parents().eq(2).find(".category option:selected").text();
+        expense.date =  $(this).parents().eq(2).find(".date").val();
+        expense.amount =  $(this).parents().eq(2).find(".amount").val();
+
+        console.log(expense);
+        $.ajax({
+            type: "POST",
+            url: url,
+            contentType: "application/json",
+            data: JSON.stringify(expense),
+            success: function(result){
+                window.location.replace(window.location.href);
+            }
+        });
+    });
+
+
 });
-
-function deleteExpense(e){
-    var url = '/expenses/' + $(e.target).attr('id');
-
-    $.ajax({
-        type: "DELETE",
-        url: url,
-        success: function(result){
-            window.location.replace(window.location.href);
-        }
-    })
-}
