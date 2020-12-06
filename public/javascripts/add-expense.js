@@ -59,8 +59,14 @@ $(document).ready(function () {
     });
 
     $(document).on("click", "tr .bi-trash", function() {
-        var url = '/expenses/' + $(this).parents().eq(2).attr('id') + '?_method=DELETE';
+        $("#deleteModal").modal('show');
+        $("#btnDelete").attr('expense_id', $(this).parents().eq(2).attr('id'));
+    });
 
+    $(document).on("click", "#btnDelete", function() {
+      if($(this).attr('expense_id')) {
+        $("#deleteModal").modal('hide');
+        var url = '/expenses/' + $(this).attr('expense_id') + '?_method=DELETE';
         $.ajax({
             type: "POST",
             url: url,
@@ -68,6 +74,7 @@ $(document).ready(function () {
                 window.location.replace(window.location.href);
             }
         });
+      }
     });
 
     $(document).on("click", "tr .bi-pencil", function() {
