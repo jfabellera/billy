@@ -1,4 +1,4 @@
-<%- include ('../partials/header', { scripts: ["datatables.min.js", "add-expense.js"], styles: ["datatables.min.css"] }) %>
+<%- include ('../partials/header', { scripts: ["add-expense.js"], styles: [] }) %>
 
 <span id="user_id" hidden><%=session.user._id %></span>
 <div class="d-flex flex-fill" style="overflow-y: auto">
@@ -6,7 +6,26 @@
     <div class="jumbotron py-4">
       <h1 class="display-3 mb-4"><%=session.user.name.first %>'s expenses</h1>
 
-      <!-- expenses.foreach -->
+      <!-- num results and search bar -->
+      <div class="d-flex">
+        <div class="mr-auto">
+          <div class="" id="expenses-table_length"><label>Show
+              <select name="expenses-table_length" class="custom-select-sm" style="border-width:0px;">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select> entries</label>
+          </div>
+        </div>
+        <div class="">
+          <div id="expenses-table_filter" class="">
+            <label>Search: <input type="search" class="form-control-sm" placeholder="Search expense" style="border-width:0px;"></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- table -->
       <table id="expenses-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
           <tr>
@@ -48,6 +67,23 @@
           <% }}); %>
         </tbody>
       </table>
+
+      <nav aria-label="Page navigation example">
+        <div class="d-flex">
+        <p class="mr-auto">Showing 1 to 10 entries out of 24</p>
+        <ul class="pagination">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+        </div>
+      </nav>
     </div>
   </div>
 </div>

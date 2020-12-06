@@ -1,28 +1,27 @@
 var express = require('express');
 var bcrypt = require('bcrypt');
 var router = express.Router();
-var dotenv = require('dotenv');
+var mongoUtil = require('../mongoUtil.js');
+var db = mongoUtil.getDb();
 
 var monk = require('monk');
-var mongoose = require('mongoose');
-
-dotenv.config();
-var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.mongodb.net/billy?retryWrites=true&w=majority');
+// dotenv.config();
+// var db = monk('mongodb+srv://billy:'+process.env.mongodb_password+'@billy.ks9cj.mongodb.net/billy?retryWrites=true&w=majority');
 
 
 // display summary page
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
     var collection = db.get('expenses');
     var total = 0;
-    collection.find({user_id: mongoose.Types.ObjectId(req.session.user._id)}, { sort: { date: -1 }, skip: (req.query.page * req.session.num_results), limit: req.session.num_results }, (err, expenses) => {
+
+    await collection.find({user_id: monk.id(req.session.user._id)}, { sort: { date: -1 }, skip: ((req.query.page-1) * req.session.num_results), limit: req.session.num_results }, (err, expenses) => {
       if(err) throw err;
       expenses.forEach(element => {
           total += parseFloat(element.amount);
       });
-      res.render('user/summary', { session: req.session, expenses: expenses, total:total });
+      res.render('user/summary', { session: req.session, expenses: expenses, total: total });
     });
   });
-// router.get('/', (req, res) => res.send('Hello'));
 
 router.post('/', (req, res, next) => {
     var collection = db.get('expenses');

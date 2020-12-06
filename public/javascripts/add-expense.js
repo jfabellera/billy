@@ -1,7 +1,4 @@
 $(document).ready(function () {
-    $('#expenses-table').DataTable({"ordering": false});
-    $('.dataTables_length').addClass('bs-select');
-
     var today = new Date();
     today.setHours(today.getHours() - 6);
     $('#date').val(today.toISOString().substr(0, 10))
