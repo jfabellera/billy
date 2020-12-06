@@ -8,18 +8,29 @@
       <!-- num results and search bar -->
       <div class="d-flex">
         <div class="mr-auto">
-          <div table_length"><label>Show
-              <select id="table_length" class="custom-select-sm" style="border-width:0px;">
-                <option value="10" <%= session.num_results == 10 ? "selected" : "" %>>10</option>
-                <option value="25" <%= session.num_results == 25 ? "selected" : "" %>>25</option>
-                <option value="50" <%= session.num_results == 50 ? "selected" : "" %>>50</option>
-                <option value="100"<%= session.num_results == 100 ? "selected" : "" %>>100</option>
-              </select> entries</label>
+          <div table_length"><label>Month
+              <select id="month" class="custom-select-sm" style="border-width:0px;">
+                <option value="0" <%= session.month == 0 ? "selected" : "" %>>All Months</option>
+                <option value="12" <%= session.month == 12 ? "selected" : "" %>>December</option>
+                <option value="11" <%= session.month == 11 ? "selected" : "" %>>November</option>
+                <option value="10" <%= session.month == 10 ? "selected" : "" %>>October</option>
+              </select></label>
           </div>
         </div>
+          <div class="mr-auto">
+            <div table_length"><label>Show
+                <select id="table_length" class="custom-select-sm" style="border-width:0px;">
+                  <option value="10" <%= session.num_results == 10 ? "selected" : "" %>>10</option>
+                  <option value="25" <%= session.num_results == 25 ? "selected" : "" %>>25</option>
+                  <option value="50" <%= session.num_results == 50 ? "selected" : "" %>>50</option>
+                  <option value="100"<%= session.num_results == 100 ? "selected" : "" %>>100</option>
+                </select> entries</label>
+            </div>
+          </div>
         <div class="">
           <div id="expenses-table_filter" class="">
-            <label>Search: <input id="search" type="search" class="form-control-sm" placeholder="Search expense" style="border-width:0px;"></label>
+            <label>Search: <input id="search" type="search" class="form-control-sm" placeholder="Search expense" style="border-width:0px;"
+              value="<%= pageInfo.search ? pageInfo.search : "" %>"></label>
           </div>
         </div>
       </div>

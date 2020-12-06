@@ -103,6 +103,7 @@ router.post('/login', (req, res) => {
         console.log("Success");
         req.session.user = user;
         req.session.num_results = 10;
+        req.session.month = 0;
         res.redirect('/');
       } else {
         console.log("Not allowed");

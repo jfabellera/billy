@@ -20,7 +20,21 @@ $(document).ready(function () {
           contentType: "application/json",
           data: JSON.stringify(settings),
           success: function(result){
-              window.location.replace('/expenses');
+              window.location.replace(window.location.href);
+          }
+      });
+    });
+
+    $(document).on("change", "#month", function() {
+      var settings = {};
+      settings.month = $(this).val();
+      $.ajax({
+          type: "POST",
+          url: "/expenses?_method=GET",
+          contentType: "application/json",
+          data: JSON.stringify(settings),
+          success: function(result){
+              window.location.replace(window.location.href);
           }
       });
     });

@@ -10,6 +10,8 @@ var db = mongoUtil.getDb();
 router.get('/', async function(req, res, next) {
   if(req.body.num_results)
     req.session.num_results = parseInt(req.body.num_results);
+  if(req.body.month)
+    req.session.month = parseInt(req.body.month);
 
   var collection = db.get('expenses');
   var total = 0;
@@ -19,6 +21,9 @@ router.get('/', async function(req, res, next) {
   if(req.query.search) {
     query.title = { $regex: new RegExp(req.query.search), $options: 'i'};
     pageInfo.search = req.query.search;
+  }
+  if(req.session.month != 0) {
+    query.date = {"$gte": new Date(2020, req.session.month-1, 1), "$lt": new Date(2020, req.session.month, 1)}
   }
 
   pageInfo.numResults = req.session.num_results;
