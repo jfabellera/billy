@@ -29,7 +29,7 @@ router.get('/', async function(req, res, next) {
   pageInfo.numResults = req.session.num_results;
   pageInfo.currentPage = req.query.page ? req.query.page : 1;
 
-  await collection.count(query, (err, cnt) => {
+  await collection.count(query, async (err, cnt) => {
     pageInfo.totalResults = cnt;
     pageInfo.totalPages = Math.ceil(parseFloat(cnt / pageInfo.numResults));
 
@@ -37,28 +37,55 @@ router.get('/', async function(req, res, next) {
       res.redirect('/expenses');
       return;
     }
-  });
 
-  await collection.find(query,
-  { sort: { date: -1 }, skip: ((req.query.page-1) * req.session.num_results),
-  limit: req.session.num_results }, (err, expenses) => {
-    console.log(pageInfo);
-    if(err) throw err;
-    expenses.forEach(element => {
-        total += parseFloat(element.amount);
+    // for custom page numbers at bottom of screen
+    pageInfo.pageNumbers = {};
+    if(pageInfo.currentPage < 5) {
+      pageInfo.pageNumbers.low = 2;
+      pageInfo.pageNumbers.high = Math.min(5, pageInfo.totalPages - 1);
+    } else if(pageInfo.currentPage > (pageInfo.totalPages - 4)) {
+      pageInfo.pageNumbers.low = pageInfo.totalPages - 4;
+      pageInfo.pageNumbers.high = pageInfo.totalPages - 1;
+    } else {
+      pageInfo.pageNumbers.low = parseInt(pageInfo.currentPage) - 1;
+      pageInfo.pageNumbers.high = parseInt(pageInfo.currentPage) + 1
+    }
+
+    collection.aggregate([{
+      $match: query,
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }], (err, result) => {
+      if (err) throw err;
+      if(typeof result[0] !== 'undefined')
+        total = result[0].total;
+
+      collection.find(query,
+      { sort: { date: -1 }, skip: ((req.query.page-1) * req.session.num_results),
+      limit: req.session.num_results }, (err, expenses) => {
+        if(err) throw err;
+        res.render('user/summary', { session: req.session, expenses: expenses, total: total, pageInfo: pageInfo });
+      });
     });
-    res.render('user/summary', { session: req.session, expenses: expenses, total: total, pageInfo: pageInfo });
   });
 });
 
 router.post('/', (req, res, next) => {
     var collection = db.get('expenses');
+    var date = new Date();
+    date.setHours(date.getHours() - 6);
     collection.insert({
         user_id: monk.id(req.session.user._id),
         title: req.body.title,
         category: req.body.category,
-        date: new Date(req.body.date),
-        amount: req.body.amount
+        date: date,
+        amount: parseFloat(req.body.amount)
     })
     res.redirect('/');
   });

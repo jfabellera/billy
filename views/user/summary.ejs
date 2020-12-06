@@ -8,7 +8,7 @@
       <!-- num results and search bar -->
       <div class="d-flex">
         <div class="mr-auto">
-          <div table_length"><label>Month
+          <div table_length"><label>Total: $<%= total %> for
               <select id="month" class="custom-select-sm" style="border-width:0px;">
                 <option value="0" <%= session.month == 0 ? "selected" : "" %>>All Months</option>
                 <option value="12" <%= session.month == 12 ? "selected" : "" %>>December</option>
@@ -70,7 +70,7 @@
           <tr class="expense" id="tr-<%= expense._id %>">
             <td><%= expense.title %></td>
             <td><%= expense.amount %></td>
-            <td><%= expense.date.toDateString() %></td>
+            <td><%= expense.date.toLocaleDateString('en-US', {timeZone: 'America/New_York'}) %></td>
             <td><%= expense.category %></td>
             <td><button id="<%= expense._id %>" onclick="deleteExpense(event)" type="submit" class="btn btn-danger">Delete</button></td>
           </tr>
@@ -84,9 +84,13 @@
         <li class="page-item <%= pageInfo.currentPage == 1 ? "disabled" : "" %>">
           <a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= parseInt(pageInfo.currentPage)-1 %>" tabindex="-1">Previous</a>
         </li>
-        <% for(var i = 0; i < pageInfo.totalPages; i++) { %>
-        <li class="page-item <%= (i+1) == pageInfo.currentPage ? "active" : "" %>"><a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= i+1 %>"><%= i+1 %></a></li>
+        <li class="page-item <%= 1 == pageInfo.currentPage ? "active" : "" %>"><a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=1">1</a></li>
+        <% if(pageInfo.currentPage > 4 && pageInfo.totalPages > 7) { %><li class="page-item disabled page-link">...</li><% } %>
+        <% for(var i = pageInfo.pageNumbers.low; i <= pageInfo.pageNumbers.high; i++) { %>
+        <li class="page-item <%= (i) == pageInfo.currentPage ? "active" : "" %>"><a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= i %>"><%= i %></a></li>
         <% } %>
+        <% if(pageInfo.currentPage < pageInfo.totalPages - 3 && pageInfo.totalPages > 7) { %><li class="page-item disabled page-link">...</li><% } %>
+        <% if(pageInfo.totalPages > 1) { %><li class="page-item <%= pageInfo.totalPages == pageInfo.currentPage ? "active" : "" %>"><a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= pageInfo.totalPages %>"><%= pageInfo.totalPages %></a></li><% } %>
         <li class="page-item <%= pageInfo.currentPage == pageInfo.totalPages ? "disabled" : "" %>">
           <a class="page-link" href="/expenses?<%= pageInfo.search ? ('search='+pageInfo.search+'&') : "" %>page=<%= parseInt(pageInfo.currentPage)+1 %>" tabindex="-1">Next</a>
         </li>
