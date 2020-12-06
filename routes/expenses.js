@@ -78,8 +78,7 @@ router.get('/', async function(req, res, next) {
 
 router.post('/', (req, res, next) => {
     var collection = db.get('expenses');
-    var date = new Date();
-    date.setHours(date.getHours() - 6);
+    var date = new Date(req.body.date);
     collection.insert({
         user_id: monk.id(req.session.user._id),
         title: req.body.title,
@@ -89,6 +88,20 @@ router.post('/', (req, res, next) => {
     })
     res.redirect('/');
   });
+
+router.put('/:id', (req, res, next) => {
+    console.log(req.params.id);
+    var collection = db.get('expenses');
+    var date = new Date(req.body.date);
+    collection.update({
+        _id: req.params.id
+    }, { $set: {
+      title: req.body.title,
+      amount: parseFloat(req.body.amount),
+      date: date,
+      category: req.body.category
+    }}).then(() => {res.end('')})
+});
 
 router.delete('/:id', (req, res, next) => {
     var collection = db.get('expenses');
