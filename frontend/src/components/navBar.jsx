@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -8,7 +10,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 
 class NavBar extends Component {
   state = {
-    session: null,
+    session: 1,
   };
 
   /**
@@ -16,15 +18,19 @@ class NavBar extends Component {
    */
   renderLinks() {
     if (this.state.session) {
-      return <Nav.Link href="/users">Users</Nav.Link>;
+      return (
+        <Nav.Link as={Link} to="/users">
+          Users
+        </Nav.Link>
+      );
     } else {
       return (
         <NavDropdown title="About" id="collasible-nav-dropdown">
-          <NavDropdown.Item href="/about/terms">
+          <NavDropdown.Item as={Link} to="/about/terms">
             Terms and Conditions
           </NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item href="/about/contributors">
+          <NavDropdown.Item as={Link} to="/about/contributors">
             Contributors
           </NavDropdown.Item>
         </NavDropdown>
@@ -45,20 +51,33 @@ class NavBar extends Component {
           id="dropdown-menu-align-right"
           className="mx-1"
         >
-          <Dropdown.Item eventKey="1">Summary</Dropdown.Item>
-          <Dropdown.Item eventKey="2">About</Dropdown.Item>
+          <Dropdown.Item as={Link} to="/summary">
+            Summary
+          </Dropdown.Item>
+          <Dropdown.Item as={Link} to="/about">
+            About
+          </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item eventKey="3">Account</Dropdown.Item>
-          <Dropdown.Item eventKey="4">Logout</Dropdown.Item>
+          <Dropdown.Item as={Link} to="/account">
+            Account
+          </Dropdown.Item>
+          <Dropdown.Item as={Link} to="/logout">
+            Logout
+          </Dropdown.Item>
         </DropdownButton>
       );
     } else {
       return (
         <>
-          <Button variant="outline-secondary" className="mx-1" href="/register">
+          <Button
+            as={Link}
+            variant="outline-secondary"
+            className="mx-1"
+            to="/register"
+          >
             Create Account
           </Button>{" "}
-          <Button variant="success" className="mx-1" href="/login">
+          <Button as={Link} variant="success" className="mx-1" to="/login">
             Login
           </Button>{" "}
         </>
@@ -70,7 +89,9 @@ class NavBar extends Component {
     return (
       <>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-          <Navbar.Brand href="/">Billy</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">
+            Billy
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="mr-auto">{this.renderLinks()}</Nav>
