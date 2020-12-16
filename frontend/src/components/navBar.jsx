@@ -10,7 +10,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 
 class NavBar extends Component {
   state = {
-    session: 1,
+    session: null,
   };
 
   /**
