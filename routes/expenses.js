@@ -1,53 +1,49 @@
-var express = require('express');
-var bcrypt = require('bcrypt');
+var express = require("express");
 var router = express.Router();
-var mongoUtil = require('../mongoUtil.js');
-var monk = require('monk');
+var mongoose = require("mongoose");
 
-var db = mongoUtil.getDb();
+var Expense = require("../models/expenseModel");
 
 // display summary page
-router.get('/', async function(req, res, next) {
+router.get("/", async function (req, res, next) {
   if (!req.session.user) {
-    res.redirect('/');
-    return
+    res.redirect("/");
+    return;
   }
 
   if (req.body.num_results)
     req.session.num_results = parseInt(req.body.num_results);
-  if (req.body.month)
-    req.session.month = parseInt(req.body.month);
+  if (req.body.month) req.session.month = parseInt(req.body.month);
 
-  var collection = db.get('expenses');
   var total = 0;
   var pageInfo = {};
 
   var query = {
-    user_id: monk.id(req.session.user._id)
+    user_id: mongoose.Types.ObjectId(req.session.user._id),
   };
   if (req.query.search) {
     query.title = {
       $regex: new RegExp(req.query.search),
-      $options: 'i'
+      $options: "i",
     };
     pageInfo.search = req.query.search;
   }
   if (req.session.month != 0) {
     query.date = {
-      "$gte": new Date(2020, req.session.month - 1, 1),
-      "$lt": new Date(2020, req.session.month, 1)
-    }
+      $gte: new Date(2020, req.session.month - 1, 1),
+      $lt: new Date(2020, req.session.month, 1),
+    };
   }
 
   pageInfo.numResults = req.session.num_results;
   pageInfo.currentPage = req.query.page ? req.query.page : 1;
 
-  await collection.count(query, async (err, cnt) => {
+  await Expense.countDocuments(query, async (err, cnt) => {
     pageInfo.totalResults = cnt;
     pageInfo.totalPages = Math.ceil(parseFloat(cnt / pageInfo.numResults));
 
     if (req.query.page > pageInfo.totalPages || req.query.page < 1) {
-      res.redirect('/expenses');
+      res.redirect("/expenses");
       return;
     }
 
@@ -56,102 +52,114 @@ router.get('/', async function(req, res, next) {
     if (pageInfo.currentPage < 5) {
       pageInfo.pageNumbers.low = 2;
       pageInfo.pageNumbers.high = Math.min(5, pageInfo.totalPages - 1);
-    } else if (pageInfo.currentPage > (pageInfo.totalPages - 4)) {
+    } else if (pageInfo.currentPage > pageInfo.totalPages - 4) {
       pageInfo.pageNumbers.low = pageInfo.totalPages - 4;
       pageInfo.pageNumbers.high = pageInfo.totalPages - 1;
     } else {
       pageInfo.pageNumbers.low = parseInt(pageInfo.currentPage) - 1;
-      pageInfo.pageNumbers.high = parseInt(pageInfo.currentPage) + 1
+      pageInfo.pageNumbers.high = parseInt(pageInfo.currentPage) + 1;
     }
 
-    collection.aggregate([{
-        $match: query,
-      },
-      {
-        $group: {
-          _id: null,
-          total: {
-            $sum: "$amount"
-          }
-        }
-      }
-    ], (err, result) => {
-      if (err) throw err;
-      if (typeof result[0] !== 'undefined')
-        total = result[0].total;
-
-      collection.find(query, {
-        sort: {
-          date: -1,
+    Expense.aggregate(
+      [
+        {
+          $match: query,
         },
-        skip: ((req.query.page - 1) * req.session.num_results),
-        limit: req.session.num_results
-      }, (err, expenses) => {
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$amount",
+            },
+          },
+        },
+      ],
+      (err, result) => {
         if (err) throw err;
-        res.render('user/summary', {
-          session: req.session,
-          expenses: expenses,
-          total: total,
-          pageInfo: pageInfo
-        });
-      });
-    });
+        if (typeof result[0] !== "undefined") total = result[0].total;
+
+        Expense.find(
+          query,
+          null,
+          {
+            sort: {
+              date: -1,
+            },
+            skip: (req.query.page - 1) * req.session.num_results,
+            limit: req.session.num_results,
+          },
+          (err, expenses) => {
+            if (err) throw err;
+            res.render("user/summary", {
+              session: req.session,
+              expenses: expenses,
+              total: total,
+              pageInfo: pageInfo,
+            });
+          }
+        );
+      }
+    );
   });
 });
 
 // Add new expense
-router.post('/', (req, res, next) => {
+router.post("/", (req, res, next) => {
   if (!req.session.user) {
-    res.redirect('/');
-    return
+    res.redirect("/");
+    return;
   }
-  var collection = db.get('expenses');
   var date = new Date(req.body.date);
-  collection.insert({
-    user_id: monk.id(req.session.user._id),
+  Expense.create({
+    user_id: mongoose.Types.ObjectId(req.session.user._id),
     title: req.body.title,
     category: req.body.category,
     date: date,
-    amount: parseFloat(req.body.amount)
-  })
-  res.redirect('/');
+    amount: parseFloat(req.body.amount),
+  });
+  res.redirect("/");
 });
 
 // Edit expense
-router.put('/:id', (req, res, next) => {
+router.put("/:id", (req, res, next) => {
   if (!req.session.user) {
-    res.redirect('/');
-    return
+    res.redirect("/");
+    return;
   }
   console.log(req.params.id);
-  var collection = db.get('expenses');
   var date = new Date(req.body.date);
-  collection.update({
-    _id: req.params.id
-  }, {
-    $set: {
-      title: req.body.title,
-      amount: parseFloat(req.body.amount),
-      date: date,
-      category: req.body.category
+  Expense.findOneAndUpdate(
+    {
+      _id: req.params.id,
+    },
+    {
+      $set: {
+        title: req.body.title,
+        amount: parseFloat(req.body.amount),
+        date: date,
+        category: req.body.category,
+      },
+    },
+    (err) => {
+      if (err) throw err;
     }
-  }).then(() => {
-    res.end('')
-  })
+  );
 });
 
 // Delete expense
-router.delete('/:id', (req, res, next) => {
+router.delete("/:id", (req, res, next) => {
   if (!req.session.user) {
-    res.redirect('/');
-    return
+    res.redirect("/");
+    return;
   }
-  var collection = db.get('expenses');
-  collection.findOneAndDelete({
-    _id: req.params.id
-  }).then(() => {
-    res.end('')
-  })
+  Expense.findOneAndDelete(
+    {
+      _id: req.params.id,
+    },
+    (err) => {
+      if (err) throw err;
+    }
+  );
 });
 
 module.exports = router;
