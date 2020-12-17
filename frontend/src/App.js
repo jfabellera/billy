@@ -6,7 +6,6 @@ import LandingPage from './containers/home/landingPage';
 import Terms from './containers/home/terms';
 import Login from './containers/users/login';
 import Register from './containers/users/register';
-import { Container } from 'react-bootstrap';
 
 class App extends Component {
   render() {

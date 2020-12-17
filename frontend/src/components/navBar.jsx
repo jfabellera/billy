@@ -1,12 +1,14 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import {
+  Nav,
+  Navbar,
+  NavDropdown,
+  Button,
+  Dropdown,
+  DropdownButton,
+} from 'react-bootstrap';
 
 class NavBar extends Component {
   state = {
@@ -47,7 +49,7 @@ class NavBar extends Component {
         <DropdownButton
           variant="dark"
           menuAlign="right"
-          title={"Hi, " + this.state.firstName}
+          title={'Hi, ' + this.state.firstName}
           id="dropdown-menu-align-right"
           className="mx-1"
         >
@@ -76,10 +78,10 @@ class NavBar extends Component {
             to="/register"
           >
             Create Account
-          </Button>{" "}
+          </Button>{' '}
           <Button as={Link} variant="success" className="mx-1" to="/login">
             Login
-          </Button>{" "}
+          </Button>{' '}
         </>
       );
     }

@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 
-import { Container, Card, Form, Button, Col, Row } from 'react-bootstrap/';
+import { Container, Card, Form, Button, Row } from 'react-bootstrap';
 
 class Login extends Component {
   state = {};
   render() {
     return (
       <>
-      <div className="d-flex flex-fill align-items-center overflow-auto">
-          <Container style={{ maxWidth: '500px' }}>
-            <Card>
+        <div className="d-flex flex-fill align-items-center overflow-auto">
+          <Container as={Card} style={{ maxWidth: '500px' }}>
               <Form className="m-3">
                 <h1 className="text-center">Login</h1>
                 <Form.Group>
@@ -20,19 +19,14 @@ class Login extends Component {
                   <Form.Label>Password</Form.Label>
                   <Form.Control type="password"></Form.Control>
                 </Form.Group>
-                <Container>
-                  <Row className="justify-content-center">
-                    <Col md="auto">
-                      <Button variant="success" type="submit">
-                        Login
-                      </Button>
-                    </Col>
-                  </Row>
-                </Container>
+                <Row className="justify-content-md-center">
+                  <Button variant="success" type="submit">
+                    Login
+                  </Button>
+                </Row>
               </Form>
-            </Card>
           </Container>
-          </div>
+        </div>
       </>
     );
   }
