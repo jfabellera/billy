@@ -11,11 +11,6 @@ const userSchema = new Schema(
       trim: true,
       minlength: 3,
     },
-    email: {
-      type: String,
-      trim: true,
-      lowercase: true,
-    },
     password_hash: {
       type: String,
       required: true,
