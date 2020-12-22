@@ -35,6 +35,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use("/users", usersRouter);
-app.use("/expenses", expensesRouter);
+app.use("/expenses", expensesRouter.router);
 
 module.exports = app;

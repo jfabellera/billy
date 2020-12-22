@@ -9,6 +9,7 @@
 | [Create user](#Create-user) | /users/            | POST        |
 | [Edit user](#Edit-user)     | /users/{username}/ | PUT         |
 | [Delete user](#Delete-user) | /users/{username}/ | DELETE      |
+
 <br/>
 
 ## Expenses
@@ -34,13 +35,13 @@ List all users registered to the system.
 GET /users/
 ```
 
-| Parameter   | Type    | In    | Description                                        |
-| ----------- | ------- | ----- | -------------------------------------------------- |
-| `type`      | string  | query | `all`, `user`, `admin`, or `owner`                 |
-| `sort`      | string  | query | `username`, `age`, `firstName`, `lastName`, `type` |
-| `direction` | string  | query | `asc` or `dsc`                                     |
-| `per_page`  | integer | query | Number of users to fetch (max 100)                 |
-| `page`      | integer | query | Page number of the results to fetch                |
+| Parameter   | Type    | In    | Description                                          |
+| ----------- | ------- | ----- | ---------------------------------------------------- |
+| `type`      | string  | query | `user`, `admin`, or `owner`                          |
+| `sort`      | string  | query | `username`, `age`, `first_name`, `last_name`, `type` |
+| `direction` | string  | query | `asc` or `dsc`                                       |
+| `per_page`  | integer | query | Number of users to fetch (max 100)                   |
+| `page`      | integer | query | Page number of the results to fetch                  |
 
 ---
 
@@ -117,7 +118,7 @@ GET /expenses/
 
 | Parameter    | Type    | In    | Description                                                                                                    |
 | ------------ | ------- | ----- | -------------------------------------------------------------------------------------------------------------- |
-| `sort`       | string  | query | `name`, `date`, `user`, `category`, or `amount`                                                                |
+| `sort`       | string  | query | `title`, `date`, `user_id`, `category`, or `amount`                                                            |
 | `direction`  | string  | query | `asc` or `dsc`                                                                                                 |
 | `start_date` | string  | query | Start date of the expenses to fetch. If left empty, will retrieve expenses starting from the beginning of time |
 | `end_date`   | string  | query | End date of the expenses to fetch. If left empty, will retrieve expenses up until the current time             |
