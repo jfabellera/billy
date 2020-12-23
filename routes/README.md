@@ -67,12 +67,11 @@ Registers a user to the system.
 POST /users/
 ```
 
-| Parameter    | Type   | In   | Description                                   |
-| ------------ | ------ | ---- | --------------------------------------------- |
-| `username`   | string | body | Username for new user, must not already exist |
-| `password`   | string | body | Password for new user                         |
-| `first_name` | string | body | User's first name                             |
-| `last_name`  | string | body | User's last name                              |
+| Parameter  | Type   | In   | Description                                   |
+| ---------- | ------ | ---- | --------------------------------------------- |
+| `username` | string | body | Username for new user, must not already exist |
+| `password` | string | body | Password for new user                         |
+| `name`     | JSON   | body | JSON Object with `first` and `last` keys      |
 
 ---
 
@@ -84,13 +83,12 @@ Update the details for a user.
 PUT /users/{username}/
 ```
 
-| Parameter    | Type   | In   | Description                                   |
-| ------------ | ------ | ---- | --------------------------------------------- |
-| `username`   | string | path |                                               |
-| `username`   | string | body | New username for user, must not already exist |
-| `password`   | string | body | New password for new user                     |
-| `first_name` | string | body | New first name                                |
-| `last_name`  | string | body | New last name                                 |
+| Parameter  | Type   | In   | Description                                                 |
+| ---------- | ------ | ---- | ----------------------------------------------------------- |
+| `username` | string | path |                                                             |
+| `username` | string | body | New username for user, must not already exist               |
+| `password` | string | body | New password for new user                                   |
+| `name`     | JSON   | body | JSON object including new `first` value and/or `last` value |
 
 ---
 

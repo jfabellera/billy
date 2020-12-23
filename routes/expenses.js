@@ -123,9 +123,7 @@ router.get('/categories', getExpenseCategories);
 router.get(
   '/:id',
   [
-    check('id', 'Invalid expense ID')
-      .isHexadecimal()
-      .isLength({ min: 24, max: 24 }),
+    check('id', 'Invalid expense ID').isMongoId()
   ],
   (req, res) => {
     let err = validationResult(req);
@@ -145,9 +143,7 @@ router.get(
 router.post(
   '/',
   [
-    check('user_id', 'User ID must be an ObjectID')
-      .isHexadecimal()
-      .isLength({ min: 24, max: 24 }),
+    check('user_id', 'User ID must be an ObjectID').isMongoId(),
     check('title', 'Title is required').notEmpty(),
     check('amount', 'Amount must be a float').isFloat(),
     check('date', 'Incorrect date format').isDate(),
@@ -179,9 +175,7 @@ router.post(
 router.put(
   '/:id',
   [
-    check('id', 'Expense ID must be an ObjectID')
-      .isHexadecimal()
-      .isLength({ min: 24, max: 24 }),
+    check('id', 'Expense ID must be an ObjectID').isMongoId(),
     check('title', 'Title is required').optional().notEmpty(),
     check('amount', 'Amount must be a float').optional().isFloat(),
     check('date', 'Incorrect date format').optional().isDate(),
@@ -209,9 +203,7 @@ router.put(
 router.delete(
   '/:id',
   [
-    check('id', 'Expense ID must be an ObjectID')
-      .isHexadecimal()
-      .isLength({ min: 24, max: 24 }),
+    check('id', 'Expense ID must be an ObjectID').isMongoId()
   ],
   (req, res) => {
     let err = validationResult(req);

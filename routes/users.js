@@ -103,6 +103,12 @@ router.post(
   [
     check('username', 'Username is required').exists(),
     check('password', 'Password is required').exists(),
+    check('name').customSanitizer((name) => {
+      let newName = { first: '', last: '' };
+      if (name.first) newName.first = name.first;
+      if (name.last) newName.last = name.last;
+      return newName;
+    }),
   ],
   async (req, res) => {
     let err = validationResult(req);
@@ -115,11 +121,8 @@ router.post(
           {
             username: String(req.body.username).toLowerCase(),
             password_hash: hashedPassword,
-            name: {
-              first: req.body.first_name,
-              last: req.body.last_name,
-            },
-            account_type: req.body.account_type,
+            name: req.body.name,
+            account_type: 'user',
             disabled: false,
           },
           (err) => {
@@ -142,11 +145,7 @@ router.post(
 // Edit user
 router.put(
   '/:id',
-  [
-    check('id', 'Invalid user ID')
-      .isHexadecimal()
-      .isLength({ min: 24, max: 24 }),
-  ],
+  [check('id', 'Invalid user ID').isMongoId()],
   async (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
@@ -158,14 +157,10 @@ router.put(
           delete req.body['password'];
         }
 
-        if (req.body.first_name) {
-          req.body['name.first'] = req.body.first_name;
-          delete req.body['first_name'];
-        }
-
-        if (req.body.last_name) {
-          req.body['name.last'] = req.body.last_name;
-          delete req.body['last_name'];
+        if (req.body.name) {
+          if (req.body.name.first) req.body['name.first'] = req.body.name.first;
+          if (req.body.name.last) req.body['name.last'] = req.body.name.last;
+          delete req.body['name'];
         }
 
         User.findOneAndUpdate(
@@ -194,9 +189,7 @@ router.put(
 router.delete(
   '/:id',
   [
-    check('id', 'Invalid user ID')
-      .isHexadecimal()
-      .isLength({ min: 24, max: 24 }),
+    check('id', 'Invalid user ID').isMongoId()
   ],
   (req, res) => {
     let err = validationResult(req);
