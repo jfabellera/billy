@@ -2,7 +2,11 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
-const { validateGetExpenses, getExpenses } = require('./expenses');
+const {
+  validateGetExpenses,
+  getExpenses,
+  getExpenseCategories,
+} = require('./expenses');
 
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
@@ -112,8 +116,8 @@ router.post(
             username: String(req.body.username).toLowerCase(),
             password_hash: hashedPassword,
             name: {
-              first: req.body.firstName,
-              last: req.body.lastName,
+              first: req.body.first_name,
+              last: req.body.last_name,
             },
             account_type: req.body.account_type,
             disabled: false,
@@ -152,6 +156,16 @@ router.put(
         if (req.body.password) {
           req.body.password_hash = await bcrypt.hash(req.body.password, 10);
           delete req.body['password'];
+        }
+
+        if (req.body.first_name) {
+          req.body['name.first'] = req.body.first_name;
+          delete req.body['first_name'];
+        }
+
+        if (req.body.last_name) {
+          req.body['name.last'] = req.body.last_name;
+          delete req.body['last_name'];
         }
 
         User.findOneAndUpdate(
@@ -218,26 +232,7 @@ router.get(
 router.get(
   '/:username/expenses/categories',
   [check('username').isAlphanumeric()],
-  (req, res) => {
-    let err = validationResult(req);
-    if (!err.isEmpty()) {
-      res.status(400).json(err.errors);
-    } else {
-      User.findOne({ username: req.params.username }, (err, user) => {
-        if (err) throw err;
-        if (!user) res.status(400).json({ message: 'User not found' });
-        else {
-          Expense.find({ user_id: user._id }).distinct(
-            'category',
-            (err, categories) => {
-              if (err) throw err;
-              res.status(200).json(categories);
-            }
-          );
-        }
-      });
-    }
-  }
+  getExpenseCategories
 );
 
 module.exports = router;

@@ -67,12 +67,12 @@ Registers a user to the system.
 POST /users/
 ```
 
-| Parameter   | Type   | In   | Description                                   |
-| ----------- | ------ | ---- | --------------------------------------------- |
-| `username`  | string | body | Username for new user, must not already exist |
-| `password`  | string | body | Password for new user                         |
-| `firstName` | string | body | User's first name                             |
-| `lastName`  | string | body | User's last name                              |
+| Parameter    | Type   | In   | Description                                   |
+| ------------ | ------ | ---- | --------------------------------------------- |
+| `username`   | string | body | Username for new user, must not already exist |
+| `password`   | string | body | Password for new user                         |
+| `first_name` | string | body | User's first name                             |
+| `last_name`  | string | body | User's last name                              |
 
 ---
 
@@ -84,13 +84,13 @@ Update the details for a user.
 PUT /users/{username}/
 ```
 
-| Parameter   | Type   | In   | Description                                   |
-| ----------- | ------ | ---- | --------------------------------------------- |
-| `username`  | string | path |                                               |
-| `username`  | string | body | New username for user, must not already exist |
-| `password`  | string | body | New password for new user                     |
-| `firstName` | string | body | New first name                                |
-| `lastName`  | string | body | New last name                                 |
+| Parameter    | Type   | In   | Description                                   |
+| ------------ | ------ | ---- | --------------------------------------------- |
+| `username`   | string | path |                                               |
+| `username`   | string | body | New username for user, must not already exist |
+| `password`   | string | body | New password for new user                     |
+| `first_name` | string | body | New first name                                |
+| `last_name`  | string | body | New last name                                 |
 
 ---
 
@@ -99,12 +99,12 @@ PUT /users/{username}/
 Deletes a user from the system. This is a soft delete i.e. the account will only be flagged as disabled.
 
 ```
-DELETE /users/{username}/
+DELETE /users/{id}/
 ```
 
-| Parameter  | Type   | In   | Description |
-| ---------- | ------ | ---- | ----------- |
-| `username` | string | path |             |
+| Parameter | Type     | In   | Description |
+| --------- | -------- | ---- | ----------- |
+| `id`      | ObjectID | path |             |
 
 ---
 
@@ -199,11 +199,6 @@ Lists all the categories of expenses across users.
 GET /expenses/categories/
 ```
 
-| Parameter   | Type   | In    | Description    |
-| ----------- | ------ | ----- | -------------- |
-| `sort`      | string | query | `amount`       |
-| `direction` | string | query | `asc` or `dsc` |
-
 ---
 
 ### List user expenses
@@ -234,8 +229,6 @@ Lists the categories of the expenses of a single user.
 GET /users/{username}/expenses/categories/
 ```
 
-| Parameter   | Type   | In    | Description    |
-| ----------- | ------ | ----- | -------------- |
-| `username`  | string | path  |                |
-| `sort`      | string | query | `amount`       |
-| `direction` | string | query | `asc` or `dsc` |
+| Parameter  | Type   | In   | Description |
+| ---------- | ------ | ---- | ----------- |
+| `username` | string | path |             |

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require('express-validator');
+const mongoose = require('mongoose');
+const { check, validationResult, query } = require('express-validator');
 
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
-const { resolveInclude } = require('ejs');
 
 const validateGetExpenses = [
   check('sort', 'Invalid sort option')
@@ -67,7 +67,7 @@ getExpenses = async (req, res) => {
     }
 
     new Promise((resolve) => {
-      // Handle user  
+      // Handle user
       if (req.params.username) {
         User.findOne({ username: req.params.username }, (err, user) => {
           if (err) throw err;
@@ -77,9 +77,7 @@ getExpenses = async (req, res) => {
           } else query.user_id = user._id;
           resolve();
         });
-      } else {
-        resolve();
-      }
+      } else resolve();
     }).then(() => {
       Expense.find(query, null, options, (err, expenses) => {
         if (err) throw err;
@@ -89,8 +87,37 @@ getExpenses = async (req, res) => {
   }
 };
 
+getExpenseCategories = async (req, res) => {
+  let err = validationResult(req);
+  if (!err.isEmpty()) {
+    res.status(400).json(err.errors);
+  } else {
+    let query = {};
+    new Promise((resolve) => {
+      if (req.params.username) {
+        User.findOne({ username: req.params.username }, (err, user) => {
+          if (err) throw err;
+          if (!user) {
+            res.status(400).json({ message: 'User not found' });
+            return;
+          } else query.user_id = user._id;
+          resolve();
+        });
+      } else resolve();
+    }).then(() => {
+      Expense.find(query).distinct('category', (err, categories) => {
+        if (err) throw err;
+        res.status(200).json(categories);
+      });
+    });
+  }
+};
+
 // Get all expenses
 router.get('/', validateGetExpenses, getExpenses);
+
+// Get all expense categories
+router.get('/categories', getExpenseCategories);
 
 // Get details of a single expense
 router.get(
@@ -115,19 +142,94 @@ router.get(
 );
 
 // Create new expense
-router.post('/', (req, res) => {});
+router.post(
+  '/',
+  [
+    check('user_id', 'User ID must be an ObjectID')
+      .isHexadecimal()
+      .isLength({ min: 24, max: 24 }),
+    check('title', 'Title is required').notEmpty(),
+    check('amount', 'Amount must be a float').isFloat(),
+    check('date', 'Incorrect date format').isDate(),
+    check('category').optional(),
+  ],
+  (req, res) => {
+    let err = validationResult(req);
+    if (!err.isEmpty()) {
+      res.status(400).json(err.errors);
+    } else {
+      Expense.create(
+        {
+          user_id: mongoose.Types.ObjectId(req.body.user_id),
+          title: req.body.title,
+          amount: req.body.amount,
+          date: req.body.date,
+          category: req.body.category,
+        },
+        (err) => {
+          if (err) throw err;
+          res.status(201).json({ message: 'Expense created' });
+        }
+      );
+    }
+  }
+);
 
 // Edit an expense
-router.put('/:id', (req, res) => {});
+router.put(
+  '/:id',
+  [
+    check('id', 'Expense ID must be an ObjectID')
+      .isHexadecimal()
+      .isLength({ min: 24, max: 24 }),
+    check('title', 'Title is required').optional().notEmpty(),
+    check('amount', 'Amount must be a float').optional().isFloat(),
+    check('date', 'Incorrect date format').optional().isDate(),
+    check('category').optional(),
+  ],
+  (req, res) => {
+    let err = validationResult(req);
+    if (!err.isEmpty()) {
+      res.status(400).json(err.errors);
+    } else {
+      Expense.findOneAndUpdate(
+        { _id: req.params.id },
+        req.body,
+        (err, expense) => {
+          if (err) throw err;
+          if (!expense) res.status(400).json({ message: 'Expense not found' });
+          else res.status(200).json({ message: 'Expense updated' });
+        }
+      );
+    }
+  }
+);
 
 // Delete an expense
-router.delete('/:id', (req, res) => {});
-
-// Get all expense categories
-router.get('/categories', (req, res) => {});
+router.delete(
+  '/:id',
+  [
+    check('id', 'Expense ID must be an ObjectID')
+      .isHexadecimal()
+      .isLength({ min: 24, max: 24 }),
+  ],
+  (req, res) => {
+    let err = validationResult(req);
+    if (!err.isEmpty()) {
+      res.status(400).json(err.errors);
+    } else {
+      Expense.findOneAndDelete({ _id: req.params.id }, (err, expense) => {
+        if (err) throw err;
+        if (!expense) res.status(400).json({ message: 'Expense not found' });
+        else res.status(200).json({ message: 'Expense deleted' });
+      });
+    }
+  }
+);
 
 module.exports = {
   router: router,
   validateGetExpenses: validateGetExpenses,
   getExpenses: getExpenses,
+  getExpenseCategories: getExpenseCategories,
 };

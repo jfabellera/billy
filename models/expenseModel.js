@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const expenseSchema = new Schema(
@@ -11,12 +11,13 @@ const expenseSchema = new Schema(
       type: String,
       require: true,
     },
-    amoung: {
+    amount: {
       type: Number,
       require: true,
     },
     date: {
       type: Date,
+      require: true,
     },
     category: {
       type: String,
@@ -27,6 +28,6 @@ const expenseSchema = new Schema(
   }
 );
 
-const Expense = mongoose.model("expenses", expenseSchema);
+const Expense = mongoose.model('expenses', expenseSchema);
 
 module.exports = Expense;
