@@ -137,16 +137,7 @@ router.post(
                 res.status(409).json({ error: 'Username taken' });
               else throw err;
             } else {
-              jwt.sign(
-                { id: user._id },
-                config.jwt_access_secret,
-                { expiresIn: 3600 },
-                (err, token) => {
-                  if (err) throw err;
-
-                  res.status(201).json({ token, message: 'User created' });
-                }
-              );
+              res.status(201).json({ message: 'User created' });
             }
           }
         );
@@ -228,7 +219,8 @@ router.delete(
 
 // Get expenses from a single user
 router.get(
-  '/:username/expenses', auth,
+  '/:username/expenses',
+  auth,
   [check('username', 'Invalid username').isAlphanumeric()],
   validateGetExpenses,
   getExpenses

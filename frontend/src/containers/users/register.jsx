@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import { Container, Card, Form, Button, Col, Row } from 'react-bootstrap';
 
@@ -51,9 +52,21 @@ class Register extends Component {
           },
           password: this.state.password,
         };
-
-        console.log(user);
-        // TODO: Make API call to create user
+        axios
+          .post('http://localhost:5000/users', user)
+          .then((res) => {
+            // logged in
+          })
+          .catch((err) => {
+            if (err.response) {
+              // Username is taken
+              if (err.response.status === 409) {
+                this.setState({
+                  usernameTaken: true,
+                });
+              }
+            }
+          });
       }
     });
   };
@@ -86,36 +99,36 @@ class Register extends Component {
   render() {
     return (
       <>
-        <div className="d-flex flex-fill align-items-center overflow-auto">
+        <div className='d-flex flex-fill align-items-center overflow-auto'>
           <Container as={Card} style={{ maxWidth: '500px' }}>
-            <Form className="m-3" onSubmit={this.onSubmit}>
-              <h1 className="mb-3 text-center">Register</h1>
+            <Form className='m-3' onSubmit={this.onSubmit}>
+              <h1 className='mb-3 text-center'>Register</h1>
               <Row>
                 <Form.Group as={Col}>
                   <Form.Label>First Name</Form.Label>
                   <Form.Control
-                    type="text"
+                    type='text'
                     onChange={this.onChangefirstName}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group as={Col}>
                   <Form.Label>Last Name</Form.Label>
                   <Form.Control
-                    type="text"
+                    type='text'
                     onChange={this.onChangeLastName}
                   ></Form.Control>
                 </Form.Group>
               </Row>
               <Row>
-                <Form.Group as={Col} lg="6">
+                <Form.Group as={Col} lg='6'>
                   <Form.Label>Username</Form.Label>
                   <Form.Control
-                    type="text"
+                    type='text'
                     isInvalid={this.state.usernameTaken}
                     required
                     onChange={this.onChangeUsername}
                   ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
+                  <Form.Control.Feedback type='invalid'>
                     Username is taken
                   </Form.Control.Feedback>
                 </Form.Group>
@@ -124,7 +137,7 @@ class Register extends Component {
                 <Form.Group as={Col}>
                   <Form.Label>Password</Form.Label>
                   <Form.Control
-                    type="password"
+                    type='password'
                     required
                     onChange={this.onChangePassword}
                   ></Form.Control>
@@ -132,18 +145,18 @@ class Register extends Component {
                 <Form.Group as={Col}>
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
-                    type="password"
+                    type='password'
                     isInvalid={this.state.passwordMismatch}
                     required
                     onChange={this.onChangeConfirmPassword}
                   ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
+                  <Form.Control.Feedback type='invalid'>
                     Passwords do not match
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              <Row className="justify-content-md-center">
-                <Button variant="success" type="submit" className="mt-4">
+              <Row className='justify-content-md-center'>
+                <Button variant='success' type='submit' className='mt-4'>
                   Register
                 </Button>
               </Row>
