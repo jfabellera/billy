@@ -1,12 +1,16 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const auth = require('./middleware/auth');
 const { check, validationResult } = require('express-validator');
 const {
   validateGetExpenses,
   getExpenses,
   getExpenseCategories,
 } = require('./expenses');
+
+const config = require('../config');
 
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
@@ -125,14 +129,25 @@ router.post(
             account_type: 'user',
             disabled: false,
           },
-          (err) => {
+          (err, user) => {
             // new user created
             if (err) {
               if (err.code === 11000)
                 // User already exists
                 res.status(409).json({ error: 'Username taken' });
               else throw err;
-            } else res.status(201).json({ message: 'User created' });
+            } else {
+              jwt.sign(
+                { id: user._id },
+                config.jwt_access_secret,
+                { expiresIn: 3600 },
+                (err, token) => {
+                  if (err) throw err;
+
+                  res.status(201).json({ token, message: 'User created' });
+                }
+              );
+            }
           }
         );
       } catch {
@@ -188,9 +203,7 @@ router.put(
 // Delete user
 router.delete(
   '/:id',
-  [
-    check('id', 'Invalid user ID').isMongoId()
-  ],
+  [check('id', 'Invalid user ID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
@@ -215,7 +228,7 @@ router.delete(
 
 // Get expenses from a single user
 router.get(
-  '/:username/expenses',
+  '/:username/expenses', auth,
   [check('username', 'Invalid username').isAlphanumeric()],
   validateGetExpenses,
   getExpenses

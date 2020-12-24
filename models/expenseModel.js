@@ -5,19 +5,19 @@ const expenseSchema = new Schema(
   {
     user_id: {
       type: mongoose.Types.ObjectId,
-      require: true,
+      required: true,
     },
     title: {
       type: String,
-      require: true,
+      required: true,
     },
     amount: {
       type: Number,
-      require: true,
+      required: true,
     },
     date: {
       type: Date,
-      require: true,
+      required: true,
     },
     category: {
       type: String,
