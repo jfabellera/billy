@@ -41,46 +41,30 @@ class Register extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
-    this.confirmUsername(() => {
-      if (this.state.usernameTaken) return;
-      else {
-        const user = {
-          username: this.state.username,
-          name: {
-            first: this.state.firstName,
-            last: this.state.lastName,
-          },
-          password: this.state.password,
-        };
-        axios
-          .post('http://localhost:5000/users', user)
-          .then((res) => {
-            // logged in
-          })
-          .catch((err) => {
-            if (err.response) {
-              // Username is taken
-              if (err.response.status === 409) {
-                this.setState({
-                  usernameTaken: true,
-                });
-              }
-            }
-          });
-      }
-    });
+    const user = {
+      username: this.state.username,
+      name: {
+        first: this.state.firstName,
+        last: this.state.lastName,
+      },
+      password: this.state.password,
+    };
+    axios
+      .post('http://localhost:5000/users', user)
+      .then((res) => {
+        // log user in
+      })
+      .catch((err) => {
+        if (err.response) {
+          // Username is taken
+          if (err.response.status === 409) {
+            this.setState({
+              usernameTaken: true,
+            });
+          }
+        }
+      });
   };
-
-  /**
-   * Checks if the username is available
-   */
-  confirmUsername = (callback) => {
-    // TODO: Get actual username count or a boolean
-    let usernameCount = 0;
-    if (this.state.username === 'jan') usernameCount = 1;
-    this.setState({ usernameTaken: usernameCount !== 0 }, callback);
-  };
-
   /**
    * Checks that the two password fields match.
    */

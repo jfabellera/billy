@@ -11,6 +11,10 @@ const tokenSchema = new Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
+    createdAt: {
+      type: Date,
+      expires: 86400,
+    },
   },
   {
     timestamps: true,

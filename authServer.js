@@ -104,4 +104,4 @@ function generateAccessToken(user) {
   return jwt.sign({ user }, config.jwt_access_secret, { expiresIn: '15s' });
 }
 
-app.listen(6000);
+app.listen(5001);
