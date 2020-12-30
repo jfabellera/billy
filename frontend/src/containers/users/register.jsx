@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { userRegisterRequest } from '../../store/actions/usersActions';
 
 import { Container, Card, Form, Button, Col, Row } from 'react-bootstrap';
 
@@ -10,7 +12,6 @@ class Register extends Component {
     username: '',
     password: '',
     confirmPassword: '',
-    usernameTaken: null,
     passwordMismatch: null,
   };
 
@@ -49,21 +50,8 @@ class Register extends Component {
       },
       password: this.state.password,
     };
-    axios
-      .post('http://localhost:5000/users', user)
-      .then((res) => {
-        // log user in
-      })
-      .catch((err) => {
-        if (err.response) {
-          // Username is taken
-          if (err.response.status === 409) {
-            this.setState({
-              usernameTaken: true,
-            });
-          }
-        }
-      });
+
+    this.props.userRegisterRequest(user);
   };
   /**
    * Checks that the two password fields match.
@@ -81,6 +69,10 @@ class Register extends Component {
   };
 
   render() {
+    if (this.props.isAuthenticated) {
+      return <Redirect to='/' />;
+    }
+
     return (
       <>
         <div className='d-flex flex-fill align-items-center overflow-auto'>
@@ -108,7 +100,7 @@ class Register extends Component {
                   <Form.Label>Username</Form.Label>
                   <Form.Control
                     type='text'
-                    isInvalid={this.state.usernameTaken}
+                    isInvalid={this.props.usernameTaken}
                     required
                     onChange={this.onChangeUsername}
                   ></Form.Control>
@@ -152,4 +144,17 @@ class Register extends Component {
   }
 }
 
-export default Register;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.isAuthenticated,
+    usernameTaken: state.usernameTaken,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userRegisterRequest: (userInfo) => dispatch(userRegisterRequest(userInfo)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

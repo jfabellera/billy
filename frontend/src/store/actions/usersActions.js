@@ -2,6 +2,33 @@ import * as actionTypes from './actionTypes';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
+export const userRegisterRequest = (userInfo) => {
+  return (dispatch) => {
+    axios
+      .post('http://localhost:5000/users', userInfo)
+      .then((res) => {
+        // log user in
+        dispatch(
+          userLoginRequest({
+            username: userInfo.username,
+            password: userInfo.password,
+          })
+        );
+      })
+      .catch((err) => {
+        if (err.response) {
+          // Username is taken
+          if (err.response.status === 409) {
+            dispatch({
+              type: actionTypes.REGISTER_USERNAME_TAKEN,
+              usernameTaken: true,
+            });
+          }
+        }
+      });
+  };
+};
+
 export const userLoginRequest = (userLogin) => {
   console.log('login requested');
 
@@ -22,7 +49,9 @@ export const userLoginRequest = (userLogin) => {
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 401) {
-            this.setState({ invalid: true });
+            dispatch({
+              type: actionTypes.LOGIN_UNSUCCESSFUL,
+            });
           }
         }
       });

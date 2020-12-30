@@ -32,7 +32,7 @@ class Login extends Component {
   };
 
   displayInvalid = () => {
-    if (this.state.invalid) {
+    if (this.props.invalidUser) {
       return (
         <Row className='justify-content-md-center'>
           <br />
@@ -44,9 +44,9 @@ class Login extends Component {
   };
 
   render() {
-      if (this.props.isAuthenticated) {
-        return <Redirect to='/' />;
-      }
+    if (this.props.isAuthenticated) {
+      return <Redirect to='/' />;
+    }
 
     return (
       <>
@@ -85,6 +85,7 @@ class Login extends Component {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.isAuthenticated,
+    invalidUser: state.invalidUser,
   };
 };
 
