@@ -14,9 +14,9 @@ const validCredentials = () => {
 
 const initialState = {
   isAuthenticated: validCredentials(),
-  authenticatedUsername: !validCredentials()
+  authenticatedUser: !validCredentials()
     ? null
-    : jwt.decode(localStorage.getItem('refreshToken')).userInfo.username,
+    : jwt.decode(localStorage.getItem('refreshToken')).userInfo,
 };
 
 const reducer = (state = initialState, action) => {
@@ -24,12 +24,12 @@ const reducer = (state = initialState, action) => {
     case actionTypes.LOGIN_SUCCESSFUL:
         return {
             isAuthenticated: true,
-            authenticatedUsername: action.authenticatedUsername,
+            authenticatedUser: action.authenticatedUser,
         }
     case actionTypes.LOGOUT_USER: {
         return {
             isAuthenticated: false,
-            authenticatedUsername: ''
+            authenticatedUser: ''
         }
     }
     default:

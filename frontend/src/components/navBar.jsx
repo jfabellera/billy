@@ -55,7 +55,7 @@ class NavBar extends Component {
         <DropdownButton
           variant='dark'
           menuAlign='right'
-          title={'Hi, ' + this.state.firstName}
+          title={'Hi, ' + this.props.authenticatedUser.name.first}
           id='dropdown-menu-align-right'
           className='mx-1'
         >
@@ -94,7 +94,6 @@ class NavBar extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <>
         <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
@@ -115,7 +114,7 @@ class NavBar extends Component {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.isAuthenticated,
-    authenticatedUsername: state.authenticatedUsername,
+    authenticatedUser: state.authenticatedUser,
   };
 };
 

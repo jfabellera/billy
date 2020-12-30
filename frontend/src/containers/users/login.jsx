@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { userLoginRequest } from '../../store/actions/usersActions';
+import { Redirect } from 'react-router-dom';
 
 import { Container, Card, Form, Button, Row } from 'react-bootstrap';
 
@@ -28,22 +28,7 @@ class Login extends Component {
       password: this.state.password,
     };
 
-    axios
-      .post('http://localhost:5001/login', login)
-      .then((res) => {
-        // logged in
-        this.setState({ invalid: false });
-        localStorage.setItem('accessToken', res.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
-        this.props.userLoginRequest();
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.status === 401) {
-            this.setState({ invalid: true });
-          }
-        }
-      });
+    this.props.userLoginRequest(login);
   };
 
   displayInvalid = () => {
@@ -59,6 +44,10 @@ class Login extends Component {
   };
 
   render() {
+      if (this.props.isAuthenticated) {
+        return <Redirect to='/' />;
+      }
+
     return (
       <>
         <div className='d-flex flex-fill align-items-center overflow-auto'>
@@ -101,7 +90,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    userLoginRequest: () => dispatch(userLoginRequest()),
+    userLoginRequest: (userLogin) => dispatch(userLoginRequest(userLogin)),
   };
 };
 
