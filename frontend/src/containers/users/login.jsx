@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { userLoginRequest } from '../../store/actions/usersActions';
 
 import { Container, Card, Form, Button, Row } from 'react-bootstrap';
 
@@ -31,6 +33,9 @@ class Login extends Component {
       .then((res) => {
         // logged in
         this.setState({ invalid: false });
+        localStorage.setItem('accessToken', res.data.accessToken);
+        localStorage.setItem('refreshToken', res.data.refreshToken);
+        this.props.userLoginRequest();
       })
       .catch((err) => {
         if (err.response) {
@@ -88,4 +93,16 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.isAuthenticated,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userLoginRequest: () => dispatch(userLoginRequest()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

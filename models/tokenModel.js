@@ -11,15 +11,13 @@ const tokenSchema = new Schema(
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    createdAt: {
-      type: Date,
-      expires: 86400,
-    },
   },
   {
     timestamps: true,
   }
 );
+
+tokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 const Token = mongoose.model('refresh_tokens', tokenSchema);
 

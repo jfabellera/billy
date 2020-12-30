@@ -71,8 +71,13 @@ app.post('/login', [check(['username', 'password']).exists()], (req, res) => {
             (await bcrypt.compare(req.body.password, user.password_hash))
           ) {
             // authorized
-            const accessToken = generateAccessToken(user);
-            const refreshToken = jwt.sign({ user }, config.jwt_refresh_secret);
+            let userInfo = {};
+            userInfo.username = user.username;
+            userInfo.name = user.name;
+            userInfo.account_type = user.account_type;
+            
+            const accessToken = generateAccessToken(userInfo);
+            const refreshToken = jwt.sign({ userInfo }, config.jwt_refresh_secret);
 
             // add refresh token to database
             Token.create(
@@ -101,7 +106,7 @@ app.post('/login', [check(['username', 'password']).exists()], (req, res) => {
 });
 
 function generateAccessToken(user) {
-  return jwt.sign({ user }, config.jwt_access_secret, { expiresIn: '15s' });
+  return jwt.sign({ user }, config.jwt_access_secret, { expiresIn: '15m' });
 }
 
 app.listen(5001);

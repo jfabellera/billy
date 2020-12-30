@@ -1,7 +1,24 @@
-import  React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.css';
 
-import App from './App'
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import usersReducer from './store/reducers/usersReducer';
+
+import App from './App';
+
+// const rootReducer = combineReducers({
+//   users: usersReducer,
+// });
+
+const store = createStore(usersReducer, applyMiddleware(thunk));
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
