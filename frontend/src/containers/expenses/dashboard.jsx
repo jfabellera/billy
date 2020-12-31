@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { getUserExpenses } from '../../store/actions/expensesActions';
+import ExpensesTable from '../../components/expensesTable';
 
 class Dashboard extends Component {
-  state = {
-    expenses: null,
-  };
-
   componentDidMount() {
     this.props.getUserExpenses();
   }
@@ -18,8 +15,10 @@ class Dashboard extends Component {
     }
 
     return (
-      <div className='d-flex flex-fill overflow-auto'>
-        {JSON.stringify(this.props.expenses)}
+      <div className='d-flex flex-fill'>
+        <div style={{maxHeight: '500px', width: '500px'}}>
+          <ExpensesTable expenses={this.props.expenses} />
+        </div>
       </div>
     );
   }
