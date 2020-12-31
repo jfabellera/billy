@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axiosAPI from '../../helpers/axiosAPI';
+import { getUserExpenses } from '../../store/actions/expensesActions';
 
 class Dashboard extends Component {
   state = {
@@ -9,14 +10,7 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    axiosAPI
-      .get('http://localhost:5000/users/johndoe/expenses')
-      .then((res) => {
-        this.setState({ expenses: JSON.stringify(res.data, null, 4) });
-      })
-      .catch((err) => {
-        this.setState({ expenses: 'please log in' });
-      });
+    this.props.getUserExpenses();
   }
 
   render() {
@@ -26,7 +20,7 @@ class Dashboard extends Component {
 
     return (
       <div className='d-flex flex-fill overflow-auto'>
-        {this.state.expenses}
+        {JSON.stringify(this.props.expenses)}
       </div>
     );
   }
@@ -34,12 +28,15 @@ class Dashboard extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.isAuthenticated,
+    isAuthenticated: state.users.isAuthenticated,
+    expenses: state.expenses.expenses,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    getUserExpenses: () => dispatch(getUserExpenses()),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

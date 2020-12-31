@@ -146,8 +146,8 @@ class Register extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.isAuthenticated,
-    usernameTaken: state.usernameTaken,
+    isAuthenticated: state.users.isAuthenticated,
+    usernameTaken: state.users.usernameTaken,
   };
 };
 

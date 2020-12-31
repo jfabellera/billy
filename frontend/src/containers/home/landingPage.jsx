@@ -33,7 +33,7 @@ class LandingPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.isAuthenticated,
+    isAuthenticated: state.users.isAuthenticated,
   };
 };
 
