@@ -31,14 +31,14 @@ app.use(express.json());
 const Token = require('./models/tokenModel');
 const User = require('./models/userModel');
 
-app.post('/token', (req, res) => {
+app.post('/refresh', (req, res) => {
   const refreshToken = req.body.token;
   if (refreshToken == null) return res.sendStatus(401);
   Token.findOne({ refresh_token: refreshToken }, (err, token) => {
     if (err) throw err;
-    if (!token) return res.sendStatus(403);
+    if (!token) return res.sendStatus(401);
     jwt.verify(refreshToken, config.jwt_refresh_secret, (err, user) => {
-      if (err) return res.sendStatus(403);
+      if (err) return res.sendStatus(401);
       const accessToken = generateAccessToken(user);
       res.json({ accessToken: accessToken });
     });
@@ -49,7 +49,6 @@ app.delete('/logout', (req, res) => {
   // delete refresh token from database
   Token.findOneAndDelete({ refresh_token: req.body.token }, (err, token) => {
     if(err) throw err;
-    console.log(token);
   });
 
   res.sendStatus(204);
@@ -87,7 +86,6 @@ app.post('/login', [check(['username', 'password']).exists()], (req, res) => {
               },
               (err, token) => {
                 if (err) throw err;
-                console.log(token);
               }
             );
 

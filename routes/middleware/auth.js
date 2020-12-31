@@ -9,14 +9,13 @@ auth = (req, res, next) => {
   try {
     // verify token
     jwt.verify(token, config.jwt_access_secret, (err, user) => {
-      console.log(err);
-      if (err) return res.status(403).json({ message: 'Forbidden' });
+      if (err) return res.status(401).json({ message: 'Forbidden' });
       // add user from payload
       req.user = user;
       next();
     });
   } catch (e) {
-    res.status(400).json({ message: 'Token is not valid' });
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
 

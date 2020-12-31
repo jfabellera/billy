@@ -1,11 +1,11 @@
 import * as actionTypes from './actionTypes';
 import jwt from 'jsonwebtoken';
-import axios from 'axios';
+import axiosAuth from '../../helpers/axiosAuth';
 
 export const userRegisterRequest = (userInfo) => {
   return (dispatch) => {
-    axios
-      .post('http://localhost:5000/users', userInfo)
+    axiosAuth
+      .post('/users', userInfo)
       .then((res) => {
         // log user in
         dispatch(
@@ -32,9 +32,9 @@ export const userRegisterRequest = (userInfo) => {
 export const userLoginRequest = (userLogin) => {
   console.log('login requested');
 
-  return async (dispatch) => {
-    await axios
-      .post('http://localhost:5001/login', userLogin)
+  return (dispatch) => {
+    axiosAuth
+      .post('/login', userLogin)
       .then((res) => {
         // logged in
 
@@ -61,8 +61,8 @@ export const userLoginRequest = (userLogin) => {
 export const userLogoutRequest = () => {
   console.log('logout requested');
   return (dispatch) => {
-    axios
-      .delete('http://localhost:5001/logout', {
+    axiosAuth
+      .delete('/logout', {
         data: { token: localStorage.getItem('refreshToken') },
       })
       .then((res) => {

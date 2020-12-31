@@ -17,19 +17,16 @@ class NavBar extends Component {
     session: null,
   };
 
-  componentDidMount() {
-    console.log('NavBar loaded');
-  }
-
   /**
    * Renders links on the left of the navbar depending on the user session
    */
   renderLinks() {
     if (this.props.isAuthenticated) {
       return (
-        <Nav.Link as={Link} to='/users'>
-          Users
-        </Nav.Link>
+        null
+        // <Nav.Link as={Link} to='/users'>
+        //   Users
+        // </Nav.Link>
       );
     } else {
       return (
