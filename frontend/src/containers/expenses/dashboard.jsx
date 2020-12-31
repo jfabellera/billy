@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import axiosAPI from '../../helpers/axiosAPI';
 import { getUserExpenses } from '../../store/actions/expensesActions';
 
 class Dashboard extends Component {

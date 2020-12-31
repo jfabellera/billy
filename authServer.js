@@ -37,9 +37,9 @@ app.post('/refresh', (req, res) => {
   Token.findOne({ refresh_token: refreshToken }, (err, token) => {
     if (err) throw err;
     if (!token) return res.sendStatus(401);
-    jwt.verify(refreshToken, config.jwt_refresh_secret, (err, user) => {
+    jwt.verify(refreshToken, config.jwt_refresh_secret, (err, decoded) => {
       if (err) return res.sendStatus(401);
-      const accessToken = generateAccessToken(user);
+      const accessToken = generateAccessToken(decoded.user);
       res.json({ accessToken: accessToken });
     });
   });
@@ -48,7 +48,7 @@ app.post('/refresh', (req, res) => {
 app.delete('/logout', (req, res) => {
   // delete refresh token from database
   Token.findOneAndDelete({ refresh_token: req.body.token }, (err, token) => {
-    if(err) throw err;
+    if (err) throw err;
   });
 
   res.sendStatus(204);
@@ -74,9 +74,12 @@ app.post('/login', [check(['username', 'password']).exists()], (req, res) => {
             userInfo.username = user.username;
             userInfo.name = user.name;
             userInfo.account_type = user.account_type;
-            
+
             const accessToken = generateAccessToken(userInfo);
-            const refreshToken = jwt.sign({ userInfo }, config.jwt_refresh_secret);
+            const refreshToken = jwt.sign(
+              { user: userInfo },
+              config.jwt_refresh_secret
+            );
 
             // add refresh token to database
             Token.create(

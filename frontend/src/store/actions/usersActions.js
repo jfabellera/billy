@@ -43,7 +43,7 @@ export const userLoginRequest = (userLogin) => {
 
         dispatch({
           type: actionTypes.LOGIN_SUCCESSFUL,
-          authenticatedUser: jwt.decode(res.data.refreshToken).userInfo,
+          authenticatedUser: jwt.decode(res.data.refreshToken).user,
         });
       })
       .catch((err) => {

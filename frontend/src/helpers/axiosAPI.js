@@ -29,7 +29,7 @@ axiosInstance.interceptors.response.use(
         !err.config.__isRetryRequest &&
         refreshToken
       ) {
-        originalRequest._retry = true;
+        originalRequest.__isRetryRequest = true;
 
         const response = fetch('http://localhost:5001/refresh', {
           method: 'POST',

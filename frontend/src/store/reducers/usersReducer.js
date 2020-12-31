@@ -16,7 +16,7 @@ const initialState = {
   isAuthenticated: validCredentials(),
   authenticatedUser: !validCredentials()
     ? null
-    : jwt.decode(localStorage.getItem('refreshToken')).userInfo,
+    : jwt.decode(localStorage.getItem('refreshToken')).user,
   usernameTaken: false,
   invalidUser: false,
 };

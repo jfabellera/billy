@@ -4,7 +4,9 @@ import axiosAPI from '../../helpers/axiosAPI';
 
 export const getUserExpenses = () => {
   return (dispatch) => {
-    const username = jwt.decode(localStorage.getItem('accessToken')).user.username;
+    const username = jwt.decode(localStorage.getItem('accessToken')).user
+      .username;
+    // const username = 'jan';
 
     axiosAPI
       .get('/users/' + username + '/expenses')
