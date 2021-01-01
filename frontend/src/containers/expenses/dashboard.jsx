@@ -5,9 +5,7 @@ import { getUserExpenses } from '../../store/actions/expensesActions';
 import ExpensesTable from '../../components/expensesTable';
 
 class Dashboard extends Component {
-  componentDidMount() {
-    this.props.getUserExpenses();
-  }
+  componentDidMount() {}
 
   render() {
     if (!this.props.isAuthenticated) {
@@ -16,8 +14,8 @@ class Dashboard extends Component {
 
     return (
       <div className='d-flex flex-fill'>
-        <div style={{maxHeight: '500px', width: '500px'}}>
-          <ExpensesTable expenses={this.props.expenses} />
+        <div style={{ height: '100%' }}>
+          <ExpensesTable />
         </div>
       </div>
     );
@@ -27,7 +25,6 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.users.isAuthenticated,
-    expenses: state.expenses.expenses,
   };
 };
 

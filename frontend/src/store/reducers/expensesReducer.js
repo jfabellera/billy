@@ -2,6 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
   expenses: [],
+  totalExpenses: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -9,6 +10,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.GET_USER_EXPENSES: {
       return {
         expenses: action.expenses,
+        totalExpenses: action.totalExpenses,
       };
     }
     case actionTypes.LOGOUT_USER: {

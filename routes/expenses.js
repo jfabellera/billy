@@ -79,9 +79,15 @@ getExpenses = async (req, res) => {
         });
       } else resolve();
     }).then(() => {
-      Expense.find(query, null, options, (err, expenses) => {
+      // Get TOTAL number of documents that match query excluding per_page and page
+      Expense.countDocuments(query, (err, count) => {
         if (err) throw err;
-        res.status(200).json(expenses);
+
+        // Return matching documents and total
+        Expense.find(query, null, options, (err, expenses) => {
+          if (err) throw err;
+          res.status(200).json({ total: count, expenses: expenses });
+        });
       });
     });
   }
@@ -122,9 +128,7 @@ router.get('/categories', getExpenseCategories);
 // Get details of a single expense
 router.get(
   '/:id',
-  [
-    check('id', 'Invalid expense ID').isMongoId()
-  ],
+  [check('id', 'Invalid expense ID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
@@ -202,9 +206,7 @@ router.put(
 // Delete an expense
 router.delete(
   '/:id',
-  [
-    check('id', 'Expense ID must be an ObjectID').isMongoId()
-  ],
+  [check('id', 'Expense ID must be an ObjectID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
