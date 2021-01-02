@@ -42,6 +42,8 @@ getExpenses = async (req, res) => {
       options.sort = { [req.query.sort]: direction };
     }
 
+    options.sort.createdAt = '-1';
+
     // Date range
     if (req.query.start_date) {
       if (!query.date) query.date = {};
@@ -156,6 +158,7 @@ router.post(
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
+      console.log(err.errors);
       res.status(400).json(err.errors);
     } else {
       Expense.create(

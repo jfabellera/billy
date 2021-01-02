@@ -7,3 +7,7 @@ table thead th {
 table thead th span {
   cursor: pointer;
 }
+
+/* table {
+  table-layout: fixed;
+} */

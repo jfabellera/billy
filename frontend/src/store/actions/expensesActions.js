@@ -14,8 +14,7 @@ export const getUserExpenses = (options) => {
     // decocode jwt to get username
     const token = localStorage.getItem('accessToken');
     if (!token) return;
-    const username = jwt.decode(localStorage.getItem('accessToken')).user
-      .username;
+    const username = jwt.decode(token).user.username;
 
     // construct query params from options
     let query = '';
@@ -33,7 +32,36 @@ export const getUserExpenses = (options) => {
           totalExpenses: res.data.total,
         });
       })
-      .catch((err) => {});
-      
+      .catch((err) => {
+        // TODO
+      });
+  };
+};
+
+export const addNewExpense = (expense, options) => {
+  return (dispatch) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+    const username = jwt.decode(token).user.username;
+
+    // get user_id
+    return axiosAPI
+      .get('/users/' + username)
+      .then((res) => {
+        expense.user_id = res.data._id;
+        axiosAPI
+          .post('/expenses', expense)
+          .then((res) => {
+            dispatch({
+              type: actionTypes.ADD_NEW_EXPENSE,
+            });
+          })
+          .catch((err) => {
+            // TODO
+          });
+      })
+      .catch((err) => {
+        // TODO
+      });
   };
 };

@@ -86,6 +86,7 @@ router.get(
 // Get details of a single user
 router.get(
   '/:username',
+  auth,
   [check('username', 'Invalid username').isAlphanumeric()],
   (req, res) => {
     let err = validationResult(req);

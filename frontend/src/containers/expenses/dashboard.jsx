@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { getUserExpenses } from '../../store/actions/expensesActions';
 import ExpensesTable from '../../components/expensesTable';
+import NewExpenseForm from '../../components/newExpenseForm';
+
+import { Col } from 'react-bootstrap';
 
 class Dashboard extends Component {
   componentDidMount() {}
@@ -14,9 +17,15 @@ class Dashboard extends Component {
 
     return (
       <div className='d-flex flex-fill'>
-        <div style={{ height: '100%' }}>
-          <ExpensesTable />
-        </div>
+        <Col className='d-flex flex-column w-100'>
+          <div className='py-3'>
+            <NewExpenseForm />
+          </div>
+          <div className='d-flex flex-fill pb-3'>
+            <ExpensesTable />
+          </div>
+        </Col>
+        <Col></Col>
       </div>
     );
   }

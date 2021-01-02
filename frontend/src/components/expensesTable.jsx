@@ -5,7 +5,6 @@ import { getUserExpenses } from '../store/actions/expensesActions';
 import './expensesTable.css';
 import {
   Table,
-  Container,
   Card,
   Row,
   Col,
@@ -28,6 +27,13 @@ class ExpensesTable extends Component {
 
   componentDidMount() {
     this.fetchExpenses();
+  }
+
+  componentDidUpdate() {
+    if (this.state.update !== this.props.update) {
+      this.setState({ update: this.props.update });
+      this.fetchExpenses();
+    }
   }
 
   fetchExpenses = () => {
@@ -177,10 +183,9 @@ class ExpensesTable extends Component {
 
   render() {
     return (
-      <Container
-        as={Card}
+      <Card
         className='d-flex flex-column p-3 '
-        style={{ display: 'inline-table', height: '100%' }}
+        style={{ height: '100%', width: '100%' }}
       >
         <Row>
           <Col>
@@ -229,7 +234,7 @@ class ExpensesTable extends Component {
         <div className='d-flex justify-content-center align-items-center'>
           {this.renderPagination()}
         </div>
-      </Container>
+      </Card>
     );
   }
 }
@@ -238,6 +243,7 @@ const mapStateToProps = (state) => {
   return {
     expenses: state.expenses.expenses,
     totalExpenses: state.expenses.totalExpenses,
+    update: state.expenses.update,
   };
 };
 
