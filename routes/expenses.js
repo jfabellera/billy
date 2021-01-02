@@ -180,9 +180,10 @@ router.post(
 
 // Edit an expense
 router.put(
-  '/:id',
+  '/:expense_id',
+  auth,
   [
-    check('id', 'Expense ID must be an ObjectID').isMongoId(),
+    check('expense_id', 'Expense ID must be an ObjectID').isMongoId(),
     check('title', 'Title is required').optional().notEmpty(),
     check('amount', 'Amount must be a float').optional().isFloat(),
     check('date', 'Incorrect date format').optional().isDate(),
@@ -194,7 +195,7 @@ router.put(
       res.status(400).json(err.errors);
     } else {
       Expense.findOneAndUpdate(
-        { _id: req.params.id },
+        { _id: req.params.expense_id },
         req.body,
         (err, expense) => {
           if (err) throw err;
@@ -208,14 +209,14 @@ router.put(
 
 // Delete an expense
 router.delete(
-  '/:id',
-  [check('id', 'Expense ID must be an ObjectID').isMongoId()],
+  '/:expense_id',
+  [check('expense_id', 'Expense ID must be an ObjectID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
       res.status(400).json(err.errors);
     } else {
-      Expense.findOneAndDelete({ _id: req.params.id }, (err, expense) => {
+      Expense.findOneAndDelete({ _id: req.params.expense_id }, (err, expense) => {
         if (err) throw err;
         if (!expense) res.status(400).json({ message: 'Expense not found' });
         else res.status(200).json({ message: 'Expense deleted' });
