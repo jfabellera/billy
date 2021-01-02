@@ -38,7 +38,7 @@ export const getUserExpenses = (options) => {
   };
 };
 
-export const addNewExpense = (expense, options) => {
+export const addNewExpense = (expense) => {
   return (dispatch) => {
     const token = localStorage.getItem('accessToken');
     if (!token) return;
@@ -62,6 +62,24 @@ export const addNewExpense = (expense, options) => {
       })
       .catch((err) => {
         // TODO
+      });
+  };
+};
+
+export const editExpense = (expense) => {
+  return (dispatch) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
+    return axiosAPI
+      .put('/expenses/' + expense.id, expense)
+      .then((res) => {
+        dispatch({
+          type: actionTypes.EDIT_EXPENSE,
+        });
+      })
+      .catch((err) => {
+        //TODO
       });
   };
 };

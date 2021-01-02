@@ -9,4 +9,5 @@ export const LOGOUT_USER = 'LOGOUT_USER';
 
 // Expenses
 export const GET_USER_EXPENSES = 'GET_USER_EXPENSES';
-export const ADD_NEW_EXPENSE = 'ADD_NEW_EXPENSE'
+export const ADD_NEW_EXPENSE = 'ADD_NEW_EXPENSE';
+export const EDIT_EXPENSE = 'EDIT_EXPENSE';

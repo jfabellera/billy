@@ -2,12 +2,43 @@ table thead th {
   position: sticky;
   top: 0;
   background-color: white;
+  z-index: 1;
 }
 
+svg,
 table thead th span {
   cursor: pointer;
 }
 
-/* table {
-  table-layout: fixed;
-} */
+tbody tr:hover svg {
+  visibility: visible;
+}
+
+tbody tr svg {
+  visibility: hidden;
+}
+
+table tbody tr td {
+  position: relative;
+}
+
+tbody tr td input,
+tbody tr td select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+td .form-control {
+  /* display: none; */
+  background-color: inherit;
+  height: 100%;
+  border: 0;
+  padding: 0.3rem;
+}
+
+tbody tr td select:enabled {
+  cursor: pointer;
+}

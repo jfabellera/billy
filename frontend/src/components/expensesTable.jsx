@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getUserExpenses } from '../store/actions/expensesActions';
+import { getUserExpenses, editExpense } from '../store/actions/expensesActions';
+import moment from 'moment';
 
 import './expensesTable.css';
 import {
@@ -10,7 +11,10 @@ import {
   Col,
   FormControl,
   Pagination,
+  Form,
 } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faSave } from '@fortawesome/free-solid-svg-icons';
 
 class ExpensesTable extends Component {
   constructor(props) {
@@ -22,6 +26,14 @@ class ExpensesTable extends Component {
       perPage: 100,
       currentPage: 1,
       totalPages: 1,
+      editExpense: {
+        id: null,
+        title: null,
+        amount: null,
+        category: null,
+        date: null,
+      },
+      categories: ['Other', 'Food', 'Shopping'],
     };
   }
 
@@ -36,6 +48,10 @@ class ExpensesTable extends Component {
     }
   }
 
+  /**
+   * Function to update redux stored expenses
+   * Used to update the table
+   */
   fetchExpenses = () => {
     this.props
       .getUserExpenses({
@@ -56,7 +72,6 @@ class ExpensesTable extends Component {
   /**
    * Update the sort criteria or order depending
    * on the clicked table header.
-   *
    * @param {Event} e
    */
   onClickHeader = (e) => {
@@ -85,22 +100,158 @@ class ExpensesTable extends Component {
   };
 
   /**
+   * Sets state state variables for the selected expense
+   * @param {Event} e
+   */
+  onClickEdit = (e) => {
+    const expense = e.currentTarget.closest('tr');
+    let origVals = {};
+    expense.querySelectorAll('td:not(.expense-action)').forEach((element) => {
+      origVals[element.getAttribute('name')] = element.getAttribute('orig');
+    });
+    this.setState({
+      editExpense: {
+        id: expense.getAttribute('id'),
+        ...origVals,
+      },
+    });
+  };
+
+  /**
+   * Updates state variables when input fields change
+   * @param {Event} e
+   */
+  onEditChange = (e) => {
+    this.setState({
+      editExpense: {
+        ...this.state.editExpense,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
+  /**
+   * Makes PUT request to update the selected expense
+   * @param {Event} e
+   */
+  onSubmit = (e) => {
+    e.preventDefault();
+    const expenseDetails = {
+      ...this.state.editExpense,
+      date: moment(this.state.editExpense.date).format('YYYY/MM/DD'),
+    };
+    this.props.editExpense(expenseDetails).then(() => {
+      this.setState({
+        editExpense: {
+          id: null,
+          title: null,
+          amount: null,
+          category: null,
+          date: null,
+        },
+      });
+    });
+  };
+
+  /**
+   * Renders the passed expense as plain, formatted text
+   * @param {Object} expense
+   * @param {Int} i
+   */
+  renderRowAsOutput = (expense, i) => {
+    return (
+      <tr id={expense._id} key={i}>
+        <td name='title' orig={expense.title}>
+          <span>{expense.title}</span>
+        </td>
+        <td name='amount' orig={expense.amount}>
+          <span>
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            }).format(expense.amount)}
+          </span>
+        </td>
+        <td name='date' orig={moment(expense.date).format('YYYY-MM-DD')}>
+          <span>{moment(expense.date).format('MM/DD/YYYY')}</span>
+        </td>
+        <td name='category' orig={expense.category}>
+          <span>{expense.category}</span>
+        </td>
+        <td className='expense-action text-center'>
+          <FontAwesomeIcon icon={faPen} onClick={this.onClickEdit} />
+        </td>
+      </tr>
+    );
+  };
+
+  /**
+   * Renders the passed expense as a form to edit values
+   * @param {Object} expense
+   * @param {Int} i
+   */
+  renderRowAsInput = (expense, i) => {
+    return (
+      <tr bgcolor='lightgray' className='selected' id={expense._id} key={i}>
+        <td>
+          <Form onSubmit={this.onSubmit}>
+            <FormControl
+              name='title'
+              required
+              value={this.state.editExpense.title}
+              onChange={this.onEditChange}
+            />
+          </Form>
+        </td>
+        <td>
+          <Form onSubmit={this.onSubmit}>
+            <FormControl
+              name='amount'
+              type='number'
+              required
+              value={this.state.editExpense.amount}
+              onChange={this.onEditChange}
+            />
+          </Form>
+        </td>
+        <td>
+          <FormControl
+            name='date'
+            type='date'
+            required
+            value={this.state.editExpense.date}
+            onChange={this.onEditChange}
+          />
+        </td>
+        <td>
+          <FormControl
+            name='category'
+            as='select'
+            required
+            value={this.state.editExpense.category}
+            onChange={this.onEditChange}
+          >
+            {this.state.categories.map((cat, i) => (
+              <option key={i}>{cat}</option>
+            ))}
+          </FormControl>
+        </td>
+        <td className='expense-action text-center'>
+          <FontAwesomeIcon icon={faSave} onClick={this.onSubmit} />
+        </td>
+      </tr>
+    );
+  };
+
+  /**
    * Maps fetched expenses to table rows
    */
   renderTableBody = () => {
-    return this.props.expenses.map((expense, i) => (
-      <tr key={i}>
-        <td>{expense.title}</td>
-        <td>
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(expense.amount)}
-        </td>
-        <td>{new Date(expense.date).toLocaleDateString()}</td>
-        <td>{expense.category}</td>
-      </tr>
-    ));
+    return this.props.expenses.map((expense, i) =>
+      expense._id === this.state.editExpense.id
+        ? this.renderRowAsInput(expense, i)
+        : this.renderRowAsOutput(expense, i)
+    );
   };
 
   /**
@@ -226,6 +377,7 @@ class ExpensesTable extends Component {
                     Category
                   </span>
                 </th>
+                <th>{/* just for expense action */}</th>
               </tr>
             </thead>
             <tbody>{this.renderTableBody()}</tbody>
@@ -250,6 +402,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getUserExpenses: (options) => dispatch(getUserExpenses(options)),
+    editExpense: (expense) => dispatch(editExpense(expense)),
   };
 };
 

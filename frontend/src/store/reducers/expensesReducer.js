@@ -21,6 +21,12 @@ const reducer = (state = initialState, action) => {
         update: state.update + 1,
       };
     }
+    case actionTypes.EDIT_EXPENSE: {
+      return {
+        ...state,
+        update: state.update + 1,
+      };
+    }
     case actionTypes.LOGOUT_USER: {
       return initialState;
     }
