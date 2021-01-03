@@ -39,7 +39,7 @@ class NewExpenseForm extends Component {
       .addNewExpense({
         title: this.state.title,
         amount: this.state.amount,
-        category: this.state.category,
+        category: this.state.category ? this.stae.category : 'Other',
         date: moment(this.state.date).format('YYYY/MM/DD'),
       })
       .then(() => {
@@ -84,7 +84,7 @@ class NewExpenseForm extends Component {
                   value={this.state.category}
                   options={this.props.categories}
                   onChange={this.onInputChange}
-                  defaultIfEmpty='Other'
+                  placeholder='Category'
                 />
               </Form.Group>
               <Form.Group as={Col} style={{ width: '25%' }}>

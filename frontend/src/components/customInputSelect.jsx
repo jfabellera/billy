@@ -23,7 +23,7 @@ class CustomInputSelect extends Component {
     super(props);
     this.state = {
       selected: '',
-      prevSelected: '',
+      prevSelected: '-------------------------------',
       newOptions: [],
     };
   }
@@ -84,10 +84,11 @@ class CustomInputSelect extends Component {
         openMenuOnFocus
         onChange={this.onSelectChange}
         onInputChange={this.onSelectInputChange}
-        placeholder={this.props.placeHolder || 'Select...'}
+        placeholder={this.props.placeholder || 'Select...'}
         options={options}
         menuPortalTarget={document.body}
         styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+        closeMenuOnScroll={true}
       />
     );
 

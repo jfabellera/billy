@@ -17,8 +17,15 @@ import {
   Pagination,
   Form,
 } from 'react-bootstrap';
+import CustomInputSelect from './customInputSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faSave } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPen,
+  faSave,
+  faSortDown,
+  faSortUp,
+  faSort,
+} from '@fortawesome/free-solid-svg-icons';
 
 class ExpensesTable extends Component {
   constructor(props) {
@@ -79,7 +86,6 @@ class ExpensesTable extends Component {
    * @param {Event} e
    */
   onClickHeader = (e) => {
-    // TODO(jan) add fontawesome arrows to show sort direction
     new Promise((resolve) => {
       if (this.state.sort !== e.target.id) {
         this.setState({
@@ -143,6 +149,9 @@ class ExpensesTable extends Component {
     const expenseDetails = {
       ...this.state.editExpense,
       date: moment(this.state.editExpense.date).format('YYYY/MM/DD'),
+      category: this.state.editExpense.category
+        ? this.state.editExpense.category
+        : 'Other',
     };
     this.props.editExpense(expenseDetails).then(() => {
       this.setState({
@@ -196,7 +205,7 @@ class ExpensesTable extends Component {
    */
   renderRowAsInput = (expense, i) => {
     return (
-      <tr bgcolor='lightgray' className='selected' id={expense._id} key={i}>
+      <tr className='selected' id={expense._id} key={i}>
         <td>
           <Form onSubmit={this.onSubmit}>
             <FormControl
@@ -228,17 +237,13 @@ class ExpensesTable extends Component {
           />
         </td>
         <td>
-          <FormControl
+          <CustomInputSelect
             name='category'
-            as='select'
-            required
             value={this.state.editExpense.category}
             onChange={this.onEditChange}
-          >
-            {this.props.categories.map((cat, i) => (
-              <option key={i}>{cat}</option>
-            ))}
-          </FormControl>
+            options={this.props.categories}
+            placeholder='Category'
+          />
         </td>
         <td className='expense-action text-center'>
           <FontAwesomeIcon icon={faSave} onClick={this.onSubmit} />
@@ -336,6 +341,21 @@ class ExpensesTable extends Component {
     );
   };
 
+  renderSortArrow = (headerName) => {
+    return (
+      <FontAwesomeIcon
+        icon={
+          this.state.sort === headerName
+            ? this.state.direction === 'asc'
+              ? faSortUp
+              : faSortDown
+            : null
+        }
+        size='xs'
+      />
+    );
+  };
+
   render() {
     return (
       <Card
@@ -358,28 +378,39 @@ class ExpensesTable extends Component {
           className='d-flex flex-fill overflow-auto my-3'
           style={{ height: '0px' }}
         >
-          <Table borderless hover variant='light' size='sm' className='m-0'>
+          <Table
+            borderless
+            striped
+            hover
+            variant='light'
+            size='sm'
+            className='m-0'
+          >
             <thead>
               <tr>
                 <th className='fa fa-sort-asc'>
                   <span id='title' onClick={this.onClickHeader}>
-                    Title
+                    Title{' '}
                   </span>
+                  {this.renderSortArrow('title')}
                 </th>
                 <th>
                   <span id='amount' onClick={this.onClickHeader}>
-                    Amount
+                    Amount{' '}
                   </span>
+                  {this.renderSortArrow('amount')}
                 </th>
                 <th>
                   <span id='date' onClick={this.onClickHeader}>
-                    Date
+                    Date{' '}
                   </span>
+                  {this.renderSortArrow('date')}
                 </th>
                 <th>
                   <span id='category' onClick={this.onClickHeader}>
-                    Category
+                    Category{' '}
                   </span>
+                  {this.renderSortArrow('category')}
                 </th>
                 <th>{/* just for expense action */}</th>
               </tr>
