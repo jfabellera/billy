@@ -14,8 +14,16 @@ tbody tr:hover svg {
   visibility: visible;
 }
 
-tbody tr svg {
+.expense-normal svg {
   visibility: hidden;
+}
+
+.expense-confirm svg {
+  visibility: visibile;
+}
+
+.expense-delete {
+  background-color: rgb(255, 93, 93);
 }
 
 table tbody tr td {

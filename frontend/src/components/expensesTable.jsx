@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
   getUserExpenses,
   editExpense,
+  deleteExpense,
   getUserCategories,
 } from '../store/actions/expensesActions';
 import moment from 'moment';
@@ -14,10 +15,12 @@ import CustomPagination from './customPagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPen,
-  faSave,
   faSortDown,
   faSortUp,
   faSort,
+  faTrash,
+  faTimes,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 
 class ExpensesTable extends Component {
@@ -37,6 +40,7 @@ class ExpensesTable extends Component {
         category: null,
         date: null,
       },
+      deleteExpenseId: null,
     };
   }
 
@@ -71,6 +75,24 @@ class ExpensesTable extends Component {
         });
       });
     this.props.getUserCategories();
+  };
+
+  resetEditExpense = () => {
+    this.setState({
+      editExpense: {
+        id: null,
+        title: null,
+        amount: null,
+        category: null,
+        date: null,
+      },
+    });
+  };
+
+  resetDeleteExpense = () => {
+    this.setState({
+      deleteExpenseId: null,
+    });
   };
 
   /**
@@ -111,6 +133,7 @@ class ExpensesTable extends Component {
    * @param {Event} e
    */
   onClickEdit = (e) => {
+    this.resetDeleteExpense();
     const expense = e.currentTarget.closest('tr');
     let origVals = {};
     expense.querySelectorAll('td:not(.expense-action)').forEach((element) => {
@@ -122,6 +145,18 @@ class ExpensesTable extends Component {
         ...origVals,
       },
     });
+  };
+
+  onClickDelete = (e) => {
+    this.resetEditExpense();
+    this.setState({
+      deleteExpenseId: e.currentTarget.closest('tr').getAttribute('id'),
+    });
+  };
+
+  onClickCancel = () => {
+    this.resetEditExpense();
+    this.resetDeleteExpense();
   };
 
   /**
@@ -141,7 +176,7 @@ class ExpensesTable extends Component {
    * Makes PUT request to update the selected expense
    * @param {Event} e
    */
-  onSubmit = (e) => {
+  onEditSubmit = (e) => {
     e.preventDefault();
     const expenseDetails = {
       ...this.state.editExpense,
@@ -150,17 +185,13 @@ class ExpensesTable extends Component {
         ? this.state.editExpense.category
         : 'Other',
     };
-    this.props.editExpense(expenseDetails).then(() => {
-      this.setState({
-        editExpense: {
-          id: null,
-          title: null,
-          amount: null,
-          category: null,
-          date: null,
-        },
-      });
-    });
+    this.props.editExpense(expenseDetails).then(this.resetEditExpense);
+  };
+
+  onDeleteSubmit = () => {
+    this.props
+      .deleteExpense(this.state.deleteExpenseId)
+      .then(this.resetEditExpense);
   };
 
   /**
@@ -170,7 +201,13 @@ class ExpensesTable extends Component {
    */
   renderRowAsOutput = (expense, i) => {
     return (
-      <tr id={expense._id} key={i}>
+      <tr
+        className={
+          expense._id === this.state.deleteExpenseId ? 'expense-delete' : ''
+        }
+        id={expense._id}
+        key={i}
+      >
         <td name='title' orig={expense.title}>
           <span>{expense.title}</span>
         </td>
@@ -189,9 +226,33 @@ class ExpensesTable extends Component {
           <span>{expense.category}</span>
         </td>
         <td className='expense-action text-center'>
-          <div className='h-100 d-flex align-items-center'>
-            <FontAwesomeIcon icon={faPen} onClick={this.onClickEdit} />
-          </div>
+          {expense._id !== this.state.deleteExpenseId ? (
+            <div className='expense-normal h-100 d-flex align-items-center'>
+              <FontAwesomeIcon
+                className='mr-1'
+                icon={faPen}
+                onClick={this.onClickEdit}
+              />
+              <FontAwesomeIcon
+                className='ml-1'
+                icon={faTrash}
+                onClick={this.onClickDelete}
+              />
+            </div>
+          ) : (
+            <div className='expense-confirm h-100 d-flex align-items-center'>
+              <FontAwesomeIcon
+                className='mr-1'
+                icon={faTimes}
+                onClick={this.onClickCancel}
+              />
+              <FontAwesomeIcon
+                className='ml-1'
+                icon={faCheck}
+                onClick={this.onDeleteSubmit}
+              />
+            </div>
+          )}
         </td>
       </tr>
     );
@@ -206,7 +267,7 @@ class ExpensesTable extends Component {
     return (
       <tr className='selected' id={expense._id} key={i}>
         <td>
-          <Form onSubmit={this.onSubmit}>
+          <Form onSubmit={this.onEditSubmit}>
             <FormControl
               name='title'
               required
@@ -216,7 +277,7 @@ class ExpensesTable extends Component {
           </Form>
         </td>
         <td>
-          <Form onSubmit={this.onSubmit}>
+          <Form onSubmit={this.onEditSubmit}>
             <FormControl
               name='amount'
               type='number'
@@ -245,8 +306,17 @@ class ExpensesTable extends Component {
           />
         </td>
         <td className='expense-action text-center'>
-          <div className='h-100 d-flex align-items-center'>
-            <FontAwesomeIcon icon={faSave} onClick={this.onSubmit} />
+          <div className='expense-confirm h-100 d-flex align-items-center'>
+            <FontAwesomeIcon
+              className='mr-1'
+              icon={faTimes}
+              onClick={this.onClickCancel}
+            />
+            <FontAwesomeIcon
+              className='ml-1'
+              icon={faCheck}
+              onClick={this.onEditSubmit}
+            />
           </div>
         </td>
       </tr>
@@ -301,14 +371,7 @@ class ExpensesTable extends Component {
           className='d-flex flex-fill overflow-auto my-3'
           style={{ height: '0px' }}
         >
-          <Table
-            borderless
-            striped
-            hover
-            variant='light'
-            size='sm'
-            className='m-0'
-          >
+          <Table borderless variant='light' size='sm' className='m-0'>
             <thead>
               <tr>
                 <th className='fa fa-sort-asc'>
@@ -366,6 +429,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserExpenses: (options) => dispatch(getUserExpenses(options)),
     editExpense: (expense) => dispatch(editExpense(expense)),
+    deleteExpense: (expenseId) => dispatch(deleteExpense(expenseId)),
     getUserCategories: () => dispatch(getUserCategories()),
   };
 };

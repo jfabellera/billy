@@ -92,6 +92,24 @@ export const editExpense = (expense) => {
   };
 };
 
+export const deleteExpense = (expenseId) => {
+  return (dispatch) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
+    return axiosAPI
+      .delete('/expenses/' + expenseId)
+      .then((res) => {
+        dispatch({
+          type: actionTypes.DELETE_EXPENSE,
+        });
+      })
+      .catch((err) => {
+        // TODO
+      });
+  };
+};
+
 export const getUserCategories = () => {
   return (dispatch) => {
     const token = localStorage.getItem('accessToken');

@@ -28,6 +28,12 @@ const reducer = (state = initialState, action) => {
         update: state.update + 1,
       };
     }
+    case actionTypes.DELETE_EXPENSE: {
+      return {
+        ...state,
+        update: state.update + 1,
+      };
+    }
     case actionTypes.GET_USER_CATEGORIES: {
       return {
         ...state,
