@@ -153,7 +153,7 @@ router.post(
     check('title', 'Title is required').notEmpty(),
     check('amount', 'Amount must be a float').isFloat(),
     check('date', 'Incorrect date format').isDate(),
-    check('category').optional(),
+    check('category').notEmpty(),
   ],
   (req, res) => {
     let err = validationResult(req);
@@ -216,11 +216,14 @@ router.delete(
     if (!err.isEmpty()) {
       res.status(400).json(err.errors);
     } else {
-      Expense.findOneAndDelete({ _id: req.params.expense_id }, (err, expense) => {
-        if (err) throw err;
-        if (!expense) res.status(400).json({ message: 'Expense not found' });
-        else res.status(200).json({ message: 'Expense deleted' });
-      });
+      Expense.findOneAndDelete(
+        { _id: req.params.expense_id },
+        (err, expense) => {
+          if (err) throw err;
+          if (!expense) res.status(400).json({ message: 'Expense not found' });
+          else res.status(200).json({ message: 'Expense deleted' });
+        }
+      );
     }
   }
 );

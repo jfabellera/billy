@@ -230,6 +230,7 @@ router.get(
 // Get categories of expenses from a single user
 router.get(
   '/:username/expenses/categories',
+  auth,
   [check('username').isAlphanumeric()],
   getExpenseCategories
 );

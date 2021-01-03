@@ -38,6 +38,10 @@ export const getUserExpenses = (options) => {
   };
 };
 
+/**
+ * Adds expense for the user
+ * @param {Object} expense
+ */
 export const addNewExpense = (expense) => {
   return (dispatch) => {
     const token = localStorage.getItem('accessToken');
@@ -66,6 +70,10 @@ export const addNewExpense = (expense) => {
   };
 };
 
+/**
+ * Edits an expense for the user
+ * @param {Object} expense
+ */
 export const editExpense = (expense) => {
   return (dispatch) => {
     const token = localStorage.getItem('accessToken');
@@ -80,6 +88,26 @@ export const editExpense = (expense) => {
       })
       .catch((err) => {
         //TODO
+      });
+  };
+};
+
+export const getUserCategories = () => {
+  return (dispatch) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+    const username = jwt.decode(token).user.username;
+
+    return axiosAPI
+      .get('/users/' + username + '/expenses/categories')
+      .then((res) => {
+        dispatch({
+          type: actionTypes.GET_USER_CATEGORIES,
+          categories: res.data,
+        });
+      })
+      .catch((err) => {
+        // TODO
       });
   };
 };

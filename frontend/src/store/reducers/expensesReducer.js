@@ -2,6 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
   expenses: [],
+  categories: [],
   totalExpenses: 0,
   update: 0,
 };
@@ -25,6 +26,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         update: state.update + 1,
+      };
+    }
+    case actionTypes.GET_USER_CATEGORIES: {
+      return {
+        ...state,
+        categories: action.categories,
       };
     }
     case actionTypes.LOGOUT_USER: {

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getUserExpenses, editExpense } from '../store/actions/expensesActions';
+import {
+  getUserExpenses,
+  editExpense,
+  getUserCategories,
+} from '../store/actions/expensesActions';
 import moment from 'moment';
 
 import './expensesTable.css';
@@ -33,7 +37,6 @@ class ExpensesTable extends Component {
         category: null,
         date: null,
       },
-      categories: ['Other', 'Food', 'Shopping'],
     };
   }
 
@@ -67,6 +70,7 @@ class ExpensesTable extends Component {
           totalPages: total > 0 ? total : 1,
         });
       });
+    this.props.getUserCategories();
   };
 
   /**
@@ -231,7 +235,7 @@ class ExpensesTable extends Component {
             value={this.state.editExpense.category}
             onChange={this.onEditChange}
           >
-            {this.state.categories.map((cat, i) => (
+            {this.props.categories.map((cat, i) => (
               <option key={i}>{cat}</option>
             ))}
           </FormControl>
@@ -394,6 +398,7 @@ class ExpensesTable extends Component {
 const mapStateToProps = (state) => {
   return {
     expenses: state.expenses.expenses,
+    categories: state.expenses.categories,
     totalExpenses: state.expenses.totalExpenses,
     update: state.expenses.update,
   };
@@ -403,6 +408,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserExpenses: (options) => dispatch(getUserExpenses(options)),
     editExpense: (expense) => dispatch(editExpense(expense)),
+    getUserCategories: () => dispatch(getUserCategories()),
   };
 };
 
