@@ -7,7 +7,7 @@ import {
 import moment from 'moment';
 
 import { Card, Form, Button, Row, Col, Accordion } from 'react-bootstrap';
-import CreatableSelect from 'react-select/creatable';
+import CustomInputSelect from './customInputSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
@@ -32,36 +32,14 @@ class NewExpenseForm extends Component {
     this.setState({ [field]: value });
   };
 
-  onSelectChange = (selectedOption, action) => {
-    if (action.action === 'clear') this.setState({ category: '' });
-
-    if (
-      selectedOption &&
-      (action.action === 'select-option' || action.action === 'create-option')
-    )
-      this.setState({ category: selectedOption });
-  };
-
-  onSelectInputChange = (selectInputValue, action) => {
-    if (action.action === 'input-change') {
-      this.setState({ category: selectInputValue });
-    }
-  };
-
   onSubmit = (e) => {
     e.preventDefault();
-
-    // To fix CreatableSelect stupid behavior
-    let category;
-    if (this.state.category.value) category = this.state.category.value;
-    else if (this.state.category) category = this.state.category;
-    else category = 'Other';
 
     this.props
       .addNewExpense({
         title: this.state.title,
         amount: this.state.amount,
-        category: category,
+        category: this.state.category,
         date: moment(this.state.date).format('YYYY/MM/DD'),
       })
       .then(() => {
@@ -74,46 +52,12 @@ class NewExpenseForm extends Component {
       });
   };
 
-  /**
-   * Stupid function to make up for CreatableSelect's
-   * stupid behavior this shouldn't even be necessary
-   * I spend 3 hours trying to find a solution but this
-   * will do I guess.
-   */
-  renderSelect = () => {
-    const selectElement = (
-      <CreatableSelect
-        name='category'
-        required
-        isClearable
-        openMenuOnFocus
-        onChange={this.onSelectChange}
-        onInputChange={this.onSelectInputChange}
-        placeholder='Category'
-        options={this.props.categories.map((cat) => {
-          return { value: cat, label: cat };
-        })}
-        menuPortalTarget={document.body}
-        styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-      />
-    );
-    if (this.state.category.value) {
-      return React.cloneElement(selectElement, { value: this.state.category });
-    } else if (this.state.category) {
-      return React.cloneElement(selectElement, {
-        inputValue: this.state.category,
-      });
-    } else {
-      return React.cloneElement(selectElement, { value: null });
-    }
-  };
-
   render() {
     return (
       <Accordion>
         <Card className='p-3'>
           <h3>Add new expense</h3>
-          <Form onSubmit={this.onSubmit} style={{ zIndex: 9999 }}>
+          <Form onSubmit={this.onSubmit}>
             <Form.Row>
               <Form.Group as={Col}>
                 <Form.Control
@@ -134,7 +78,15 @@ class NewExpenseForm extends Component {
                   value={this.state.amount}
                 />
               </Form.Group>
-              <Form.Group as={Col}>{this.renderSelect()}</Form.Group>
+              <Form.Group as={Col}>
+                <CustomInputSelect
+                  name='category'
+                  value={this.state.category}
+                  options={this.props.categories}
+                  onChange={this.onInputChange}
+                  defaultIfEmpty='Other'
+                />
+              </Form.Group>
               <Form.Group as={Col} style={{ width: '25%' }}>
                 <Form.Control
                   name='date'
