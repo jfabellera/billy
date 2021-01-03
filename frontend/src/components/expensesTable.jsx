@@ -8,16 +8,9 @@ import {
 import moment from 'moment';
 
 import './expensesTable.css';
-import {
-  Table,
-  Card,
-  Row,
-  Col,
-  FormControl,
-  Pagination,
-  Form,
-} from 'react-bootstrap';
+import { Table, Card, Row, Col, FormControl, Form } from 'react-bootstrap';
 import CustomInputSelect from './customInputSelect';
+import CustomPagination from './customPagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPen,
@@ -109,6 +102,10 @@ class ExpensesTable extends Component {
     });
   };
 
+  onPageChange = (e) => {
+    this.setState({ currentPage: e.target.value }, this.fetchExpenses);
+  };
+
   /**
    * Sets state state variables for the selected expense
    * @param {Event} e
@@ -192,7 +189,9 @@ class ExpensesTable extends Component {
           <span>{expense.category}</span>
         </td>
         <td className='expense-action text-center'>
-          <FontAwesomeIcon icon={faPen} onClick={this.onClickEdit} />
+          <div className='h-100 d-flex align-items-center'>
+            <FontAwesomeIcon icon={faPen} onClick={this.onClickEdit} />
+          </div>
         </td>
       </tr>
     );
@@ -246,7 +245,9 @@ class ExpensesTable extends Component {
           />
         </td>
         <td className='expense-action text-center'>
-          <FontAwesomeIcon icon={faSave} onClick={this.onSubmit} />
+          <div className='h-100 d-flex align-items-center'>
+            <FontAwesomeIcon icon={faSave} onClick={this.onSubmit} />
+          </div>
         </td>
       </tr>
     );
@@ -263,84 +264,6 @@ class ExpensesTable extends Component {
     );
   };
 
-  /**
-   * Determines which page numbers to display.
-   */
-  renderPagination = () => {
-    // Some weird mathgic I came up with while working on the initial course project
-    let low, high;
-    let current = this.state.currentPage,
-      total = this.state.totalPages;
-    if (this.state.currentPage < 5) {
-      low = 2;
-      high = Math.min(5, this.state.totalPages - 1);
-    } else if (this.state.currentPage > this.state.totalPages - 4) {
-      low = this.state.totalPages - 4;
-      high = this.state.totalPages - 1;
-    } else {
-      low = this.state.currentPage - 1;
-      high = this.state.currentPage + 1;
-    }
-    let diff = high - low + 1;
-    let pages = diff > 0 ? [...Array(diff).keys()].map((i) => i + low) : [];
-
-    return (
-      <Pagination className='m-0'>
-        <Pagination.Prev
-          disabled={current === 1}
-          onClick={() => {
-            this.setState(
-              { currentPage: Math.max(current - 1, 1) },
-              this.fetchExpenses
-            );
-          }}
-        />
-        <Pagination.Item
-          active={current === 1}
-          onClick={() => {
-            this.setState({ currentPage: 1 }, this.fetchExpenses);
-          }}
-        >
-          {1}
-        </Pagination.Item>
-        {current > 4 && total > 7 ? <Pagination.Ellipsis disabled /> : null}
-        {pages.map((i) => (
-          <Pagination.Item
-            key={i}
-            active={current === i}
-            onClick={() => {
-              this.setState({ currentPage: i }, this.fetchExpenses);
-            }}
-          >
-            {i}
-          </Pagination.Item>
-        ))}
-        {current < total - 3 && total > 7 ? (
-          <Pagination.Ellipsis disabled />
-        ) : null}
-        {total === 1 ? null : (
-          <Pagination.Item
-            active={current === total}
-            onClick={() => {
-              this.setState({ currentPage: total }, this.fetchExpenses);
-            }}
-          >
-            {total}
-          </Pagination.Item>
-        )}
-        <Pagination.Next
-          disabled={current === total}
-          onClick={() => {
-            this.setState(
-              { currentPage: Math.min(current + 1, total) },
-              this.fetchExpenses
-            );
-          }}
-        />
-      </Pagination>
-    );
-  };
-
   renderSortArrow = (headerName) => {
     return (
       <FontAwesomeIcon
@@ -349,7 +272,7 @@ class ExpensesTable extends Component {
             ? this.state.direction === 'asc'
               ? faSortUp
               : faSortDown
-            : null
+            : faSort
         }
         size='xs'
       />
@@ -419,7 +342,11 @@ class ExpensesTable extends Component {
           </Table>
         </div>
         <div className='d-flex justify-content-center align-items-center'>
-          {this.renderPagination()}
+          <CustomPagination
+            value={this.state.currentPage}
+            total={this.state.totalPages}
+            onChange={this.onPageChange}
+          />
         </div>
       </Card>
     );
