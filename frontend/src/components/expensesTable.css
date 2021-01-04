@@ -4,16 +4,14 @@ table {
 
 td,
 th {
-  border: 1px solid #d5d5d5;
-  padding: 15px;
-  width: 25%;
+  /* max-width: 100px; */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.auto-width {
-  white-space: nowrap;
+.fixed-width {
+  width: 4rem;
 }
 
 table thead th {
@@ -30,6 +28,14 @@ table thead th span {
 
 tbody tr:hover svg {
   visibility: visible;
+}
+
+.expense-normal,
+.expense-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .expense-normal svg {

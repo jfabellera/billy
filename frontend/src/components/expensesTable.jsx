@@ -145,7 +145,10 @@ class ExpensesTable extends Component {
   };
 
   onSearchChange = (e) => {
-    this.setState({ search: e.target.value, currentPage: 1 }, this.fetchExpenses);
+    this.setState(
+      { search: e.target.value, currentPage: 1 },
+      this.fetchExpenses
+    );
   };
 
   /**
@@ -321,8 +324,8 @@ class ExpensesTable extends Component {
             placeholder='Category'
           />
         </td>
-        <td className='expense-action text-center'>
-          <div className='expense-confirm h-100 d-flex align-items-center'>
+        <td className='expense-action'>
+          <div className='expense-confirm'>
             <FontAwesomeIcon
               className='mr-1'
               icon={faTimes}
@@ -392,7 +395,7 @@ class ExpensesTable extends Component {
           <Table borderless variant='light' size='sm' className='m-0'>
             <thead>
               <tr>
-                <th className='fa fa-sort-asc'>
+                <th>
                   <span id='title' onClick={this.onClickHeader}>
                     Title{' '}
                   </span>
@@ -416,7 +419,7 @@ class ExpensesTable extends Component {
                   </span>
                   {this.renderSortArrow('category')}
                 </th>
-                <th className='auto-width'>{/* just for expense action */}</th>
+                <th className='fixed-width'>{/* just for expense action */}</th>
               </tr>
             </thead>
             <tbody>{this.renderTableBody()}</tbody>
