@@ -1,111 +1,128 @@
 import React, { Component } from 'react';
-import CreatableSelect from 'react-select/creatable';
+import Autosuggest from 'react-autosuggest';
 
-const uniqueElements = (arr) => {
-  let result = [];
-  arr.forEach((elem) => {
-    if (!result.includes(elem)) result.push(elem);
-  });
-  return result;
-};
+import './customInputSelect.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
-/**
- * Stupid component to make up for CreatableSelect's
- * stupid behavior this shouldn't even be necessary
- * I spendt3 hours trying to find a solution but this
- * will do I guess. Also I was watching a kdrama
- * with my parent and not really paying attention to
- * whats happening in here, theres probably a better
- * way to do this.
- */
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
+function escapeRegexCharacters(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 class CustomInputSelect extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      selected: this.props.value,
-      prevSelected: '-------------------------------',
-      newOptions: [],
+      value: '',
+      suggestions: [],
+      prevValue: '-----------',
     };
   }
 
-  // for component onChange prop
   componentDidUpdate() {
-    let selected;
-    if (this.state.selected.value) selected = this.state.selected.value;
-    else if (this.state.selected) selected = this.state.selected;
-    else selected = this.props.defaultIfEmpty || '';
-
     const e = {
       target: {
-        name: this.props.name,
-        value: selected,
+        name: this.props.name ? this.props.name : '',
+        value: this.state.value,
       },
     };
 
-    if (this.state.prevSelected !== this.state.selected) {
-      this.setState({ prevSelected: this.state.selected });
-      this.props.onChange(e);
+    if (
+      this.state.value !== this.props.value &&
+      this.state.prevValue === this.props.value
+    ) {
+      if (this.props.onChange) this.props.onChange(e);
+    } else if (this.state.prevValue !== this.props.value) {
+      this.setState({
+        prevValue: this.props.value,
+        value: this.props.value,
+      });
     }
   }
 
-  onSelectChange = (selectedOption, action) => {
-    if (action.action === 'clear') this.setState({ selected: '' });
+  getSuggestions = () => {
+    const escapedValue = escapeRegexCharacters(String(this.state.value).trim());
+    const regex = new RegExp('^' + escapedValue, 'i');
+    const suggestions = this.props.options.filter((option) =>
+      regex.test(option)
+    );
 
-    if (selectedOption && action.action === 'select-option')
-      this.setState({ selected: selectedOption.value });
-
-    if (selectedOption && action.action === 'create-option') {
-      this.setState({
-        selected: selectedOption.value,
-        newOptions: [...this.state.newOptions, selectedOption.value],
-      });
-    }
+    if (suggestions.length > 0) return suggestions;
+    else return [{ isAddNew: true }];
   };
 
-  onSelectInputChange = (selectInputValue, action) => {
-    if (action.action === 'input-change') {
-      this.setState({ selected: selectInputValue });
-    }
+  getSuggestionValue = (suggestion) => {
+    if (suggestion.isAddNew) return this.state.value;
+    else return suggestion;
+  };
+
+  onChange = (e, { newValue }) => {
+    this.setState({
+      value: newValue,
+    });
+  };
+
+  onSuggestionsFetchRequested = (action) => {
+    this.setState({
+      suggestions: this.getSuggestions(action.value),
+    });
+  };
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: [],
+    });
+  };
+
+  onClear = (e) => {
+    const input = e.currentTarget.parentNode.getElementsByTagName('input')[0];
+    this.setState({ value: '', suggestions: this.props.options }, () => {
+      input.focus()
+    });
+  };
+
+  renderSuggestion = (suggestion) => {
+    if (suggestion.isAddNew) return <span>Create "{this.state.value}"</span>;
+    return <span>{suggestion}</span>;
   };
 
   render() {
-    // combine new options with given options
-    const options = uniqueElements(
-      this.props.options.concat(this.state.newOptions)
-    ).map((opt) => {
-      return { value: opt, label: opt };
-    });
+    const inputProps = {
+      placeholder: 'Category',
+      value: this.props.value,
+      onChange: this.onChange,
+      id: 'autosuggest',
+    };
 
-    // default select
-    const selectElement = (
-      <CreatableSelect
-        name={this.props.name}
-        isClearable
-        openMenuOnFocus
-        onChange={this.onSelectChange}
-        onInputChange={this.onSelectInputChange}
-        placeholder={this.props.placeholder || 'Select...'}
-        options={options}
-        menuPortalTarget={document.body}
-        styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-      />
+    return (
+      <div className='d-flex justify-content-end'>
+        <div style={{ width: '100%' }}>
+          <Autosuggest
+            suggestions={this.state.suggestions}
+            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+            getSuggestionValue={this.getSuggestionValue}
+            shouldRenderSuggestions={() => true}
+            renderSuggestion={this.renderSuggestion}
+            inputProps={inputProps}
+            highlightFirstSuggestion={this.state.value ? true : false}
+          />
+        </div>
+        <FontAwesomeIcon
+          icon={faTimesCircle}
+          style={{
+            position: 'absolute',
+            alignSelf: 'center',
+            marginRight: '0.6rem',
+            cursor: 'pointer',
+            visibility: this.state.value ? 'visible' : 'hidden',
+          }}
+          onClick={this.onClear}
+        />
+      </div>
     );
-
-    // stupid
-    if (
-      this.props.options.includes(this.props.value) ||
-      this.state.newOptions.includes(this.props.value)
-    ) {
-      return React.cloneElement(selectElement, {
-        value: { value: this.props.value, label: this.props.value },
-      });
-    } else if (this.props.value) {
-      return React.cloneElement(selectElement, {
-        inputValue: this.props.value,
-      });
-    } else {
-      return React.cloneElement(selectElement, { value: null });
-    }
   }
 }
 

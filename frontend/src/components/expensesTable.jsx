@@ -318,10 +318,9 @@ class ExpensesTable extends Component {
         <td>
           <CustomInputSelect
             name='category'
+            options={this.props.categories}
             value={this.state.editExpense.category}
             onChange={this.onEditChange}
-            options={this.props.categories}
-            placeholder='Category'
           />
         </td>
         <td className='expense-action'>
