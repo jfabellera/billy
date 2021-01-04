@@ -116,6 +116,7 @@ GET /expenses/
 
 | Parameter    | Type    | In    | Description                                                                                                    |
 | ------------ | ------- | ----- | -------------------------------------------------------------------------------------------------------------- |
+| `search`     | stromg  | query | Search keywords to match expense titles                                                                        |
 | `sort`       | string  | query | `title`, `date`, `user_id`, `category`, or `amount`                                                            |
 | `direction`  | string  | query | `asc` or `dsc`                                                                                                 |
 | `start_date` | string  | query | Start date of the expenses to fetch. If left empty, will retrieve expenses starting from the beginning of time |
@@ -210,6 +211,7 @@ GET /users/{username}/expenses/
 | Parameter    | Type    | In    | Description                                                                                                    |
 | ------------ | ------- | ----- | -------------------------------------------------------------------------------------------------------------- |
 | `username`   | string  | path  |                                                                                                                |
+| `search`     | stromg  | query | Search keywords to match expense titles                                                                        |
 | `sort`       | string  | query | `name`, `date`, `user`, `category`, or `amount`                                                                |
 | `direction`  | string  | query | `asc` or `dsc`                                                                                                 |
 | `start_date` | string  | query | Start date of the expenses to fetch. If left empty, will retrieve expenses starting from the beginning of time |

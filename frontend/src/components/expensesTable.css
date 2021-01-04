@@ -1,12 +1,15 @@
 table {
-  /* table-layout: fixed; */
+  table-layout: fixed;
 }
 
 td,
 th {
   border: 1px solid #d5d5d5;
   padding: 15px;
-  width: 24%;
+  width: 25%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .auto-width {
@@ -48,8 +51,3 @@ tbody tr:hover:not(.expense-delete) {
 table tbody tr td {
   position: relative;
 }
-
-/* tbody .form-control {
-  position: absolute;
-  box-sizing: border-box;
-} */

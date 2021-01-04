@@ -42,6 +42,7 @@ class ExpensesTable extends Component {
         date: null,
       },
       deleteExpenseId: null,
+      search: '',
     };
   }
 
@@ -74,6 +75,7 @@ class ExpensesTable extends Component {
         direction: this.state.direction,
         per_page: this.state.perPage,
         page: this.state.currentPage,
+        search: this.state.search,
       })
       .then(() => {
         // Determine number of pages
@@ -140,6 +142,10 @@ class ExpensesTable extends Component {
 
   onPageChange = (e) => {
     this.setState({ currentPage: e.target.value }, this.fetchExpenses);
+  };
+
+  onSearchChange = (e) => {
+    this.setState({ search: e.target.value, currentPage: 1 }, this.fetchExpenses);
   };
 
   /**
@@ -374,13 +380,14 @@ class ExpensesTable extends Component {
               placeholder='Search...'
               className='ml-auto'
               style={{ maxWidth: '300px' }}
+              onChange={this.onSearchChange}
             />
           </Col>
         </Row>
         <div
           id='table'
-          className='d-flex flex-fill overflow-auto my-3'
-          style={{ height: '0px' }}
+          className='d-flex flex-fill my-3'
+          style={{ height: '0px', overflowY: 'scroll' }}
         >
           <Table borderless variant='light' size='sm' className='m-0'>
             <thead>

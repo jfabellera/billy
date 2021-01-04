@@ -44,6 +44,14 @@ getExpenses = async (req, res) => {
 
     options.sort.createdAt = '-1';
 
+    // Search
+    if (req.query.search) {
+      query.title = {
+        $regex: new RegExp(req.query.search),
+        $options: 'i'
+      };
+    }
+
     // Date range
     if (req.query.start_date) {
       if (!query.date) query.date = {};
