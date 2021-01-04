@@ -22,11 +22,7 @@ class NewExpenseForm extends Component {
       suggestions: this.props.categories,
     };
   }
-
-  componentDidMount() {
-    this.props.getUserCategories();
-  }
-
+  
   onInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
