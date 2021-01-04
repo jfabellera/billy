@@ -9,12 +9,7 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      minlength: 3,
-    },
-    email: {
-      type: String,
-      trim: true,
-      lowercase: true,
+      minlength: 1,
     },
     password_hash: {
       type: String,
