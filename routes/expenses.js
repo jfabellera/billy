@@ -129,8 +129,8 @@ router.get('/categories', getExpenseCategories);
 
 // Get details of a single expense
 router.get(
-  '/:id',
-  [check('id', 'Invalid expense ID').isMongoId()],
+  '/:expense_id',
+  [check('expense_id', 'Invalid expense ID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
@@ -150,10 +150,10 @@ router.post(
   '/',
   [
     check('user_id', 'User ID must be an ObjectID').isMongoId(),
-    check('title', 'Title is required').notEmpty(),
+    check('title', 'Title is required').notEmpty().isString(),
     check('amount', 'Amount must be a float').isFloat(),
     check('date', 'Incorrect date format').isDate(),
-    check('category').notEmpty(),
+    check('category').notEmpty().isString(),
   ],
   (req, res) => {
     let err = validationResult(req);
@@ -184,10 +184,10 @@ router.put(
   auth,
   [
     check('expense_id', 'Expense ID must be an ObjectID').isMongoId(),
-    check('title', 'Title is required').optional().notEmpty(),
+    check('title', 'Title is required').optional().notEmpty().isString(),
     check('amount', 'Amount must be a float').optional().isFloat(),
     check('date', 'Incorrect date format').optional().isDate(),
-    check('category').optional(),
+    check('category').optional().notEmpty().isString(),
   ],
   (req, res) => {
     let err = validationResult(req);

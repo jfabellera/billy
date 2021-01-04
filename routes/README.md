@@ -7,8 +7,8 @@
 | [List users](#List-users)   | /users/            | GET         |
 | [Get user](#Get-user)       | /users/{username}/ | GET         |
 | [Create user](#Create-user) | /users/            | POST        |
-| [Edit user](#Edit-user)     | /users/{username}/ | PUT         |
-| [Delete user](#Delete-user) | /users/{username}/ | DELETE      |
+| [Edit user](#Edit-user)     | /users/{user_id}/  | PUT         |
+| [Delete user](#Delete-user) | /users/{user_id}/  | DELETE      |
 
 <br/>
 
@@ -17,10 +17,10 @@
 | Action                                              | Path                                   | HTTP Method |
 | --------------------------------------------------- | -------------------------------------- | ----------- |
 | [List expenses](#List-expenses)                     | /expenses/                             | GET         |
-| [Get expense](#Get-expense)                         | /expenses/{id}/                        | GET         |
+| [Get expense](#Get-expense)                         | /expenses/{expense_id}/                | GET         |
 | [Create expense](#Create-expense)                   | /expenses/                             | POST        |
-| [Edit expense](#Edit-expense)                       | /expenses/{id}/                        | PUT         |
-| [Delete expense](#Delete-expense)                   | /expenses/{id}/                        | DELETE      |
+| [Edit expense](#Edit-expense)                       | /expenses/{expense_id}/                | PUT         |
+| [Delete expense](#Delete-expense)                   | /expenses/{expense_id}/                | DELETE      |
 | [List expense categories](#List-expense-categories) | /expenses/categories/                  | GET         |
 | [List user expenses](#List-user-expenses)           | /users/{username}/expenses/            | GET         |
 | [List user categories](#List-user-categories)       | /users/{username}/expenses/categories/ | GET         |
@@ -80,12 +80,12 @@ POST /users/
 Update the details for a user.
 
 ```
-PUT /users/{username}/
+PUT /users/{user_id}/
 ```
 
 | Parameter  | Type   | In   | Description                                                 |
 | ---------- | ------ | ---- | ----------------------------------------------------------- |
-| `username` | string | path |                                                             |
+| `user_id`  | string | path |                                                             |
 | `username` | string | body | New username for user, must not already exist               |
 | `password` | string | body | New password for new user                                   |
 | `name`     | JSON   | body | JSON object including new `first` value and/or `last` value |
@@ -97,12 +97,12 @@ PUT /users/{username}/
 Deletes a user from the system. This is a soft delete i.e. the account will only be flagged as disabled.
 
 ```
-DELETE /users/{id}/
+DELETE /users/{user_id}/
 ```
 
 | Parameter | Type     | In   | Description |
 | --------- | -------- | ---- | ----------- |
-| `id`      | ObjectID | path |             |
+| `user_id` | ObjectID | path |             |
 
 ---
 
@@ -130,12 +130,12 @@ GET /expenses/
 Retrieves the details for a certain expense.
 
 ```
-GET /expenses/{id}/
+GET /expenses/{expense_id}/
 ```
 
-| Parameter | Type     | In   | Description                 |
-| --------- | -------- | ---- | --------------------------- |
-| `id`      | ObjectID | path | MongoDB ObjectID of expense |
+| Parameter    | Type     | In   | Description                 |
+| ------------ | -------- | ---- | --------------------------- |
+| `expense_id` | ObjectID | path | MongoDB ObjectID of expense |
 
 ---
 
@@ -162,16 +162,16 @@ POST /expenses/
 Modifies an existing expense in the database.
 
 ```
-PUT /expenses/{id}/
+PUT /expenses/{expense_id}/
 ```
 
-| Parameter  | Type     | In   | Description                 |
-| ---------- | -------- | ---- | --------------------------- |
-| `id`       | ObjectID | path | MongoDB ObjectID of expense |
-| `title`    | string   | body | Name of the expense         |
-| `amount`   | float    | body | Price of the expense        |
-| `date`     | date     | body | Date of the expense         |
-| `category` | string   | body | Category of the expense     |
+| Parameter    | Type     | In   | Description                 |
+| ------------ | -------- | ---- | --------------------------- |
+| `expense_id` | ObjectID | path | MongoDB ObjectID of expense |
+| `title`      | string   | body | Name of the expense         |
+| `amount`     | float    | body | Price of the expense        |
+| `date`       | date     | body | Date of the expense         |
+| `category`   | string   | body | Category of the expense     |
 
 ---
 
@@ -180,12 +180,12 @@ PUT /expenses/{id}/
 Removes an expense from the database. This operation is a hard delete i.e. this cannot be undone.
 
 ```
-DELETE /expenses/{id}/
+DELETE /expenses/{expense_id}/
 ```
 
-| Parameter | Type     | In   | Description                 |
-| --------- | -------- | ---- | --------------------------- |
-| `id`      | ObjectID | path | MongoDB ObjectID of expense |
+| Parameter    | Type     | In   | Description                 |
+| ------------ | -------- | ---- | --------------------------- |
+| `expense_id` | ObjectID | path | MongoDB ObjectID of expense |
 
 ---
 
