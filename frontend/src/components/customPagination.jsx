@@ -25,16 +25,25 @@ class CustomPagination extends Component {
       },
     };
 
-    if (this.state.currentPage !== this.props.value) {
+    if (
+      this.state.currentPage !== this.props.value &&
+      this.state.prevValue === this.props.value
+    ) {
       if (this.props.onChange) this.props.onChange(e);
+    } else if (this.state.prevValue !== this.props.value) {
+      this.setState({
+        prevValue: this.props.value,
+        currentPage: this.props.value,
+      });
     }
   }
 
   render() {
     // Some weird mathgic I came up with while working on the initial course project
+    // if (this.props.value) this.setState({ currentPage: this.props.value });
     let low, high;
-    let current = this.props.value,
-      total = this.props.total || 1;
+    let current = this.props.value;
+    let total = this.props.total || 1;
     if (current < 5) {
       low = 2;
       high = Math.min(5, total - 1);

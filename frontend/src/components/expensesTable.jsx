@@ -42,11 +42,13 @@ class ExpensesTable extends Component {
         date: null,
       },
       deleteExpenseId: null,
+      search: '',
+      update: this.props.update,
     };
   }
 
   componentDidMount() {
-    this.fetchExpenses();
+    this.fetchExpenses(true, true);
   }
 
   componentDidUpdate() {
@@ -56,7 +58,8 @@ class ExpensesTable extends Component {
       // don't scroll to top on an edit or delete
       this.fetchExpenses(
         this.props.updateAction !== 'edit' &&
-          this.props.updateAction !== 'delete'
+          this.props.updateAction !== 'delete',
+        true
       );
     }
   }
@@ -65,30 +68,55 @@ class ExpensesTable extends Component {
    * Function to update redux stored expenses
    * Used to update the table
    */
-  fetchExpenses = (scrollToTop = true) => {
+  fetchExpenses = (scrollToTop = true, getCategories = false) => {
     this.resetDeleteExpense();
     this.resetEditExpense();
-    this.props
-      .getUserExpenses({
-        sort: this.state.sort,
-        direction: this.state.direction,
-        per_page: this.state.perPage,
-        page: this.state.currentPage,
-      })
-      .then(() => {
-        // Determine number of pages
-        let total = Math.ceil(this.props.totalExpenses / this.state.perPage);
-        this.setState(
-          {
-            totalPages: total > 0 ? total : 1,
-          },
-          () => {
-            if (scrollToTop)
-              animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
-          }
+    let query = {
+      sort: this.state.sort,
+      direction: this.state.direction,
+      per_page: this.state.perPage,
+      page: this.state.currentPage,
+      search: this.state.search,
+    };
+    if (this.props.variant) {
+      if (this.props.variant === 'currentMonth') {
+        query.start_date = moment()
+          .clone()
+          .startOf('month')
+          .format('YYYY/MM/DD');
+        query.end_date = moment().clone().endOf('month').format('YYYY/MM/DD');
+      } else if (
+        this.props.variant === 'month' &&
+        this.props.month &&
+        this.props.year
+      ) {
+        const month = moment(
+          this.props.year + '/' + this.props.month,
+          'YYYY/M'
         );
-      });
-    this.props.getUserCategories();
+        query.start_date = month.clone().startOf('month').format('YYYY/MM/DD');
+        query.end_date = month.clone().endOf('month').format('YYYY/MM/DD');
+      } else if (this.props.variant === 'year' && this.props.year) {
+        const year = moment(this.props.year, 'YYYY');
+        query.start_date = year.clone().startOf('year').format('YYYY/MM/DD');
+        query.end_date = year.clone().endOf('year').format('YYYY/MM/DD');
+        console.log(query.start_date + ' ' + query.end_date);
+      }
+    }
+    this.props.getUserExpenses(query).then(() => {
+      // Determine number of pages
+      let total = Math.ceil(this.props.totalExpenses / this.state.perPage);
+      this.setState(
+        {
+          totalPages: total > 0 ? total : 1,
+        },
+        () => {
+          if (scrollToTop)
+            animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
+        }
+      );
+    });
+    if (getCategories) this.props.getUserCategories();
   };
 
   resetEditExpense = () => {
@@ -129,17 +157,20 @@ class ExpensesTable extends Component {
         resolve();
       }
     }).then(() => {
-      this.props.getUserExpenses({
-        sort: this.state.sort,
-        direction: this.state.direction,
-        per_page: this.state.perPage,
-        page: this.state.currentPage,
-      });
+      this.fetchExpenses();
     });
   };
 
   onPageChange = (e) => {
-    this.setState({ currentPage: e.target.value }, this.fetchExpenses);
+    this.setState({ currentPage: e.target.value }, () => {
+      this.fetchExpenses();
+    });
+  };
+
+  onSearchChange = (e) => {
+    this.setState({ search: e.target.value, currentPage: 1 }, () => {
+      this.fetchExpenses();
+    });
   };
 
   /**
@@ -309,14 +340,13 @@ class ExpensesTable extends Component {
         <td>
           <CustomInputSelect
             name='category'
+            options={this.props.categories}
             value={this.state.editExpense.category}
             onChange={this.onEditChange}
-            options={this.props.categories}
-            placeholder='Category'
           />
         </td>
-        <td className='expense-action text-center'>
-          <div className='expense-confirm h-100 d-flex align-items-center'>
+        <td className='expense-action'>
+          <div className='expense-confirm'>
             <FontAwesomeIcon
               className='mr-1'
               icon={faTimes}
@@ -374,18 +404,19 @@ class ExpensesTable extends Component {
               placeholder='Search...'
               className='ml-auto'
               style={{ maxWidth: '300px' }}
+              onChange={this.onSearchChange}
             />
           </Col>
         </Row>
         <div
           id='table'
-          className='d-flex flex-fill overflow-auto my-3'
-          style={{ height: '0px' }}
+          className='d-flex flex-fill my-3'
+          style={{ height: '0px', overflowY: 'scroll' }}
         >
           <Table borderless variant='light' size='sm' className='m-0'>
             <thead>
               <tr>
-                <th className='fa fa-sort-asc'>
+                <th>
                   <span id='title' onClick={this.onClickHeader}>
                     Title{' '}
                   </span>
@@ -409,7 +440,7 @@ class ExpensesTable extends Component {
                   </span>
                   {this.renderSortArrow('category')}
                 </th>
-                <th className='auto-width'>{/* just for expense action */}</th>
+                <th className='fixed-width'>{/* just for expense action */}</th>
               </tr>
             </thead>
             <tbody>{this.renderTableBody()}</tbody>

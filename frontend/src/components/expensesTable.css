@@ -1,23 +1,24 @@
 table {
-  /* table-layout: fixed; */
+  table-layout: fixed;
+  z-index: 1;
 }
 
-td,
-th {
-  border: 1px solid #d5d5d5;
-  padding: 15px;
-  width: 24%;
-}
-
-.auto-width {
+td span {
+  display: block;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fixed-width {
+  width: 4rem;
 }
 
 table thead th {
   position: sticky;
   top: 0;
   background-color: white;
-  z-index: 1;
+  z-index: 3;
 }
 
 td svg,
@@ -27,6 +28,14 @@ table thead th span {
 
 tbody tr:hover svg {
   visibility: visible;
+}
+
+.expense-normal,
+.expense-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .expense-normal svg {
@@ -48,8 +57,3 @@ tbody tr:hover:not(.expense-delete) {
 table tbody tr td {
   position: relative;
 }
-
-/* tbody .form-control {
-  position: absolute;
-  box-sizing: border-box;
-} */

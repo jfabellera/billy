@@ -19,13 +19,10 @@ class NewExpenseForm extends Component {
       amount: '',
       category: '',
       date: moment().format('YYYY-MM-DD'),
+      suggestions: this.props.categories,
     };
   }
-
-  componentDidMount() {
-    this.props.getUserCategories();
-  }
-
+  
   onInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -52,10 +49,34 @@ class NewExpenseForm extends Component {
       });
   };
 
+  getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+
+    return inputLength === 0
+      ? []
+      : this.props.categories.filter(
+          (category) =>
+            category.toLowerCase().slice(0, inputLength) === inputValue
+        );
+  };
+
+  onSuggestionsFetchRequested = ({ value }) => {
+    this.setState({
+      suggestions: this.getSuggestions(value),
+    });
+  };
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: [],
+    });
+  };
+
   render() {
     return (
       <Accordion>
-        <Card className='p-3'>
+        <Card className='p-3' style={{overflow: 'visible'}}>
           <h3>Add new expense</h3>
           <Form onSubmit={this.onSubmit}>
             <Form.Row>
@@ -81,10 +102,9 @@ class NewExpenseForm extends Component {
               <Form.Group as={Col}>
                 <CustomInputSelect
                   name='category'
-                  value={this.state.category}
                   options={this.props.categories}
+                  value={this.state.category}
                   onChange={this.onInputChange}
-                  placeholder='Category'
                 />
               </Form.Group>
               <Form.Group as={Col} style={{ width: '25%' }}>
