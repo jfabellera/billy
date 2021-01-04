@@ -5,6 +5,7 @@ const initialState = {
   categories: [],
   totalExpenses: 0,
   update: 0,
+  updateAction: '',
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,18 +21,21 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         update: state.update + 1,
+        updateAction: 'add'
       };
     }
     case actionTypes.EDIT_EXPENSE: {
       return {
         ...state,
         update: state.update + 1,
+        updateAction: 'edit'
       };
     }
     case actionTypes.DELETE_EXPENSE: {
       return {
         ...state,
         update: state.update + 1,
+        updateAction: 'delete'
       };
     }
     case actionTypes.GET_USER_CATEGORIES: {

@@ -22,7 +22,7 @@ class CustomInputSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: '',
+      selected: this.props.value,
       prevSelected: '-------------------------------',
       newOptions: [],
     };

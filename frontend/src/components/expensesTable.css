@@ -1,3 +1,18 @@
+table {
+  /* table-layout: fixed; */
+}
+
+td,
+th {
+  border: 1px solid #d5d5d5;
+  padding: 15px;
+  width: 24%;
+}
+
+.auto-width {
+  white-space: nowrap;
+}
+
 table thead th {
   position: sticky;
   top: 0;
@@ -26,11 +41,15 @@ tbody tr:hover svg {
   background-color: rgb(255, 93, 93);
 }
 
+tbody tr:hover:not(.expense-delete) {
+  background-color: lightgray;
+}
+
 table tbody tr td {
   position: relative;
 }
 
-tbody .form-control {
+/* tbody .form-control {
   position: absolute;
   box-sizing: border-box;
-}
+} */

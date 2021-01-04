@@ -7,6 +7,7 @@ import {
   getUserCategories,
 } from '../store/actions/expensesActions';
 import moment from 'moment';
+import { animateScroll } from 'react-scroll';
 
 import './expensesTable.css';
 import { Table, Card, Row, Col, FormControl, Form } from 'react-bootstrap';
@@ -51,7 +52,12 @@ class ExpensesTable extends Component {
   componentDidUpdate() {
     if (this.state.update !== this.props.update) {
       this.setState({ update: this.props.update });
-      this.fetchExpenses();
+
+      // don't scroll to top on an edit or delete
+      this.fetchExpenses(
+        this.props.updateAction !== 'edit' &&
+          this.props.updateAction !== 'delete'
+      );
     }
   }
 
@@ -59,7 +65,9 @@ class ExpensesTable extends Component {
    * Function to update redux stored expenses
    * Used to update the table
    */
-  fetchExpenses = () => {
+  fetchExpenses = (scrollToTop = true) => {
+    this.resetDeleteExpense();
+    this.resetEditExpense();
     this.props
       .getUserExpenses({
         sort: this.state.sort,
@@ -70,9 +78,15 @@ class ExpensesTable extends Component {
       .then(() => {
         // Determine number of pages
         let total = Math.ceil(this.props.totalExpenses / this.state.perPage);
-        this.setState({
-          totalPages: total > 0 ? total : 1,
-        });
+        this.setState(
+          {
+            totalPages: total > 0 ? total : 1,
+          },
+          () => {
+            if (scrollToTop)
+              animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
+          }
+        );
       });
     this.props.getUserCategories();
   };
@@ -172,10 +186,6 @@ class ExpensesTable extends Component {
     });
   };
 
-  /**
-   * Makes PUT request to update the selected expense
-   * @param {Event} e
-   */
   onEditSubmit = (e) => {
     e.preventDefault();
     const expenseDetails = {
@@ -368,6 +378,7 @@ class ExpensesTable extends Component {
           </Col>
         </Row>
         <div
+          id='table'
           className='d-flex flex-fill overflow-auto my-3'
           style={{ height: '0px' }}
         >
@@ -398,7 +409,7 @@ class ExpensesTable extends Component {
                   </span>
                   {this.renderSortArrow('category')}
                 </th>
-                <th>{/* just for expense action */}</th>
+                <th className='auto-width'>{/* just for expense action */}</th>
               </tr>
             </thead>
             <tbody>{this.renderTableBody()}</tbody>
@@ -422,6 +433,7 @@ const mapStateToProps = (state) => {
     categories: state.expenses.categories,
     totalExpenses: state.expenses.totalExpenses,
     update: state.expenses.update,
+    updateAction: state.expenses.updateAction,
   };
 };
 

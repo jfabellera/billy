@@ -39,7 +39,7 @@ class NewExpenseForm extends Component {
       .addNewExpense({
         title: this.state.title,
         amount: this.state.amount,
-        category: this.state.category ? this.stae.category : 'Other',
+        category: this.state.category ? this.state.category : 'Other',
         date: moment(this.state.date).format('YYYY/MM/DD'),
       })
       .then(() => {
