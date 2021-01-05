@@ -1,13 +1,14 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  expenses: [],
-  categories: [],
-  totalExpenses: 0,
+  expenses: null,
+  totalPages: null,
+  categories: null,
+  totalExpenses: null,
+  monthlyTotal: null,
+  yearlyTotal: null,
   update: 0,
   updateAction: '',
-  monthlyTotal: 0,
-  yearlyTotal: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -17,6 +18,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         expenses: action.expenses,
         totalExpenses: action.totalExpenses,
+        totalPages: action.totalPages,
       };
     }
     case actionTypes.ADD_NEW_EXPENSE: {

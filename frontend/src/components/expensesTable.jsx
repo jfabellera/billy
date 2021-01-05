@@ -33,7 +33,6 @@ class ExpensesTable extends Component {
       sort: 'date',
       perPage: 100,
       currentPage: 1,
-      totalPages: 1,
       editExpense: {
         id: null,
         title: null,
@@ -45,10 +44,6 @@ class ExpensesTable extends Component {
       search: '',
       update: this.props.update,
     };
-  }
-
-  componentDidMount() {
-    this.fetchExpenses();
   }
 
   componentDidUpdate() {
@@ -103,17 +98,8 @@ class ExpensesTable extends Component {
       }
     }
     this.props.getUserExpenses(query).then(() => {
-      // Determine number of pages
-      let total = Math.ceil(this.props.totalExpenses / this.state.perPage);
-      this.setState(
-        {
-          totalPages: total > 0 ? total : 1,
-        },
-        () => {
-          if (scrollToTop)
-            animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
-        }
-      );
+      if (scrollToTop)
+        animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
     });
   };
 
@@ -365,11 +351,12 @@ class ExpensesTable extends Component {
    * Maps fetched expenses to table rows
    */
   renderTableBody = () => {
-    return this.props.expenses.map((expense, i) =>
-      expense._id === this.state.editExpense.id
-        ? this.renderRowAsInput(expense, i)
-        : this.renderRowAsOutput(expense, i)
-    );
+    if (this.props.expenses)
+      return this.props.expenses.map((expense, i) =>
+        expense._id === this.state.editExpense.id
+          ? this.renderRowAsInput(expense, i)
+          : this.renderRowAsOutput(expense, i)
+      );
   };
 
   renderSortArrow = (headerName) => {
@@ -447,7 +434,7 @@ class ExpensesTable extends Component {
         <div className='d-flex justify-content-center align-items-center'>
           <CustomPagination
             value={this.state.currentPage}
-            total={this.state.totalPages}
+            total={this.props.totalPages}
             onChange={this.onPageChange}
           />
         </div>
@@ -461,6 +448,7 @@ const mapStateToProps = (state) => {
     expenses: state.expenses.expenses,
     categories: state.expenses.categories,
     totalExpenses: state.expenses.totalExpenses,
+    totalPages: state.expenses.totalPages,
     update: state.expenses.update,
     updateAction: state.expenses.updateAction,
   };

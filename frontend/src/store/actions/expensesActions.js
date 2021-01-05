@@ -27,10 +27,13 @@ export const getUserExpenses = (options) => {
     return axiosAPI
       .get('/users/' + username + '/expenses' + query)
       .then((res) => {
+        const per_page = options.per_page ? options.per_page : 100
+        const total = Math.ceil(res.data.total / per_page);
         dispatch({
           type: actionTypes.GET_USER_EXPENSES,
           expenses: res.data.expenses,
           totalExpenses: res.data.total,
+          totalPages: total > 0 ? total : 1,
         });
       })
       .catch((err) => {
