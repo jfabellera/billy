@@ -48,7 +48,7 @@ getExpenses = async (req, res) => {
     if (req.query.search) {
       query.title = {
         $regex: new RegExp(req.query.search),
-        $options: 'i'
+        $options: 'i',
       };
     }
 
@@ -76,32 +76,54 @@ getExpenses = async (req, res) => {
       options.skip = (req.query.page - 1) * options.limit;
     }
 
-    new Promise((resolve) => {
-      // Handle user
-      if (req.params.username) {
-        User.findOne({ username: req.params.username }, (err, user) => {
-          if (err) throw err;
-          if (!user) {
-            res.status(200).json({ message: 'User not found' });
-            return;
-          } else query.user_id = user._id;
-          resolve();
-        });
-      } else resolve();
-    }).then(() => {
-      // Get TOTAL number of documents that match query excluding per_page and page
-      Expense.countDocuments(query, (err, count) => {
-        if (err) throw err;
+    // handle username
+    if (req.params.username) {
+      query.user_id = req.user._id;
+    }
 
-        // Return matching documents and total
-        Expense.find(query, null, options, (err, expenses) => {
+    // Get TOTAL number of documents that match query excluding per_page and page
+    Expense.countDocuments(query, (err, count) => {
+      if (err) throw err;
+
+      Expense.aggregate(
+        [
+          {
+            $match: query,
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: '$amount',
+              },
+            },
+          },
+        ],
+        (err, result) => {
           if (err) throw err;
-          res.status(200).json({ total: count, expenses: expenses });
-        });
-      });
+          let totalAmount = 0;
+          if (typeof result[0] !== 'undefined') totalAmount = result[0].total;
+
+          // Return matching documents and total
+          Expense.find(query, null, options, (err, expenses) => {
+            if (err) throw err;
+            res.status(200).json({
+              total: count,
+              totalAmount: totalAmount,
+              expenses: expenses,
+            });
+          });
+        }
+      );
     });
   }
 };
+
+const validateGetExpenseCategories = [
+  check('start_date').optional().isDate(),
+  check('end_date').optional().isDate(),
+  check('amounts').optional().isBoolean(),
+];
 
 getExpenseCategories = async (req, res) => {
   let err = validationResult(req);
@@ -109,21 +131,63 @@ getExpenseCategories = async (req, res) => {
     res.status(400).json(err.errors);
   } else {
     let query = {};
-    new Promise((resolve) => {
-      if (req.params.username) {
-        User.findOne({ username: req.params.username }, (err, user) => {
-          if (err) throw err;
-          if (!user) {
-            res.status(400).json({ message: 'User not found' });
-            return;
-          } else query.user_id = user._id;
-          resolve();
+    if (req.params.username) {
+      query.user_id = req.user._id;
+    }
+
+    // Date range
+    if (req.query.start_date) {
+      if (!query.date) query.date = {};
+      query.date.$gte = new Date(
+        new Date(req.query.start_date).setHours(00, 00, 00)
+      );
+    }
+
+    if (req.query.end_date) {
+      if (!query.date) query.date = {};
+      query.date.$lte = new Date(
+        new Date(req.query.end_date).setHours(23, 59, 59)
+      );
+    }
+
+    Expense.find(query).distinct('category', (err, categories) => {
+      if (err) throw err;
+
+      let queries = [];
+      if (req.query.amounts && req.query.amounts === 'true') {
+        categories.forEach((category) => {
+          queries.push(
+            Expense.aggregate([
+              {
+                $match: { user_id: req.user._id, category: category },
+              },
+              {
+                $group: {
+                  _id: category,
+                  total: {
+                    $sum: '$amount',
+                  },
+                },
+              },
+            ]).exec()
+          );
         });
-      } else resolve();
-    }).then(() => {
-      Expense.find(query).distinct('category', (err, categories) => {
-        if (err) throw err;
-        res.status(200).json(categories);
+      }
+      Promise.all(queries).then((results) => {
+        let categoryObjArray;
+        if (results.length > 0)
+          categoryObjArray = results.map((result) => {
+            return {
+              name: result[0]._id,
+              total: result[0].total,
+            };
+          });
+        else
+          categoryObjArray = categories.map((category) => {
+            return { name: category };
+          });
+
+        res.status(200).json({ categories: categoryObjArray });
       });
     });
   }
@@ -133,7 +197,7 @@ getExpenseCategories = async (req, res) => {
 router.get('/', validateGetExpenses, getExpenses);
 
 // Get all expense categories
-router.get('/categories', getExpenseCategories);
+router.get('/categories', validateGetExpenseCategories, getExpenseCategories);
 
 // Get details of a single expense
 router.get(
@@ -166,7 +230,6 @@ router.post(
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
-      console.log(err.errors);
       res.status(400).json(err.errors);
     } else {
       Expense.create(
@@ -240,5 +303,6 @@ module.exports = {
   router: router,
   validateGetExpenses: validateGetExpenses,
   getExpenses: getExpenses,
+  validateGetExpenseCategories: validateGetExpenseCategories,
   getExpenseCategories: getExpenseCategories,
 };

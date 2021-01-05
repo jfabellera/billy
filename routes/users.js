@@ -7,6 +7,7 @@ const { check, validationResult } = require('express-validator');
 const {
   validateGetExpenses,
   getExpenses,
+  validateGetExpenseCategories,
   getExpenseCategories,
 } = require('./expenses');
 
@@ -232,6 +233,7 @@ router.get(
   '/:username/expenses/categories',
   auth,
   [check('username').isAlphanumeric()],
+  validateGetExpenseCategories,
   getExpenseCategories
 );
 

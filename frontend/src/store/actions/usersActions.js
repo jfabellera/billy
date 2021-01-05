@@ -1,10 +1,11 @@
 import * as actionTypes from './actionTypes';
 import jwt from 'jsonwebtoken';
 import axiosAuth from '../../helpers/axiosAuth';
+import axiosAPI from '../../helpers/axiosAPI';
 
 export const userRegisterRequest = (userInfo) => {
   return (dispatch) => {
-    axiosAuth
+    axiosAPI
       .post('/users', userInfo)
       .then((res) => {
         // log user in
