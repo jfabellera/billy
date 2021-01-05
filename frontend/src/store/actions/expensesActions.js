@@ -27,7 +27,7 @@ export const getUserExpenses = (options) => {
     return axiosAPI
       .get('/users/' + username + '/expenses' + query)
       .then((res) => {
-        const per_page = options.per_page ? options.per_page : 100
+        const per_page = options.per_page ? options.per_page : 100;
         const total = Math.ceil(res.data.total / per_page);
         dispatch({
           type: actionTypes.GET_USER_EXPENSES,
@@ -125,7 +125,32 @@ export const getUserCategories = () => {
       .then((res) => {
         dispatch({
           type: actionTypes.GET_USER_CATEGORIES,
-          categories: res.data,
+          categories: res.data.categories.map((category) => category.name),
+        });
+      })
+      .catch((err) => {
+        // TODO
+      });
+  };
+};
+
+export const getCategoryAmounts = (options) => {
+  return (dispatch) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+    const username = jwt.decode(token).user.username;
+
+    let query = '';
+    if (options) {
+      query = '&' + querystring.stringify(options);
+    }
+
+    return axiosAPI
+      .get('/users/' + username + '/expenses/categories?amounts=true' + query)
+      .then((res) => {
+        dispatch({
+          type: actionTypes.GET_CATEGORY_AMOUNTS,
+          categoryAmounts: res.data.categories,
         });
       })
       .catch((err) => {

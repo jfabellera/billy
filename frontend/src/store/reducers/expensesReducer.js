@@ -7,6 +7,7 @@ const initialState = {
   totalExpenses: null,
   monthlyTotal: null,
   yearlyTotal: null,
+  categoryAmounts: null,
   update: 0,
   updateAction: '',
 };
@@ -46,6 +47,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         categories: action.categories,
+      };
+    }
+    case actionTypes.GET_CATEGORY_AMOUNTS: {
+      return {
+        ...state,
+        categoryAmounts: action.categoryAmounts,
       };
     }
     case actionTypes.GET_MONTHLY_TOTAL: {

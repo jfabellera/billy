@@ -14,11 +14,19 @@ class Totals extends Component {
       <div className='d-flex flex-fill align-items-center justify-content-center'
       style={{ padding: '12px' }}>
         <div className='monthly-total'>
-          <h1>{this.props.monthlyTotal}</h1>
+          <h1>
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            }).format(this.props.monthlyTotal)}</h1>
           <span>Monthly Total</span>
         </div>
         <div className='yearly-total'>
-          <h1>{this.props.yearlyTotal}</h1>
+          <h1>
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            }).format(this.props.yearlyTotal)}</h1>
           <span>Yearly Total</span>
         </div>
       </div>
