@@ -198,6 +198,12 @@ Lists all the categories of expenses across users.
 GET /expenses/categories/
 ```
 
+| Parameter    | Type    | In    | Description                                                                                                    |
+| ------------ | ------- | ----- | -------------------------------------------------------------------------------------------------------------- |
+| `amounts`    | boolean | query | `true` or `false`, indicates whether or not to calculate amounts per category                                  |
+| `start_date` | string  | query | Start date of the expenses to fetch. If left empty, will retrieve expenses starting from the beginning of time |
+| `end_date`   | string  | query | End date of the expenses to fetch. If left empty, will retrieve expenses up until the current time             |
+
 ---
 
 ### List user expenses
@@ -229,6 +235,9 @@ Lists the categories of the expenses of a single user.
 GET /users/{username}/expenses/categories/
 ```
 
-| Parameter  | Type   | In   | Description |
-| ---------- | ------ | ---- | ----------- |
-| `username` | string | path |             |
+| Parameter    | Type    | In    | Description                                                                                                    |
+| ------------ | ------- | ----- | -------------------------------------------------------------------------------------------------------------- |
+| `username`   | string  | path  |                                                                                                                |
+| `amounts`    | boolean | query | `true` or `false`, indicates whether or not to calculate amounts per category                                  |
+| `start_date` | string  | query | Start date of the expenses to fetch. If left empty, will retrieve expenses starting from the beginning of time |
+| `end_date`   | string  | query | End date of the expenses to fetch. If left empty, will retrieve expenses up until the current time             |
