@@ -6,6 +6,8 @@ const initialState = {
   totalExpenses: 0,
   update: 0,
   updateAction: '',
+  monthlyTotal: 0,
+  yearlyTotal: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,27 +23,39 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         update: state.update + 1,
-        updateAction: 'add'
+        updateAction: 'add',
       };
     }
     case actionTypes.EDIT_EXPENSE: {
       return {
         ...state,
         update: state.update + 1,
-        updateAction: 'edit'
+        updateAction: 'edit',
       };
     }
     case actionTypes.DELETE_EXPENSE: {
       return {
         ...state,
         update: state.update + 1,
-        updateAction: 'delete'
+        updateAction: 'delete',
       };
     }
     case actionTypes.GET_USER_CATEGORIES: {
       return {
         ...state,
         categories: action.categories,
+      };
+    }
+    case actionTypes.GET_MONTHLY_TOTAL: {
+      return {
+        ...state,
+        monthlyTotal: action.monthlyTotal,
+      };
+    }
+    case actionTypes.GET_YEARLY_TOTAL: {
+      return {
+        ...state,
+        yearlyTotal: action.yearlyTotal,
       };
     }
     case actionTypes.LOGOUT_USER: {

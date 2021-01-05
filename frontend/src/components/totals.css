@@ -1,0 +1,24 @@
+.monthly-total,
+.yearly-total {
+  padding-top: 0.5rem;
+}
+
+h1 {
+  margin-bottom: 0;
+}
+
+.monthly-total {
+  padding-right: 1rem;
+  border-right-style: solid;
+  border-right-width: 1.5px;
+  border-right-color: #ced4da;
+  text-align: center;
+}
+
+.yearly-total {
+  padding-left: 1rem;
+  border-left-style: solid;
+  border-left-width: 1.5px;
+  border-left-color: #ced4da;
+  text-align: center;
+}

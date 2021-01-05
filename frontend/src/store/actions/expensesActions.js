@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import jwt from 'jsonwebtoken';
 import axiosAPI from '../../helpers/axiosAPI';
 import querystring from 'querystring';
+import moment from 'moment';
 
 /**
  * Get the expenses for the current user that follow the specified options
@@ -127,5 +128,46 @@ export const getUserCategories = () => {
       .catch((err) => {
         // TODO
       });
+  };
+};
+
+const getTotal = (dispatch, period) => {
+  if (period !== 'month' && period !== 'year') return;
+  const token = localStorage.getItem('accessToken');
+  if (!token) return;
+  const username = jwt.decode(token).user.username;
+
+  let dateQuery =
+    '?' +
+    querystring.stringify({
+      start_date: moment().clone().startOf(period).format('YYYY/MM/DD'),
+      end_date: moment().clone().endOf(period).format('YYYY/MM/DD'),
+    });
+
+  let type = actionTypes.GET_MONTHLY_TOTAL;
+  if (period === 'year') type = actionTypes.GET_YEARLY_TOTAL;
+
+  return axiosAPI
+    .get('/users/' + username + '/expenses' + dateQuery)
+    .then((res) => {
+      dispatch({
+        type: type,
+        [period + 'lyTotal']: res.data.totalAmount,
+      });
+    })
+    .catch((err) => {
+      // TODO
+    });
+};
+
+export const getMonthlyTotal = () => {
+  return (dispatch) => {
+    getTotal(dispatch, 'month');
+  };
+};
+
+export const getYearlyTotal = () => {
+  return (dispatch) => {
+    getTotal(dispatch, 'year');
   };
 };

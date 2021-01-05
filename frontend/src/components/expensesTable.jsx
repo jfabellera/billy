@@ -48,7 +48,7 @@ class ExpensesTable extends Component {
   }
 
   componentDidMount() {
-    this.fetchExpenses(true, true);
+    this.fetchExpenses();
   }
 
   componentDidUpdate() {
@@ -58,8 +58,7 @@ class ExpensesTable extends Component {
       // don't scroll to top on an edit or delete
       this.fetchExpenses(
         this.props.updateAction !== 'edit' &&
-          this.props.updateAction !== 'delete',
-        true
+          this.props.updateAction !== 'delete'
       );
     }
   }
@@ -68,7 +67,7 @@ class ExpensesTable extends Component {
    * Function to update redux stored expenses
    * Used to update the table
    */
-  fetchExpenses = (scrollToTop = true, getCategories = false) => {
+  fetchExpenses = (scrollToTop = true) => {
     this.resetDeleteExpense();
     this.resetEditExpense();
     let query = {
@@ -116,7 +115,6 @@ class ExpensesTable extends Component {
         }
       );
     });
-    if (getCategories) this.props.getUserCategories();
   };
 
   resetEditExpense = () => {
