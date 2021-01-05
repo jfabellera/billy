@@ -48,7 +48,7 @@ getExpenses = async (req, res) => {
     if (req.query.search) {
       query.title = {
         $regex: new RegExp(req.query.search),
-        $options: 'i'
+        $options: 'i',
       };
     }
 
@@ -93,11 +93,34 @@ getExpenses = async (req, res) => {
       Expense.countDocuments(query, (err, count) => {
         if (err) throw err;
 
-        // Return matching documents and total
-        Expense.find(query, null, options, (err, expenses) => {
-          if (err) throw err;
-          res.status(200).json({ total: count, expenses: expenses });
-        });
+        Expense.aggregate(
+          [
+            {
+              $match: query,
+            },
+            {
+              $group: {
+                _id: null,
+                total: {
+                  $sum: '$amount',
+                },
+              },
+            },
+          ],
+          (err, result) => {
+            if (err) throw err;
+            let totalAmount = 0;
+            if (typeof result[0] !== 'undefined') totalAmount = result[0].total;
+
+            // Return matching documents and total
+            Expense.find(query, null, options, (err, expenses) => {
+              if (err) throw err;
+              res
+                .status(200)
+                .json({ total: count, totalAmount: totalAmount, expenses: expenses });
+            });
+          }
+        );
       });
     });
   }

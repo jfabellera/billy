@@ -202,7 +202,7 @@ GET /expenses/categories/
 
 ### List user expenses
 
-Lists all expenses of a single user.
+Lists all expenses of a single user. Returns the total number of results in the query, total amount spent, and `per_page` amount of results.
 
 ```
 GET /users/{username}/expenses/
