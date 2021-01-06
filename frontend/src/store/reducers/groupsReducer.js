@@ -1,15 +1,15 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  accounts: null,
+  getGroups: null,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_ACCOUNTS: {
+    case actionTypes.GET_GROUPS: {
       return {
         ...state,
-        accounts: action.accounts,
+        groups: action.groups,
       };
     }
     default:

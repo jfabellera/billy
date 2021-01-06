@@ -135,7 +135,7 @@ class NewExpenseForm extends Component {
                 <h4 className='text-warning'>This area does nothing</h4>
                 <Form.Row>
                   <Form.Group as={Col}>
-                    <Form.Label>Account</Form.Label>
+                    <Form.Label>Group</Form.Label>
                     <Form.Control as='select'>
                       <option>Default</option>
                       <option>Secondary</option>

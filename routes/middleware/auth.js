@@ -3,7 +3,7 @@ const config = require('../../config');
 
 const User = require('../../models/userModel');
 const Expense = require('../../models/expenseModel');
-const Account = require('../../models/accountModel');
+const Group = require('../../models/groupModel');
 
 auth = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -25,8 +25,8 @@ auth = (req, res, next) => {
 
         if (req.params.expense_id)
           queries.push(Expense.findOne({ _id: req.params.expense_id }).exec());
-        if (req.params.account_id)
-          queries.push(Account.findOne({ _id: req.params.account_id }).exec());
+        if (req.params.group_id)
+          queries.push(Group.findOne({ _id: req.params.group_id }).exec());
 
         Promise.all(queries).then((results) => {
           results.forEach((result) => {

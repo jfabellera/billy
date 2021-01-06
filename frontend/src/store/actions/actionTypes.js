@@ -17,8 +17,8 @@ export const GET_MONTHLY_TOTAL = 'GET_MONTHLY_TOTAL';
 export const GET_YEARLY_TOTAL = 'GET_YEARLY_TOTAL';
 export const GET_CATEGORY_AMOUNTS = 'GET_CATEGORY_AMOUNTS';
 
-// Accounts
-export const GET_ACCOUNTS = 'GET_ACCOUNTS';
-export const ADD_ACCOUNT = 'ADD_ACCOUNT';
-export const EDIT_ACCOUNT = 'EDIT_ACCOUNT';
-export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
+// Groups
+export const GET_GROUPS = 'GET_GROUPS';
+export const ADD_GROUP = 'ADD_GROUP';
+export const EDIT_GROUP = 'EDIT_GROUP';
+export const DELETE_GROUP = 'DELETE_GROUP';

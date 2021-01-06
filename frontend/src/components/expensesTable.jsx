@@ -378,11 +378,11 @@ class ExpensesTable extends Component {
     return (
       <Card
         className='d-flex flex-column p-3 '
-        style={{ height: '100%', width: '100%' }}
+        style={{ ...{ height: '100%', width: '100%' }, ...this.props.style }}
       >
         <Row>
           <Col>
-            <h2>Expenses</h2>
+            <h2>{this.props.title ? this.props.title : 'Expenses'}</h2>
           </Col>
           <Col>
             <FormControl

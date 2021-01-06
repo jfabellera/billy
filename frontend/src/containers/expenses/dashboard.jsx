@@ -70,7 +70,7 @@ class Dashboard extends Component {
               <NewExpenseForm />
             </div>
             <div className='d-flex flex-fill pb-3'>
-              <ExpensesTable variant='currentMonth' />
+              <ExpensesTable title='Monthly expenses' variant='currentMonth' />
             </div>
           </Col>
           <Col className='w-100'>

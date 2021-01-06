@@ -4,30 +4,30 @@ const mongoose = require('mongoose');
 const { auth, authAdmin } = require('./middleware/auth');
 const { check, validationResult, query } = require('express-validator');
 
-const Account = require('../models/accountModel');
+const Group = require('../models/groupModel');
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
 
-getAccounts = (req, res) => {
+getGroups = (req, res) => {
   let err = validationResult(req);
   if (!err.isEmpty()) return res.status(400).json(err.errors);
 
   let query = {};
   if (req.params.username) query.user_id = req.user._id;
 
-  Account.find(query, (err, accounts) => {
+  Group.find(query, (err, groups) => {
     if (err) throw err;
-    res.status(200).json({ accounts: accounts });
+    res.status(200).json({ groups: groups });
   });
 };
 
 /**
- * Get all accounts
+ * Get all groups
  */
-router.get('/', authAdmin,  getAccounts);
+router.get('/', authAdmin,  getGroups);
 
 /**
- * Create a new account
+ * Create a new group
  */
 router.post(
   '/',
@@ -37,12 +37,12 @@ router.post(
     let err = validationResult(req);
     if (!err.isEmpty()) return res.status(400).json(err.errors);
 
-    Account.create(
+    Group.create(
       {
         user_id: req.body.user_id,
         name: req.body.name,
       },
-      (err, acc) => {
+      (err, group) => {
         if (err) throw err;
         res.sendStatus(200);
       }
@@ -51,22 +51,22 @@ router.post(
 );
 
 /**
- * Edit an account
+ * Edit a group
  */
 router.put(
-  '/:account_id',
+  '/:group_id',
   auth,
-  [check('account_id').isMongoId(), check('name').isString()],
+  [check('group_id').isMongoId(), check('name').isString()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) return res.status(400).json(err.errors);
 
-    Account.findOneAndUpdate(
-      { _id: req.params.account_id },
+    Group.findOneAndUpdate(
+      { _id: req.params.group_id },
       { name: req.body.name },
-      (err, account) => {
+      (err, group) => {
         if (err) throw err;
-        if (!account) return res.sendStatus(500);
+        if (!group) return res.sendStatus(500);
         res.sendStatus(200);
       }
     );
@@ -74,22 +74,22 @@ router.put(
 );
 
 /**
- * Delete an account
+ * Delete an group
  */
 router.delete(
-  '/:account_id',
+  '/:group_id',
   auth,
-  [check('account_id').isMongoId()],
+  [check('group_id').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) return res.status(400).json(err.errors);
 
-    Account.findOneAndDelete({ _id: req.params.account_id }, (err, account) => {
+    Group.findOneAndDelete({ _id: req.params.group_id }, (err, group) => {
       if (err) throw err;
-      if (!account) return res.sendStatus(500);
+      if (!group) return res.sendStatus(500);
       res.sendStatus(200);
     });
   }
 );
 
-module.exports = { router: router, getAccounts: getAccounts };
+module.exports = { router: router, getGroups: getGroups };

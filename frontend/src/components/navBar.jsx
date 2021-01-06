@@ -23,9 +23,9 @@ class NavBar extends Component {
   renderLinks() {
     if (this.props.isAuthenticated) {
       return (
-        <Nav.Link as={Link} to='/accounts'>
-          Accounts
-        </Nav.Link>
+        <Nav.Link as={Link} to='/expenses'>
+          Expenses
+        </Nav.Link> 
       );
     } else {
       return (
