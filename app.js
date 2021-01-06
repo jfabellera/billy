@@ -21,6 +21,7 @@ mongoose.connection.on('error', (err) => {
 
 const usersRouter = require('./routes/users');
 const expensesRouter = require('./routes/expenses');
+const accountRouter = require('./routes/accounts');
 
 let app = express();
 
@@ -31,5 +32,6 @@ app.use(express.json());
 
 app.use('/users', usersRouter);
 app.use('/expenses', expensesRouter.router);
+app.use('/accounts', accountRouter);
 
 app.listen(5000);
