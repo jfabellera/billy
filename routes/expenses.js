@@ -6,22 +6,18 @@ const { check, validationResult, query } = require('express-validator');
 
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
+const Group = require('../models/groupModel');
 
 const validateGetExpenses = [
   check('sort', 'Invalid sort option')
     .optional()
-    .isIn(['title', 'date', 'amount', 'category', 'user_id'])
-    .not()
-    .isArray(),
+    .isIn(['title', 'date', 'amount', 'category', 'user_id']),
   check('direction', 'Invalid direction option')
     .optional()
-    .isIn(['asc', 'dsc'])
-    .not()
-    .isArray(),
-  check(['start_date', 'end_date'], 'Invalid date format')
-    .optional()
-    .not()
-    .isArray(),
+    .isIn(['asc', 'dsc']),
+  check(['start_date', 'end_date'], 'Invalid date format').optional(),
+  check('search').optional().isString(),
+  check('group_id').optional().isMongoId(),
   check('per_page', 'Invalid number').optional().isInt({ min: 1, max: 100 }),
   check('page', 'Invalid number').optional().isInt({ min: 1 }),
 ];
@@ -75,6 +71,11 @@ getExpenses = async (req, res) => {
 
     if (req.query.page) {
       options.skip = (req.query.page - 1) * options.limit;
+    }
+
+    // Group
+    if (req.query.group_id) {
+      query.group_id = req.query.group_id;
     }
 
     // handle username
@@ -234,25 +235,26 @@ router.post(
     check('amount', 'Amount must be a float').isFloat(),
     check('date', 'Incorrect date format').isDate(),
     check('category').notEmpty().isString(),
+    check('group_id').optional().isMongoId(),
   ],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
       res.status(400).json(err.errors);
     } else {
-      Expense.create(
-        {
-          user_id: mongoose.Types.ObjectId(req.body.user_id),
-          title: req.body.title,
-          amount: req.body.amount,
-          date: req.body.date,
-          category: req.body.category,
-        },
-        (err) => {
-          if (err) throw err;
-          res.status(201).json({ message: 'Expense created' });
-        }
-      );
+      let query = {
+        user_id: mongoose.Types.ObjectId(req.body.user_id),
+        title: req.body.title,
+        amount: req.body.amount,
+        date: req.body.date,
+        category: req.body.category,
+      };
+      if (!req.body.group_id && req.user.default_group_id)
+        query.group_id = req.user.default_group_id;
+      Expense.create(query, (err) => {
+        if (err) throw err;
+        res.status(201).json({ message: 'Expense created' });
+      });
     }
   }
 );
@@ -267,6 +269,7 @@ router.put(
     check('amount', 'Amount must be a float').optional().isFloat(),
     check('date', 'Incorrect date format').optional().isDate(),
     check('category').optional().notEmpty().isString(),
+    check('group_id').optional().isMongoId(),
   ],
   (req, res) => {
     let err = validationResult(req);

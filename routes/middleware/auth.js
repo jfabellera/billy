@@ -23,12 +23,19 @@ auth = (req, res, next) => {
 
         let queries = [];
 
+        // TODO : use custom sanitizer with express-validator ?
         if (req.params.expense_id)
           queries.push(Expense.findOne({ _id: req.params.expense_id }).exec());
         if (req.params.group_id)
           queries.push(Group.findOne({ _id: req.params.group_id }).exec());
+        if (req.body.expense_id)
+          queries.push(Expense.findOne({ _id: req.body.expense_id }).exec());
+        if (req.body.group_id)
+          queries.push(Group.findOne({ _id: req.body.group_id }).exec());
         if (req.body.default_group_id)
-          queries.push(Group.findOne({ _id: req.body.default_group_id }).exec());
+          queries.push(
+            Group.findOne({ _id: req.body.default_group_id }).exec()
+          );
 
         Promise.all(queries).then((results) => {
           console.log(results);
