@@ -220,6 +220,7 @@ router.get(
 // Create new expense
 router.post(
   '/',
+  auth,
   [
     check('user_id', 'User ID must be an ObjectID').isMongoId(),
     check('title', 'Title is required').notEmpty().isString(),
@@ -281,6 +282,7 @@ router.put(
 // Delete an expense
 router.delete(
   '/:expense_id',
+  auth,
   [check('expense_id', 'Expense ID must be an ObjectID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);

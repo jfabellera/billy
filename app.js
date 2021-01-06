@@ -32,6 +32,6 @@ app.use(express.json());
 
 app.use('/users', usersRouter);
 app.use('/expenses', expensesRouter.router);
-app.use('/accounts', accountRouter);
+app.use('/accounts', accountRouter.router);
 
 app.listen(5000);
