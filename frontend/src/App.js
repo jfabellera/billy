@@ -7,6 +7,7 @@ import Terms from './containers/home/terms';
 import Login from './containers/users/login';
 import Register from './containers/users/register';
 import Dashboard from './containers/expenses/dashboard';
+import Accounts from './containers/expenses/accounts';
 
 class App extends Component {
   render() {
@@ -20,6 +21,7 @@ class App extends Component {
           <Route exact path='/' component={LandingPage} />
           <Route exact path='/about/terms' component={Terms} />
           <Route path='/dashboard' component={Dashboard} />
+          <Route path='/accounts' component={Accounts} />
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
         </div>
