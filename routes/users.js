@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const auth = require('./middleware/auth');
+const { auth, authAdmin } = require('./middleware/auth');
 const { check, validationResult } = require('express-validator');
 const {
   validateGetExpenses,
@@ -20,6 +20,7 @@ const Expense = require('../models/expenseModel');
 // Get list of users
 router.get(
   '/',
+  authAdmin,
   [
     check('type', 'Invalid account type')
       .optional()
@@ -153,8 +154,9 @@ router.post(
 
 // Edit user
 router.put(
-  '/:id',
-  [check('id', 'Invalid user ID').isMongoId()],
+  '/:user_id',
+  auth,
+  [check('user_id', 'Invalid user ID').isMongoId()],
   async (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
@@ -174,7 +176,7 @@ router.put(
 
         User.findOneAndUpdate(
           {
-            _id: req.params.id,
+            _id: req.params.user_id,
           },
           req.body,
           (err, user) => {
@@ -196,8 +198,9 @@ router.put(
 
 // Delete user
 router.delete(
-  '/:id',
-  [check('id', 'Invalid user ID').isMongoId()],
+  '/:user_id',
+  auth,
+  [check('user_id', 'Invalid user ID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) {
@@ -205,7 +208,7 @@ router.delete(
     } else {
       User.findOneAndUpdate(
         {
-          _id: req.params.id,
+          _id: req.params.user_id,
         },
         {
           disabled: true,

@@ -51,4 +51,26 @@ auth = (req, res, next) => {
   }
 };
 
-module.exports = auth;
+authAdmin = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+
+  try {
+    // verify token
+    jwt.verify(token, config.jwt_access_secret, (err, decoded) => {
+      if (err) return res.sendStatus(401);
+
+      User.findOne({ username: decoded.user.username }, (userErr, user) => {
+        if (userErr || !user) return res.sendStatus(401);
+        if (user.account_type !== 'admin' && user.account_type !== 'owner')
+          return res.sendStatus(401);
+        next();
+      });
+    });
+  } catch (e) {
+    return res.sendStatus(401);
+  }
+};
+
+module.exports = { auth: auth, authAdmin: authAdmin };

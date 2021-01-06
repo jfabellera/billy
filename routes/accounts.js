@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const { auth, authAdmin } = require('./middleware/auth');
 const { check, validationResult, query } = require('express-validator');
 
 const Account = require('../models/accountModel');
@@ -23,7 +24,7 @@ getAccounts = (req, res) => {
 /**
  * Get all accounts
  */
-router.get('/', getAccounts);
+router.get('/', authAdmin,  getAccounts);
 
 /**
  * Create a new account

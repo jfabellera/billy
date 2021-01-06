@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const { auth, authAdmin } = require('./middleware/auth');
 const { check, validationResult, query } = require('express-validator');
 
 const User = require('../models/userModel');
@@ -194,14 +195,20 @@ getExpenseCategories = async (req, res) => {
 };
 
 // Get all expenses
-router.get('/', validateGetExpenses, getExpenses);
+router.get('/', authAdmin, validateGetExpenses, getExpenses);
 
 // Get all expense categories
-router.get('/categories', validateGetExpenseCategories, getExpenseCategories);
+router.get(
+  '/categories',
+  authAdmin,
+  validateGetExpenseCategories,
+  getExpenseCategories
+);
 
 // Get details of a single expense
 router.get(
   '/:expense_id',
+  auth,
   [check('expense_id', 'Invalid expense ID').isMongoId()],
   (req, res) => {
     let err = validationResult(req);
