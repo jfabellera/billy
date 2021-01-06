@@ -17,14 +17,21 @@ getGroups = (req, res) => {
 
   Group.find(query, (err, groups) => {
     if (err) throw err;
-    res.status(200).json({ groups: groups });
+    res.status(200).json({
+      groups: groups.map((group) => {
+        return {
+          ...group.toObject(),
+          default: String(group._id) === String(req.user.default_group_id),
+        };
+      }),
+    });
   });
 };
 
 /**
  * Get all groups
  */
-router.get('/', authAdmin,  getGroups);
+router.get('/', authAdmin, getGroups);
 
 /**
  * Create a new group
@@ -44,7 +51,19 @@ router.post(
       },
       (err, group) => {
         if (err) throw err;
-        res.sendStatus(200);
+        if (!req.user.default_group_id) {
+          // make the created group the default for the user if they do not have a default
+          User.findOneAndUpdate(
+            { _id: group.user_id },
+            { default_group_id: group._id },
+            (err, user) => {
+              if (err) throw err;
+              res.sendStatus(200);
+            }
+          );
+        } else {
+          res.sendStatus(200);
+        }
       }
     );
   }
@@ -87,7 +106,33 @@ router.delete(
     Group.findOneAndDelete({ _id: req.params.group_id }, (err, group) => {
       if (err) throw err;
       if (!group) return res.sendStatus(500);
-      res.sendStatus(200);
+      if (
+        req.user.default_group_id &&
+        String(req.user.default_group_id) === String(group._id)
+      ) {
+        Group.find({ user_id: group.user_id }, (err, groups) => {
+          if (err) throw err;
+          let defaultQuery;
+          if (groups.length > 0) {
+            // set first result as default group
+            defaultQuery = { default_group_id: groups[0]._id };
+          } else {
+            // remove default group from user
+            defaultQuery = { $unset: { default_group_id: 1 } };
+          }
+
+          User.findOneAndUpdate(
+            { _id: group.user_id },
+            defaultQuery,
+            (err, user) => {
+              if (err) throw err;
+              res.sendStatus(200);
+            }
+          );
+        });
+      } else {
+        res.sendStatus(200);
+      }
     });
   }
 );

@@ -22,6 +22,9 @@ const expenseSchema = new Schema(
     category: {
       type: String,
     },
+    group_id: {
+      type: mongoose.Types.ObjectId,
+    },
   },
   {
     timestamps: true,

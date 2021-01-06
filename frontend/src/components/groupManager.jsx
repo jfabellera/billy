@@ -21,6 +21,7 @@ class GroupManager extends Component {
     if (this.props.groups) {
       groups = [...groups, ...this.props.groups];
     }
+
     return (
       <>
         <div className='h-100'>
@@ -33,7 +34,12 @@ class GroupManager extends Component {
                 onClick={this.onClick}
                 active={this.state.selected === group._id}
               >
-                {group.name}
+                <div className='d-flex'>
+                  <span>{group.name}</span>
+                  {group.default ? (
+                    <small className='ml-auto'>Default</small>
+                  ) : null}
+                </div>
               </ListGroup.Item>
             ))}
           </ListGroup>

@@ -174,6 +174,14 @@ router.put(
           delete req.body['name'];
         }
 
+        if (req.body.account_type) {
+          delete req.body['account_type'];
+        }
+
+        if (req.body.disabled) {
+          delete req.body['disabled'];
+        }
+
         User.findOneAndUpdate(
           {
             _id: req.params.user_id,

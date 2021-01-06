@@ -27,8 +27,12 @@ auth = (req, res, next) => {
           queries.push(Expense.findOne({ _id: req.params.expense_id }).exec());
         if (req.params.group_id)
           queries.push(Group.findOne({ _id: req.params.group_id }).exec());
+        if (req.body.default_group_id)
+          queries.push(Group.findOne({ _id: req.body.default_group_id }).exec());
 
         Promise.all(queries).then((results) => {
+          console.log(results);
+          if (results.includes(null)) return res.sendStatus(500);
           results.forEach((result) => {
             if (String(result.user_id) !== String(user._id))
               return res.sendStatus(401);
