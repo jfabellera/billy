@@ -15,7 +15,7 @@ getGroups = (req, res) => {
   let query = {};
   if (req.params.username) query.user_id = req.user._id;
 
-  Group.find(query, (err, groups) => {
+  Group.find(query, null, { sort: { name: 1 } }, (err, groups) => {
     if (err) throw err;
     res.status(200).json({
       groups: groups.map((group) => {
@@ -39,7 +39,7 @@ router.get('/', authAdmin, getGroups);
 router.post(
   '/',
   auth,
-  [check('user_id').isMongoId(), check('name').isString()],
+  [check('user_id').isMongoId(), check('name').notEmpty().isString()],
   (req, res) => {
     let err = validationResult(req);
     if (!err.isEmpty()) return res.status(400).json(err.errors);
@@ -50,7 +50,11 @@ router.post(
         name: req.body.name,
       },
       (err, group) => {
-        if (err) throw err;
+        if (err) {
+          if (err.code === 11000)
+            res.status(409).json({ message: 'Group name already exists' });
+          else throw err;
+        }
         if (!req.user.default_group_id) {
           // make the created group the default for the user if they do not have a default
           User.findOneAndUpdate(
@@ -82,9 +86,13 @@ router.put(
 
     Group.findOneAndUpdate(
       { _id: req.params.group_id },
-      { name: req.body.name },
+      req.body,
       (err, group) => {
-        if (err) throw err;
+        if (err) {
+          if (err.code === 11000)
+            res.status(409).json({ message: 'Group name already exists' });
+          else throw err;
+        }
         if (!group) return res.sendStatus(500);
         res.sendStatus(200);
       }

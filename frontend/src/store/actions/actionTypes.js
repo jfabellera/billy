@@ -8,6 +8,7 @@ export const LOGIN_UNSUCCESSFUL = 'LOGIN_UNSUCCESSFUL';
 export const LOGOUT_USER = 'LOGOUT_USER';
 
 // Expenses
+export const REFRESH_EXPENSES = 'REFRESH_EXPENSES'
 export const GET_USER_EXPENSES = 'GET_USER_EXPENSES';
 export const GET_USER_CATEGORIES = 'GET_USER_CATEGORIES';
 export const ADD_NEW_EXPENSE = 'ADD_NEW_EXPENSE';
@@ -22,3 +23,4 @@ export const GET_GROUPS = 'GET_GROUPS';
 export const ADD_GROUP = 'ADD_GROUP';
 export const EDIT_GROUP = 'EDIT_GROUP';
 export const DELETE_GROUP = 'DELETE_GROUP';
+export const SET_DEFAULT_GROUP = 'SET_DEFAULT_GROUP';

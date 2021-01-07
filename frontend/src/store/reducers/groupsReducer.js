@@ -12,6 +12,18 @@ const reducer = (state = initialState, action) => {
         groups: action.groups,
       };
     }
+    case actionTypes.EDIT_GROUP: {
+      return state;
+    }
+    case actionTypes.SET_DEFAULT_GROUP: {
+      return state;
+    }
+    case actionTypes.ADD_GROUP: {
+      return state;
+    }
+    case actionTypes.DELETE_GROUP: {
+      return state;
+    }
     default:
       return state;
   }

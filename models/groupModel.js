@@ -9,13 +9,15 @@ const groupSchema = new Schema(
     },
     name: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+groupSchema.index({ user_id: 1, name: 1 }, { unique: true });
 
 const Group = mongoose.model('groups', groupSchema);
 

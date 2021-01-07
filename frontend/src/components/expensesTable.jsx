@@ -43,10 +43,15 @@ class ExpensesTable extends Component {
       deleteExpenseId: null,
       search: '',
       update: this.props.update,
+      prevProps: null,
     };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    this.fetchExpenses();
+  }
+
+  componentDidUpdate(props, state) {
     if (this.state.update !== this.props.update) {
       this.setState({ update: this.props.update });
 
@@ -97,6 +102,7 @@ class ExpensesTable extends Component {
         console.log(query.start_date + ' ' + query.end_date);
       }
     }
+    query = { ...query, ...this.props.options };
     this.props.getUserExpenses(query).then(() => {
       if (scrollToTop)
         animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
@@ -377,7 +383,7 @@ class ExpensesTable extends Component {
   render() {
     return (
       <Card
-        className='d-flex flex-column p-3 '
+        className='expenses-table d-flex flex-column p-3 '
         style={{ ...{ height: '100%', width: '100%' }, ...this.props.style }}
       >
         <Row>

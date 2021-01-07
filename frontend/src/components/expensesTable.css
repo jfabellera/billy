@@ -1,9 +1,9 @@
-table {
+.expenses-table table {
   table-layout: fixed;
   z-index: 1;
 }
 
-td span {
+.expenses-table td span {
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -14,19 +14,19 @@ td span {
   width: 4rem;
 }
 
-table thead th {
+.expenses-table table thead th {
   position: sticky;
   top: 0;
   background-color: white;
   z-index: 3;
 }
 
-td svg,
-table thead th span {
+.expenses-table td svg,
+.expenses-table table thead th span {
   cursor: pointer;
 }
 
-tbody tr:hover svg {
+.expenses-table tbody tr:hover svg {
   visibility: visible;
 }
 
@@ -50,10 +50,10 @@ tbody tr:hover svg {
   background-color: rgb(255, 93, 93);
 }
 
-tbody tr:hover:not(.expense-delete) {
+.expenses-table tbody tr:hover:not(.expense-delete) {
   background-color: lightgray;
 }
 
-table tbody tr td {
+.expenses-table table tbody tr td {
   position: relative;
 }

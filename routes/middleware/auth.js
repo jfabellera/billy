@@ -38,7 +38,6 @@ auth = (req, res, next) => {
           );
 
         Promise.all(queries).then((results) => {
-          console.log(results);
           if (results.includes(null)) return res.sendStatus(500);
           results.forEach((result) => {
             if (String(result.user_id) !== String(user._id))

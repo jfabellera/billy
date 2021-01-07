@@ -4,6 +4,14 @@ import axiosAPI from '../../helpers/axiosAPI';
 import querystring from 'querystring';
 import moment from 'moment';
 
+export const refreshExpenses = () => {
+  return (dispatch) => {
+    dispatch({
+      type: actionTypes.REFRESH_EXPENSES,
+    });
+  };
+};
+
 /**
  * Get the expenses for the current user that follow the specified options
  * like sort order, sort criteria, start date, end date, etc.

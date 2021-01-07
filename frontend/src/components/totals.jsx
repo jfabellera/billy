@@ -18,7 +18,7 @@ class Totals extends Component {
         style={{ padding: '12px' }}
       >
         <div className='monthly-total'>
-          <h1>
+          <h1 style={{ marginBottom: 0 }}>
             <AnimatedNumber
               value={this.props.monthlyTotal}
               formatValue={this.formatValue}
@@ -28,7 +28,7 @@ class Totals extends Component {
           <span>Monthly Total</span>
         </div>
         <div className='yearly-total'>
-          <h1>
+          <h1 style={{ marginBottom: 0 }}>
             <AnimatedNumber
               value={this.props.yearlyTotal}
               formatValue={this.formatValue}
