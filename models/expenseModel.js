@@ -21,9 +21,13 @@ const expenseSchema = new Schema(
     },
     category: {
       type: String,
+      required: true,
     },
     group_id: {
       type: mongoose.Types.ObjectId,
+    },
+    description: {
+      type: String,
     },
   },
   {

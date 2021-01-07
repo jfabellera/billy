@@ -395,6 +395,7 @@ class ExpensesTable extends Component {
               placeholder='Search...'
               className='ml-auto'
               style={{ maxWidth: '300px' }}
+              value={this.state.search}
               onChange={this.onSearchChange}
             />
           </Col>

@@ -236,6 +236,7 @@ router.post(
     check('date', 'Incorrect date format').isDate(),
     check('category').notEmpty().isString(),
     check('group_id').optional().isMongoId(),
+    check('description').optional().isString(),
   ],
   (req, res) => {
     let err = validationResult(req);
@@ -252,6 +253,7 @@ router.post(
       if (!req.body.group_id && req.user.default_group_id)
         query.group_id = req.user.default_group_id;
       else if (req.body.group_id) query.group_id = req.body.group_id;
+      if (req.body.description) query.description = req.body.description;
       Expense.create(query, (err) => {
         if (err) throw err;
         res.status(201).json({ message: 'Expense created' });
@@ -271,6 +273,7 @@ router.put(
     check('date', 'Incorrect date format').optional().isDate(),
     check('category').optional().notEmpty().isString(),
     check('group_id').optional().isMongoId(),
+    check('description').optional().isString(),
   ],
   (req, res) => {
     let err = validationResult(req);

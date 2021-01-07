@@ -60,7 +60,6 @@ export const addNewExpense = (expense) => {
     if (!token) return;
     const username = jwt.decode(token).user.username;
 
-    console.log(expense);
     // get user_id
     return axiosAPI
       .get('/users/' + username)
