@@ -24,6 +24,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.DELETE_GROUP: {
       return state;
     }
+    case actionTypes.LOGOUT_USER: {
+      return initialState;
+    }
     default:
       return state;
   }

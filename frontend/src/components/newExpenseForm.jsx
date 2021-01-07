@@ -20,9 +20,12 @@ class NewExpenseForm extends Component {
       category: '',
       date: moment().format('YYYY-MM-DD'),
       suggestions: this.props.categories,
+      group_id: this.props.groups[
+        this.props.groups.findIndex((obj) => obj.default === true)
+      ]._id,
     };
   }
-  
+
   onInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -38,6 +41,7 @@ class NewExpenseForm extends Component {
         amount: this.state.amount,
         category: this.state.category ? this.state.category : 'Other',
         date: moment(this.state.date).format('YYYY/MM/DD'),
+        group_id: this.state.group_id,
       })
       .then(() => {
         this.setState({
@@ -76,7 +80,7 @@ class NewExpenseForm extends Component {
   render() {
     return (
       <Accordion>
-        <Card className='p-3' style={{overflow: 'visible'}}>
+        <Card className='p-3' style={{ overflow: 'visible' }}>
           <h3>Add new expense</h3>
           <Form onSubmit={this.onSubmit}>
             <Form.Row>
@@ -132,16 +136,24 @@ class NewExpenseForm extends Component {
             </Row>
             <Accordion.Collapse eventKey='0'>
               <div>
-                <h4 className='text-warning'>This area does nothing</h4>
                 <Form.Row>
                   <Form.Group as={Col}>
                     <Form.Label>Group</Form.Label>
-                    <Form.Control as='select'>
-                      <option>Default</option>
-                      <option>Secondary</option>
+                    <Form.Control
+                      as='select'
+                      name='group_id'
+                      value={this.state.group_id}
+                      onChange={this.onInputChange}
+                    >
+                      {this.props.groups.map((group) => (
+                        <option value={group._id} selected={group.default}>
+                          {group.name}
+                        </option>
+                      ))}
                     </Form.Control>
                   </Form.Group>
                 </Form.Row>
+                <h4 className='text-warning'>This area does nothing</h4>
                 <Form.Row className='mt-3'>
                   <Form.Group as={Col} className='mb-0'>
                     <Form.Check
@@ -172,6 +184,7 @@ class NewExpenseForm extends Component {
 const mapStateToProps = (state) => {
   return {
     categories: state.expenses.categories,
+    groups: state.groups.groups,
   };
 };
 

@@ -251,6 +251,7 @@ router.post(
       };
       if (!req.body.group_id && req.user.default_group_id)
         query.group_id = req.user.default_group_id;
+      else if (req.body.group_id) query.group_id = req.body.group_id;
       Expense.create(query, (err) => {
         if (err) throw err;
         res.status(201).json({ message: 'Expense created' });
