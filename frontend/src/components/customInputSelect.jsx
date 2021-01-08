@@ -42,15 +42,16 @@ class CustomInputSelect extends Component {
     }
   }
 
-  getSuggestions = () => {
-    const escapedValue = escapeRegexCharacters(String(this.state.value).trim());
+  getSuggestions = (value) => {
+    const escapedValue = escapeRegexCharacters(String(value).trim());
     const regex = new RegExp('^' + escapedValue, 'i');
     const suggestions = this.props.options.filter((option) =>
       regex.test(option)
     );
 
     if (suggestions.length > 0) return suggestions;
-    else return [{ isAddNew: true }];
+    else if (this.state.value) return [{ isAddNew: true }];
+    else return [];
   };
 
   getSuggestionValue = (suggestion) => {
@@ -79,7 +80,7 @@ class CustomInputSelect extends Component {
   onClear = (e) => {
     const input = e.currentTarget.parentNode.getElementsByTagName('input')[0];
     this.setState({ value: '', suggestions: this.props.options }, () => {
-      input.focus()
+      input.focus();
     });
   };
 

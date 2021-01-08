@@ -40,7 +40,6 @@ class Dashboard extends Component {
 
   componentDidUpdate() {
     if (this.state.update !== this.props.update) {
-      console.log('updating dashboard BRO !');
       this.setState({ update: this.props.update });
       this.update();
     }

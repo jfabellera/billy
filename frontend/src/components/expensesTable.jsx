@@ -87,11 +87,11 @@ class ExpensesTable extends Component {
       date: expense.getAttribute('date'),
       group_id:
         expense.getAttribute('group_id') ||
-        (this.props.groups && this.props.groups.length > 0)
+        (this.props.groups && this.props.groups.length > 0
           ? this.props.groups[
               this.props.groups.findIndex((obj) => obj.default === true)
             ]._id
-          : '',
+          : ''),
       description: expense.getAttribute('description') || '',
     };
     return origVals;
@@ -133,7 +133,6 @@ class ExpensesTable extends Component {
         const year = moment(this.props.year, 'YYYY');
         query.start_date = year.clone().startOf('year').format('YYYY/MM/DD');
         query.end_date = year.clone().endOf('year').format('YYYY/MM/DD');
-        console.log(query.start_date + ' ' + query.end_date);
       }
     }
     query = { ...query, ...this.props.options };
