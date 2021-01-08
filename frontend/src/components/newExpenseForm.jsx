@@ -26,6 +26,7 @@ class NewExpenseForm extends Component {
             ]._id
           : null,
       description: '',
+      expanded: false,
     };
   };
 
@@ -82,7 +83,7 @@ class NewExpenseForm extends Component {
 
   render() {
     return (
-      <Accordion>
+      <Accordion activeKey={this.state.expanded ? '1' : '0'}>
         <Card className='p-3' style={{ overflow: 'visible' }}>
           <h3>Add new expense</h3>
           <Form onSubmit={this.onSubmit}>
@@ -128,8 +129,11 @@ class NewExpenseForm extends Component {
               <Accordion.Toggle
                 as={Button}
                 variant='link'
-                eventKey='0'
+                eventKey='3'
                 className='mr-auto px-3 shadow-none'
+                onClick={() =>
+                  this.setState({ expanded: !this.state.expanded })
+                }
               >
                 More options <FontAwesomeIcon icon={faChevronDown} size='xs' />
               </Accordion.Toggle>
@@ -137,7 +141,7 @@ class NewExpenseForm extends Component {
                 <Button type='submit'>Add Expense</Button>
               </div>
             </Row>
-            <Accordion.Collapse eventKey='0'>
+            <Accordion.Collapse eventKey='1'>
               <div>
                 <Form.Row>
                   <Form.Group as={Col}>
@@ -145,7 +149,7 @@ class NewExpenseForm extends Component {
                     <Form.Control
                       as='select'
                       name='group_id'
-                      value={'this.state.group_id'}
+                      value={this.state.group_id}
                       onChange={this.onInputChange}
                       disabled={
                         !this.props.groups || !this.props.groups.length > 0

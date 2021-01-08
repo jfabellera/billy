@@ -30,6 +30,14 @@
   visibility: visible;
 }
 
+.expenses-table tbody tr:hover svg:hover {
+  opacity: 50%;
+}
+
+.expenses-table tbody tr:hover td:not(.expense-action) {
+  cursor: pointer;
+}
+
 .expense-normal,
 .expense-confirm {
   display: flex;
@@ -50,10 +58,15 @@
   background-color: rgb(255, 93, 93);
 }
 
-.expenses-table tbody tr:hover:not(.expense-delete) {
+.expenses-table tbody tr:hover:not(.expense-delete),
+.expenses-table .expense-select {
   background-color: lightgray;
 }
 
 .expenses-table table tbody tr td {
   position: relative;
+}
+
+.expenses-table .fade {
+  transition: 0;
 }

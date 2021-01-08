@@ -10,7 +10,16 @@ import moment from 'moment';
 import { animateScroll } from 'react-scroll';
 
 import './expensesTable.css';
-import { Table, Card, Row, Col, FormControl, Form } from 'react-bootstrap';
+import {
+  Table,
+  Card,
+  Row,
+  Col,
+  FormControl,
+  Form,
+  OverlayTrigger,
+  Popover,
+} from 'react-bootstrap';
 import CustomInputSelect from './customInputSelect';
 import CustomPagination from './customPagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -40,6 +49,7 @@ class ExpensesTable extends Component {
         category: null,
         date: null,
       },
+      selectedExpenseId: null,
       deleteExpenseId: null,
       search: '',
       update: this.props.update,
@@ -122,9 +132,23 @@ class ExpensesTable extends Component {
   };
 
   resetDeleteExpense = () => {
-    this.setState({
-      deleteExpenseId: null,
-    });
+    this.setState({ deleteExpenseId: null });
+  };
+
+  resetSelectExpense = () => {
+    this.setState({ selectedExpenseId: null });
+  };
+
+  getGroupName = (group_id) => {
+    if (group_id && this.props.groups && this.props.groups.length > 0) {
+      const group_index = this.props.groups.findIndex(
+        (obj) => obj._id === group_id
+      );
+      if (group_index >= 0) return this.props.groups[group_index].name;
+      else return 'No group';
+    } else {
+      return 'No group';
+    }
   };
 
   /**
@@ -183,15 +207,17 @@ class ExpensesTable extends Component {
   };
 
   onClickDelete = (e) => {
+    const expenseId = e.currentTarget.closest('tr').getAttribute('id');
     this.resetEditExpense();
     this.setState({
-      deleteExpenseId: e.currentTarget.closest('tr').getAttribute('id'),
+      deleteExpenseId: expenseId,
     });
   };
 
   onClickCancel = () => {
     this.resetEditExpense();
     this.resetDeleteExpense();
+    this.resetSelectExpense();
   };
 
   /**
@@ -225,6 +251,15 @@ class ExpensesTable extends Component {
       .then(this.resetEditExpense);
   };
 
+  onClickRow = (e) => {
+    const expenseId = e.currentTarget.closest('tr').getAttribute('id');
+    const newSelected =
+      expenseId === this.state.selectedExpenseId ? null : expenseId;
+    this.setState({
+      selectedExpenseId: newSelected,
+    });
+  };
+
   /**
    * Renders the passed expense as plain, formatted text
    * @param {Object} expense
@@ -232,60 +267,87 @@ class ExpensesTable extends Component {
    */
   renderRowAsOutput = (expense, i) => {
     return (
-      <tr
-        className={
-          expense._id === this.state.deleteExpenseId ? 'expense-delete' : ''
-        }
-        id={expense._id}
+      <OverlayTrigger
+        show={this.state.selectedExpenseId === expense._id}
         key={i}
+        placement='bottom'
+        overlay={
+          <Popover style={{ transition: 'none' }}>
+            <Popover.Title as='h3'>
+              {this.getGroupName(expense.group_id)}
+            </Popover.Title>
+            <Popover.Content>
+              {expense.description ? (
+                expense.description
+              ) : (
+                <i>No description</i>
+              )}
+            </Popover.Content>
+          </Popover>
+        }
       >
-        <td name='title' orig={expense.title}>
-          <span>{expense.title}</span>
-        </td>
-        <td name='amount' orig={expense.amount}>
-          <span>
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(expense.amount)}
-          </span>
-        </td>
-        <td name='date' orig={moment(expense.date).format('YYYY-MM-DD')}>
-          <span>{moment(expense.date).format('MM/DD/YYYY')}</span>
-        </td>
-        <td name='category' orig={expense.category}>
-          <span>{expense.category}</span>
-        </td>
-        <td className='expense-action text-center'>
-          {expense._id !== this.state.deleteExpenseId ? (
-            <div className='expense-normal h-100 d-flex align-items-center'>
-              <FontAwesomeIcon
-                className='mr-1'
-                icon={faPen}
-                onClick={this.onClickEdit}
-              />
-              <FontAwesomeIcon
-                className='ml-1'
-                icon={faTrash}
-                onClick={this.onClickDelete}
-              />
-            </div>
-          ) : (
-            <div className='expense-confirm h-100 d-flex align-items-center'>
-              <FontAwesomeIcon
-                className='mr-1'
-                icon={faTimes}
-                onClick={this.onClickCancel}
-              />
-              <FontAwesomeIcon
-                className='ml-1'
-                icon={faCheck}
-                onClick={this.onDeleteSubmit}
-              />
-            </div>
-          )}
-        </td>
-      </tr>
+        <tr
+          className={
+            expense._id === this.state.deleteExpenseId
+              ? 'expense-delete'
+              : expense._id === this.state.selectedExpenseId
+              ? 'expense-select'
+              : 'expense'
+          }
+          id={expense._id}
+        >
+          <td name='title' orig={expense.title} onClick={this.onClickRow}>
+            <span>{expense.title}</span>
+          </td>
+          <td name='amount' orig={expense.amount} onClick={this.onClickRow}>
+            <span>
+              {new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              }).format(expense.amount)}
+            </span>
+          </td>
+          <td name='category' orig={expense.category} onClick={this.onClickRow}>
+            <span>{expense.category}</span>
+          </td>
+          <td
+            name='date'
+            orig={moment(expense.date).format('YYYY-MM-DD')}
+            onClick={this.onClickRow}
+          >
+            <span>{moment(expense.date).format('MM/DD/YYYY')}</span>
+          </td>
+          <td className='expense-action text-center'>
+            {expense._id !== this.state.deleteExpenseId ? (
+              <div className='expense-normal h-100 d-flex align-items-center'>
+                <FontAwesomeIcon
+                  className='mr-1'
+                  icon={faPen}
+                  onClick={this.onClickEdit}
+                />
+                <FontAwesomeIcon
+                  className='ml-1'
+                  icon={faTrash}
+                  onClick={this.onClickDelete}
+                />
+              </div>
+            ) : (
+              <div className='expense-confirm h-100 d-flex align-items-center'>
+                <FontAwesomeIcon
+                  className='mr-1'
+                  icon={faTimes}
+                  onClick={this.onClickCancel}
+                />
+                <FontAwesomeIcon
+                  className='ml-1'
+                  icon={faCheck}
+                  onClick={this.onDeleteSubmit}
+                />
+              </div>
+            )}
+          </td>
+        </tr>
+      </OverlayTrigger>
     );
   };
 
@@ -296,7 +358,7 @@ class ExpensesTable extends Component {
    */
   renderRowAsInput = (expense, i) => {
     return (
-      <tr className='selected' id={expense._id} key={i}>
+      <tr className='expense-edit' id={expense._id} key={i}>
         <td>
           <Form onSubmit={this.onEditSubmit}>
             <FormControl
@@ -319,19 +381,19 @@ class ExpensesTable extends Component {
           </Form>
         </td>
         <td>
+          <CustomInputSelect
+            name='category'
+            options={this.props.categories}
+            value={this.state.editExpense.category}
+            onChange={this.onEditChange}
+          />
+        </td>
+        <td>
           <FormControl
             name='date'
             type='date'
             required
             value={this.state.editExpense.date}
-            onChange={this.onEditChange}
-          />
-        </td>
-        <td>
-          <CustomInputSelect
-            name='category'
-            options={this.props.categories}
-            value={this.state.editExpense.category}
             onChange={this.onEditChange}
           />
         </td>
@@ -404,6 +466,9 @@ class ExpensesTable extends Component {
           id='table'
           className='d-flex flex-fill my-3'
           style={{ height: '0px', overflowY: 'scroll' }}
+          onScroll={
+            this.state.selectedExpenseId ? this.resetSelectExpense : null
+          }
         >
           <Table borderless variant='light' size='sm' className='m-0'>
             <thead>
@@ -421,16 +486,16 @@ class ExpensesTable extends Component {
                   {this.renderSortArrow('amount')}
                 </th>
                 <th>
-                  <span id='date' onClick={this.onClickHeader}>
-                    Date{' '}
-                  </span>
-                  {this.renderSortArrow('date')}
-                </th>
-                <th>
                   <span id='category' onClick={this.onClickHeader}>
                     Category{' '}
                   </span>
                   {this.renderSortArrow('category')}
+                </th>
+                <th>
+                  <span id='date' onClick={this.onClickHeader}>
+                    Date{' '}
+                  </span>
+                  {this.renderSortArrow('date')}
                 </th>
                 <th className='fixed-width'>{/* just for expense action */}</th>
               </tr>
@@ -458,6 +523,7 @@ const mapStateToProps = (state) => {
     totalPages: state.expenses.totalPages,
     update: state.expenses.update,
     updateAction: state.expenses.updateAction,
+    groups: state.groups.groups,
   };
 };
 

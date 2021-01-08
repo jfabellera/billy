@@ -67,7 +67,7 @@ class Dashboard extends Component {
       this.props.groups !== null
     )
       return (
-        <div className='d-flex flex-fill'>
+        <div className='d-flex flex-fill overflow-hidden'>
           <Col className='d-flex flex-column w-100'>
             <div className='py-3'>
               <NewExpenseForm />
