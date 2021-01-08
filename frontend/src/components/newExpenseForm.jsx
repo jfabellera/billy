@@ -149,7 +149,7 @@ class NewExpenseForm extends Component {
                     <Form.Control
                       as='select'
                       name='group_id'
-                      value={this.state.group_id}
+                      value={this.state.group_id || ''}
                       onChange={this.onInputChange}
                       disabled={
                         !this.props.groups || !this.props.groups.length > 0
@@ -162,7 +162,7 @@ class NewExpenseForm extends Component {
                           </option>
                         ))
                       ) : (
-                        <option>You have no groups</option>
+                        <option value=''>You have no groups</option>
                       )}
                     </Form.Control>
                   </Form.Group>

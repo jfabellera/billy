@@ -58,6 +58,10 @@
   background-color: rgb(255, 93, 93);
 }
 
+.expense-edit {
+  background-color: rgb(235, 192, 0);
+}
+
 .expenses-table tbody tr:hover:not(.expense-delete),
 .expenses-table .expense-select {
   background-color: lightgray;

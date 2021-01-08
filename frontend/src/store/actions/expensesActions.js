@@ -92,7 +92,7 @@ export const editExpense = (expense) => {
     if (!token) return;
 
     return axiosAPI
-      .put('/expenses/' + expense.id, expense)
+      .put('/expenses/' + expense._id, expense)
       .then((res) => {
         dispatch({
           type: actionTypes.EDIT_EXPENSE,
