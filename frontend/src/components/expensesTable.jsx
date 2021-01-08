@@ -59,10 +59,17 @@ class ExpensesTable extends Component {
       update: this.props.update,
       prevProps: null,
     };
-  }
 
+    this.wrapperRef = React.createRef();
+    this.onClickOutside = this.onClickOutside.bind(this);
+  }
   componentDidMount() {
     this.fetchExpenses();
+    document.addEventListener('mousedown', this.onClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onClickOutside);
   }
 
   componentDidUpdate(props, state) {
@@ -74,6 +81,12 @@ class ExpensesTable extends Component {
         this.props.updateAction !== 'edit' &&
           this.props.updateAction !== 'delete'
       );
+    }
+  }
+
+  onClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+      this.resetSelectExpense();
     }
   }
 
@@ -492,6 +505,7 @@ class ExpensesTable extends Component {
       <Card
         className='expenses-table d-flex flex-column p-3 '
         style={{ ...{ height: '100%', width: '100%' }, ...this.props.style }}
+        ref={this.wrapperRef}
       >
         <Row>
           <Col>
