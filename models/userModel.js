@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -25,6 +25,9 @@ const userSchema = new Schema(
         },
       },
     },
+    default_group_id: {
+      type: mongoose.Types.ObjectId,
+    },
     account_type: {
       type: String,
       lowercase: true,
@@ -40,6 +43,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model('users', userSchema);
 
 module.exports = User;

@@ -10,7 +10,18 @@ import moment from 'moment';
 import { animateScroll } from 'react-scroll';
 
 import './expensesTable.css';
-import { Table, Card, Row, Col, FormControl, Form } from 'react-bootstrap';
+import {
+  Table,
+  Card,
+  Row,
+  Col,
+  FormControl,
+  Form,
+  OverlayTrigger,
+  Popover,
+  Modal,
+  Button,
+} from 'react-bootstrap';
 import CustomInputSelect from './customInputSelect';
 import CustomPagination from './customPagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,9 +31,17 @@ import {
   faSortUp,
   faSort,
   faTrash,
-  faTimes,
-  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
+
+const emptyExpense = {
+  _id: null,
+  title: null,
+  amount: null,
+  category: null,
+  date: null,
+  group_id: null,
+  description: null,
+};
 
 class ExpensesTable extends Component {
   constructor(props) {
@@ -33,20 +52,27 @@ class ExpensesTable extends Component {
       sort: 'date',
       perPage: 100,
       currentPage: 1,
-      editExpense: {
-        id: null,
-        title: null,
-        amount: null,
-        category: null,
-        date: null,
-      },
-      deleteExpenseId: null,
+      editExpense: emptyExpense,
+      selectExpense: emptyExpense,
+      deleteExpense: emptyExpense,
       search: '',
       update: this.props.update,
+      prevProps: null,
     };
+
+    this.wrapperRef = React.createRef();
+    this.onClickOutside = this.onClickOutside.bind(this);
+  }
+  componentDidMount() {
+    this.fetchExpenses();
+    document.addEventListener('mousedown', this.onClickOutside);
   }
 
-  componentDidUpdate() {
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onClickOutside);
+  }
+
+  componentDidUpdate(props, state) {
     if (this.state.update !== this.props.update) {
       this.setState({ update: this.props.update });
 
@@ -57,6 +83,32 @@ class ExpensesTable extends Component {
       );
     }
   }
+
+  onClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+      this.resetSelectExpense();
+    }
+  }
+
+  getExpenseAttributes = (e) => {
+    const expense = e.currentTarget.closest('tr');
+    let origVals = {
+      _id: expense.getAttribute('_id'),
+      title: expense.getAttribute('title'),
+      amount: expense.getAttribute('amount'),
+      category: expense.getAttribute('category'),
+      date: expense.getAttribute('date'),
+      group_id:
+        expense.getAttribute('group_id') ||
+        (this.props.groups && this.props.groups.length > 0
+          ? this.props.groups[
+              this.props.groups.findIndex((obj) => obj.default === true)
+            ]._id
+          : ''),
+      description: expense.getAttribute('description') || '',
+    };
+    return origVals;
+  };
 
   /**
    * Function to update redux stored expenses
@@ -94,9 +146,9 @@ class ExpensesTable extends Component {
         const year = moment(this.props.year, 'YYYY');
         query.start_date = year.clone().startOf('year').format('YYYY/MM/DD');
         query.end_date = year.clone().endOf('year').format('YYYY/MM/DD');
-        console.log(query.start_date + ' ' + query.end_date);
       }
     }
+    query = { ...query, ...this.props.options };
     this.props.getUserExpenses(query).then(() => {
       if (scrollToTop)
         animateScroll.scrollToTop({ containerId: 'table', duration: 0 });
@@ -104,21 +156,27 @@ class ExpensesTable extends Component {
   };
 
   resetEditExpense = () => {
-    this.setState({
-      editExpense: {
-        id: null,
-        title: null,
-        amount: null,
-        category: null,
-        date: null,
-      },
-    });
+    this.setState({ editExpense: emptyExpense });
   };
 
   resetDeleteExpense = () => {
-    this.setState({
-      deleteExpenseId: null,
-    });
+    this.setState({ deleteExpense: emptyExpense });
+  };
+
+  resetSelectExpense = () => {
+    this.setState({ selectExpense: emptyExpense });
+  };
+
+  getGroupName = (group_id) => {
+    if (group_id && this.props.groups && this.props.groups.length > 0) {
+      const group_index = this.props.groups.findIndex(
+        (obj) => obj._id === group_id
+      );
+      if (group_index >= 0) return this.props.groups[group_index].name;
+      else return 'No group';
+    } else {
+      return 'No group';
+    }
   };
 
   /**
@@ -162,30 +220,23 @@ class ExpensesTable extends Component {
    * @param {Event} e
    */
   onClickEdit = (e) => {
-    this.resetDeleteExpense();
-    const expense = e.currentTarget.closest('tr');
-    let origVals = {};
-    expense.querySelectorAll('td:not(.expense-action)').forEach((element) => {
-      origVals[element.getAttribute('name')] = element.getAttribute('orig');
-    });
+    this.onCancel();
     this.setState({
-      editExpense: {
-        id: expense.getAttribute('id'),
-        ...origVals,
-      },
+      editExpense: this.getExpenseAttributes(e),
     });
   };
 
   onClickDelete = (e) => {
-    this.resetEditExpense();
+    this.onCancel();
     this.setState({
-      deleteExpenseId: e.currentTarget.closest('tr').getAttribute('id'),
+      deleteExpense: this.getExpenseAttributes(e),
     });
   };
 
-  onClickCancel = () => {
+  onCancel = () => {
     this.resetEditExpense();
     this.resetDeleteExpense();
+    this.resetSelectExpense();
   };
 
   /**
@@ -203,148 +254,29 @@ class ExpensesTable extends Component {
 
   onEditSubmit = (e) => {
     e.preventDefault();
+    let expense = this.state.editExpense;
+    if (!expense.group_id) delete expense['group_id'];
     const expenseDetails = {
-      ...this.state.editExpense,
-      date: moment(this.state.editExpense.date).format('YYYY/MM/DD'),
-      category: this.state.editExpense.category
-        ? this.state.editExpense.category
-        : 'Other',
+      ...expense,
+      date: moment(expense.date).format('YYYY/MM/DD'),
+      category: expense.category || 'Other',
     };
     this.props.editExpense(expenseDetails).then(this.resetEditExpense);
   };
 
   onDeleteSubmit = () => {
     this.props
-      .deleteExpense(this.state.deleteExpenseId)
+      .deleteExpense(this.state.deleteExpense._id)
       .then(this.resetEditExpense);
   };
 
-  /**
-   * Renders the passed expense as plain, formatted text
-   * @param {Object} expense
-   * @param {Int} i
-   */
-  renderRowAsOutput = (expense, i) => {
-    return (
-      <tr
-        className={
-          expense._id === this.state.deleteExpenseId ? 'expense-delete' : ''
-        }
-        id={expense._id}
-        key={i}
-      >
-        <td name='title' orig={expense.title}>
-          <span>{expense.title}</span>
-        </td>
-        <td name='amount' orig={expense.amount}>
-          <span>
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(expense.amount)}
-          </span>
-        </td>
-        <td name='date' orig={moment(expense.date).format('YYYY-MM-DD')}>
-          <span>{moment(expense.date).format('MM/DD/YYYY')}</span>
-        </td>
-        <td name='category' orig={expense.category}>
-          <span>{expense.category}</span>
-        </td>
-        <td className='expense-action text-center'>
-          {expense._id !== this.state.deleteExpenseId ? (
-            <div className='expense-normal h-100 d-flex align-items-center'>
-              <FontAwesomeIcon
-                className='mr-1'
-                icon={faPen}
-                onClick={this.onClickEdit}
-              />
-              <FontAwesomeIcon
-                className='ml-1'
-                icon={faTrash}
-                onClick={this.onClickDelete}
-              />
-            </div>
-          ) : (
-            <div className='expense-confirm h-100 d-flex align-items-center'>
-              <FontAwesomeIcon
-                className='mr-1'
-                icon={faTimes}
-                onClick={this.onClickCancel}
-              />
-              <FontAwesomeIcon
-                className='ml-1'
-                icon={faCheck}
-                onClick={this.onDeleteSubmit}
-              />
-            </div>
-          )}
-        </td>
-      </tr>
-    );
-  };
-
-  /**
-   * Renders the passed expense as a form to edit values
-   * @param {Object} expense
-   * @param {Int} i
-   */
-  renderRowAsInput = (expense, i) => {
-    return (
-      <tr className='selected' id={expense._id} key={i}>
-        <td>
-          <Form onSubmit={this.onEditSubmit}>
-            <FormControl
-              name='title'
-              required
-              value={this.state.editExpense.title}
-              onChange={this.onEditChange}
-            />
-          </Form>
-        </td>
-        <td>
-          <Form onSubmit={this.onEditSubmit}>
-            <FormControl
-              name='amount'
-              type='number'
-              required
-              value={this.state.editExpense.amount}
-              onChange={this.onEditChange}
-            />
-          </Form>
-        </td>
-        <td>
-          <FormControl
-            name='date'
-            type='date'
-            required
-            value={this.state.editExpense.date}
-            onChange={this.onEditChange}
-          />
-        </td>
-        <td>
-          <CustomInputSelect
-            name='category'
-            options={this.props.categories}
-            value={this.state.editExpense.category}
-            onChange={this.onEditChange}
-          />
-        </td>
-        <td className='expense-action'>
-          <div className='expense-confirm'>
-            <FontAwesomeIcon
-              className='mr-1'
-              icon={faTimes}
-              onClick={this.onClickCancel}
-            />
-            <FontAwesomeIcon
-              className='ml-1'
-              icon={faCheck}
-              onClick={this.onEditSubmit}
-            />
-          </div>
-        </td>
-      </tr>
-    );
+  onClickRow = (e) => {
+    const expense = this.getExpenseAttributes(e);
+    const newSelected =
+      expense._id === this.state.selectExpense._id ? emptyExpense : expense;
+    this.setState({
+      selectExpense: newSelected,
+    });
   };
 
   /**
@@ -352,11 +284,205 @@ class ExpensesTable extends Component {
    */
   renderTableBody = () => {
     if (this.props.expenses)
-      return this.props.expenses.map((expense, i) =>
-        expense._id === this.state.editExpense.id
-          ? this.renderRowAsInput(expense, i)
-          : this.renderRowAsOutput(expense, i)
-      );
+      return this.props.expenses.map((expense, i) => (
+        <OverlayTrigger
+          show={this.state.selectExpense._id === expense._id}
+          key={i}
+          placement='bottom'
+          overlay={
+            <Popover style={{ transition: 'none' }}>
+              <Popover.Title as='h3'>
+                {this.getGroupName(expense.group_id)}
+              </Popover.Title>
+              <Popover.Content>
+                {expense.description ? (
+                  expense.description
+                ) : (
+                  <i>No description</i>
+                )}
+              </Popover.Content>
+            </Popover>
+          }
+        >
+          <tr
+            className={
+              expense._id === this.state.deleteExpense._id
+                ? 'expense-delete'
+                : expense._id === this.state.selectExpense._id
+                ? 'expense-select'
+                : expense._id === this.state.editExpense._id
+                ? 'expense-edit'
+                : 'expense'
+            }
+            _id={expense._id}
+            title={expense.title}
+            amount={expense.amount}
+            category={expense.category}
+            date={moment(expense.date).format('YYYY-MM-DD')}
+            group_id={expense.group_id}
+            description={expense.description}
+          >
+            <td name='title' orig={expense.title} onClick={this.onClickRow}>
+              <span>{expense.title}</span>
+            </td>
+            <td name='amount' orig={expense.amount} onClick={this.onClickRow}>
+              <span>
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                }).format(expense.amount)}
+              </span>
+            </td>
+            <td
+              name='category'
+              orig={expense.category}
+              onClick={this.onClickRow}
+            >
+              <span>{expense.category}</span>
+            </td>
+            <td
+              name='date'
+              orig={moment(expense.date).format('YYYY-MM-DD')}
+              onClick={this.onClickRow}
+            >
+              <span>{moment(expense.date).format('MM/DD/YYYY')}</span>
+            </td>
+            <td className='expense-action text-center'>
+              <div className='expense-normal h-100 d-flex align-items-center'>
+                <FontAwesomeIcon
+                  className='mr-1'
+                  icon={faPen}
+                  onClick={this.onClickEdit}
+                />
+                <FontAwesomeIcon
+                  className='ml-1'
+                  icon={faTrash}
+                  onClick={this.onClickDelete}
+                />
+              </div>
+            </td>
+          </tr>
+        </OverlayTrigger>
+      ));
+  };
+
+  renderDeleteModal = () => {
+    return (
+      <Modal
+        show={this.state.deleteExpense._id !== null}
+        onHide={this.onCancel}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Delete "{this.state.deleteExpense.title}"</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to the expense, "
+          {this.state.deleteExpense.title}
+          "? This cannot be undone!
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={this.onCancel}>
+            Cancel
+          </Button>
+          <Button variant='danger' onClick={this.onDeleteSubmit}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
+
+  renderEditModal = () => {
+    return (
+      <Modal show={this.state.editExpense._id !== null} onHide={this.onCancel}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit expense</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  name='title'
+                  value={this.state.editExpense.title || ''}
+                  onChange={this.onEditChange}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Amount</Form.Label>
+                <Form.Control
+                  name='amount'
+                  type='number'
+                  value={this.state.editExpense.amount || ''}
+                  onChange={this.onEditChange}
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Category</Form.Label>
+                <CustomInputSelect
+                  name='category'
+                  options={this.props.categories}
+                  value={this.state.editExpense.category || ''}
+                  onChange={this.onEditChange}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Date</Form.Label>
+                <Form.Control
+                  name='date'
+                  type='date'
+                  value={this.state.editExpense.date || ''}
+                  onChange={this.onEditChange}
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Group</Form.Label>
+                <Form.Control
+                  name='group_id'
+                  as='select'
+                  value={this.state.editExpense.group_id || ''}
+                  onChange={this.onEditChange}
+                  disabled={!this.props.groups || !this.props.groups.length > 0}
+                >
+                  {this.props.groups && this.props.groups.length > 0 ? (
+                    this.props.groups.map((group, i) => (
+                      <option key={i} value={group._id}>
+                        {group.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value=''>You have no groups</option>
+                  )}
+                </Form.Control>
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  name='description'
+                  value={this.state.editExpense.description || ''}
+                  onChange={this.onEditChange}
+                />
+              </Form.Group>
+            </Form.Row>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={this.onCancel}>
+            Cancel
+          </Button>
+          <Button variant='success' onClick={this.onEditSubmit}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
   };
 
   renderSortArrow = (headerName) => {
@@ -377,18 +503,20 @@ class ExpensesTable extends Component {
   render() {
     return (
       <Card
-        className='d-flex flex-column p-3 '
-        style={{ height: '100%', width: '100%' }}
+        className='expenses-table d-flex flex-column p-3 '
+        style={{ ...{ height: '100%', width: '100%' }, ...this.props.style }}
+        ref={this.wrapperRef}
       >
         <Row>
           <Col>
-            <h2>Expenses</h2>
+            <h2>{this.props.title ? this.props.title : 'Expenses'}</h2>
           </Col>
           <Col>
             <FormControl
               placeholder='Search...'
               className='ml-auto'
               style={{ maxWidth: '300px' }}
+              value={this.state.search}
               onChange={this.onSearchChange}
             />
           </Col>
@@ -397,6 +525,9 @@ class ExpensesTable extends Component {
           id='table'
           className='d-flex flex-fill my-3'
           style={{ height: '0px', overflowY: 'scroll' }}
+          onScroll={
+            this.state.selectExpense._id ? this.resetSelectExpense : null
+          }
         >
           <Table borderless variant='light' size='sm' className='m-0'>
             <thead>
@@ -414,16 +545,16 @@ class ExpensesTable extends Component {
                   {this.renderSortArrow('amount')}
                 </th>
                 <th>
-                  <span id='date' onClick={this.onClickHeader}>
-                    Date{' '}
-                  </span>
-                  {this.renderSortArrow('date')}
-                </th>
-                <th>
                   <span id='category' onClick={this.onClickHeader}>
                     Category{' '}
                   </span>
                   {this.renderSortArrow('category')}
+                </th>
+                <th>
+                  <span id='date' onClick={this.onClickHeader}>
+                    Date{' '}
+                  </span>
+                  {this.renderSortArrow('date')}
                 </th>
                 <th className='fixed-width'>{/* just for expense action */}</th>
               </tr>
@@ -438,6 +569,8 @@ class ExpensesTable extends Component {
             onChange={this.onPageChange}
           />
         </div>
+        {this.renderDeleteModal()}
+        {this.renderEditModal()}
       </Card>
     );
   }
@@ -451,6 +584,7 @@ const mapStateToProps = (state) => {
     totalPages: state.expenses.totalPages,
     update: state.expenses.update,
     updateAction: state.expenses.updateAction,
+    groups: state.groups.groups,
   };
 };
 

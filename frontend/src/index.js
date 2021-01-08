@@ -7,12 +7,14 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 
 import usersReducer from './store/reducers/usersReducer';
 import expensesReducer from './store/reducers/expensesReducer';
+import groupsReducer from './store/reducers/groupsReducer';
 
 import App from './App';
 
 const rootReducer = combineReducers({
   users: usersReducer,
   expenses: expensesReducer,
+  groups: groupsReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

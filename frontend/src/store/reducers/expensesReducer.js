@@ -22,6 +22,13 @@ const reducer = (state = initialState, action) => {
         totalPages: action.totalPages,
       };
     }
+    case actionTypes.REFRESH_EXPENSES: {
+      return {
+        ...state,
+        update: state.update + 1,
+        updateAction: 'refresh',
+      };
+    }
     case actionTypes.ADD_NEW_EXPENSE: {
       return {
         ...state,

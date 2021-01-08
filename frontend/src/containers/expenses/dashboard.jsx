@@ -8,6 +8,7 @@ import {
   getMonthlyTotal,
   getYearlyTotal,
 } from '../../store/actions/expensesActions';
+import { getGroups } from '../../store/actions/groupsActions';
 import moment from 'moment';
 
 import ExpensesTable from '../../components/expensesTable';
@@ -27,6 +28,7 @@ class Dashboard extends Component {
       end_date: moment().clone().endOf('month').format('YYYY/MM/DD'),
     };
 
+    this.props.getGroups();
     this.props.getUserExpenses({
       start_date: this.state.start_date,
       end_date: this.state.end_date,
@@ -38,7 +40,6 @@ class Dashboard extends Component {
 
   componentDidUpdate() {
     if (this.state.update !== this.props.update) {
-      console.log('updating dashboard BRO !');
       this.setState({ update: this.props.update });
       this.update();
     }
@@ -61,16 +62,17 @@ class Dashboard extends Component {
     if (
       this.props.monthlyTotal !== null &&
       this.props.yearlyTotal !== null &&
-      this.props.expenses !== null
+      this.props.expenses !== null &&
+      this.props.groups !== null
     )
       return (
-        <div className='d-flex flex-fill'>
+        <div className='d-flex flex-fill overflow-hidden'>
           <Col className='d-flex flex-column w-100'>
             <div className='py-3'>
               <NewExpenseForm />
             </div>
             <div className='d-flex flex-fill pb-3'>
-              <ExpensesTable variant='currentMonth' />
+              <ExpensesTable title='Monthly expenses' variant='currentMonth' />
             </div>
           </Col>
           <Col className='w-100'>
@@ -94,6 +96,7 @@ const mapStateToProps = (state) => {
     categories: state.expenses.categories,
     monthlyTotal: state.expenses.monthlyTotal,
     yearlyTotal: state.expenses.yearlyTotal,
+    groups: state.groups.groups,
   };
 };
 
@@ -104,6 +107,7 @@ const mapDispatchToProps = (dispatch) => {
     getMonthlyTotal: () => dispatch(getMonthlyTotal()),
     getYearlyTotal: () => dispatch(getYearlyTotal()),
     getCategoryAmounts: (options) => dispatch(getCategoryAmounts(options)),
+    getGroups: () => dispatch(getGroups()),
   };
 };
 

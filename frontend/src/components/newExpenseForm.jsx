@@ -12,17 +12,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 class NewExpenseForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+  initialState = () => {
+    return {
       title: '',
       amount: '',
       category: '',
       date: moment().format('YYYY-MM-DD'),
       suggestions: this.props.categories,
+      group_id:
+        this.props.groups && this.props.groups.length > 0
+          ? this.props.groups[
+              this.props.groups.findIndex((obj) => obj.default === true)
+            ]._id
+          : null,
+      description: '',
+      expanded: false,
     };
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = this.initialState();
   }
-  
+
   onInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -31,22 +43,18 @@ class NewExpenseForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-
-    this.props
-      .addNewExpense({
-        title: this.state.title,
-        amount: this.state.amount,
-        category: this.state.category ? this.state.category : 'Other',
-        date: moment(this.state.date).format('YYYY/MM/DD'),
-      })
-      .then(() => {
-        this.setState({
-          title: '',
-          amount: '',
-          category: '',
-          date: moment().format('YYYY-MM-DD'),
-        });
-      });
+    let expense = {
+      title: this.state.title,
+      amount: this.state.amount,
+      category: this.state.category ? this.state.category : 'Other',
+      date: moment(this.state.date).format('YYYY/MM/DD'),
+      description: this.state.description,
+    };
+    if (this.props.groups && this.props.groups.length > 0)
+      expense.group_id = this.state.group_id;
+    this.props.addNewExpense(expense).then(() => {
+      this.setState({ ...this.initialState() });
+    });
   };
 
   getSuggestions = (value) => {
@@ -75,8 +83,8 @@ class NewExpenseForm extends Component {
 
   render() {
     return (
-      <Accordion>
-        <Card className='p-3' style={{overflow: 'visible'}}>
+      <Accordion activeKey={this.state.expanded ? '1' : '0'}>
+        <Card className='p-3' style={{ overflow: 'visible' }}>
           <h3>Add new expense</h3>
           <Form onSubmit={this.onSubmit}>
             <Form.Row>
@@ -121,8 +129,11 @@ class NewExpenseForm extends Component {
               <Accordion.Toggle
                 as={Button}
                 variant='link'
-                eventKey='0'
+                eventKey='3'
                 className='mr-auto px-3 shadow-none'
+                onClick={() =>
+                  this.setState({ expanded: !this.state.expanded })
+                }
               >
                 More options <FontAwesomeIcon icon={faChevronDown} size='xs' />
               </Accordion.Toggle>
@@ -130,18 +141,42 @@ class NewExpenseForm extends Component {
                 <Button type='submit'>Add Expense</Button>
               </div>
             </Row>
-            <Accordion.Collapse eventKey='0'>
+            <Accordion.Collapse eventKey='1'>
               <div>
-                <h4 className='text-warning'>This area does nothing</h4>
                 <Form.Row>
                   <Form.Group as={Col}>
-                    <Form.Label>Account</Form.Label>
-                    <Form.Control as='select'>
-                      <option>Default</option>
-                      <option>Secondary</option>
+                    <Form.Label>Group</Form.Label>
+                    <Form.Control
+                      as='select'
+                      name='group_id'
+                      value={this.state.group_id || ''}
+                      onChange={this.onInputChange}
+                      disabled={
+                        !this.props.groups || !this.props.groups.length > 0
+                      }
+                    >
+                      {this.props.groups && this.props.groups.length > 0 ? (
+                        this.props.groups.map((group, i) => (
+                          <option key={i} value={group._id}>
+                            {group.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option value=''>You have no groups</option>
+                      )}
                     </Form.Control>
                   </Form.Group>
+                  <Form.Group as={Col} md='8'>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      name='description'
+                      placeholder='Optional'
+                      value={this.state.description}
+                      onChange={this.onInputChange}
+                    />
+                  </Form.Group>
                 </Form.Row>
+                <h4 className='text-warning'>This area does nothing</h4>
                 <Form.Row className='mt-3'>
                   <Form.Group as={Col} className='mb-0'>
                     <Form.Check
@@ -172,6 +207,7 @@ class NewExpenseForm extends Component {
 const mapStateToProps = (state) => {
   return {
     categories: state.expenses.categories,
+    groups: state.groups.groups,
   };
 };
 

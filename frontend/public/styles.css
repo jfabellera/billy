@@ -15,13 +15,16 @@ html {
 input[type='date']::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
-  bottom: 0;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   color: transparent;
+  border: 0;
   background: transparent;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator:active {
+  border: 0;
 }
 
 /* Hide number input spinners */

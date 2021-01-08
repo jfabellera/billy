@@ -1,0 +1,9 @@
+.manage {
+  margin: 0;
+  height: 100%;
+}
+
+.sidebar {
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 0; 
+}

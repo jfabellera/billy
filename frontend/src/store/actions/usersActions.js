@@ -31,8 +31,6 @@ export const userRegisterRequest = (userInfo) => {
 };
 
 export const userLoginRequest = (userLogin) => {
-  console.log('login requested');
-
   return (dispatch) => {
     axiosAuth
       .post('/login', userLogin)
@@ -60,7 +58,6 @@ export const userLoginRequest = (userLogin) => {
 };
 
 export const userLogoutRequest = () => {
-  console.log('logout requested');
   return (dispatch) => {
     axiosAuth
       .delete('/logout', {
