@@ -5,7 +5,7 @@
   "scripts": {
     "express": "nodemon app.js",
     "auth": "nodemon authServer.js",
-    "client": "cd frontend && npm start"
+    "client": "cd ../frontend && npm start"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
