@@ -347,8 +347,8 @@ class ExpensesTable extends Component {
             >
               <span>{moment(expense.date).utc().format('MM/DD/YYYY')}</span>
             </td>
-            <td className='expense-action text-center'>
-              <div className='expense-normal h-100 d-flex align-items-center'>
+            <td className='expense-action'>
+              <div className='expense-normal'>
                 <FontAwesomeIcon
                   className='mr-1'
                   icon={faPen}
