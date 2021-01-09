@@ -318,7 +318,7 @@ class ExpensesTable extends Component {
             title={expense.title}
             amount={expense.amount}
             category={expense.category}
-            date={moment(expense.date).format('YYYY-MM-DD')}
+            date={moment(expense.date).utc().format('YYYY-MM-DD')}
             group_id={expense.group_id}
             description={expense.description}
           >
@@ -342,10 +342,10 @@ class ExpensesTable extends Component {
             </td>
             <td
               name='date'
-              orig={moment(expense.date).format('YYYY-MM-DD')}
+              orig={moment(expense.date).utc().format('YYYY-MM-DD')}
               onClick={this.onClickRow}
             >
-              <span>{moment(expense.date).format('MM/DD/YYYY')}</span>
+              <span>{moment(expense.date).utc().format('MM/DD/YYYY')}</span>
             </td>
             <td className='expense-action text-center'>
               <div className='expense-normal h-100 d-flex align-items-center'>

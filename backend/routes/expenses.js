@@ -243,11 +243,14 @@ router.post(
     if (!err.isEmpty()) {
       res.status(400).json(err.errors);
     } else {
+      const date = new Date(req.body.date);
+      const serverTimezonOffset = date.getTimezoneOffset() * 60000;
+      const utcDate = new Date(date.getTime() - serverTimezonOffset);
       let query = {
         user_id: mongoose.Types.ObjectId(req.body.user_id),
         title: req.body.title,
         amount: req.body.amount,
-        date: req.body.date,
+        date: utcDate,
         category: req.body.category,
       };
       if (!req.body.group_id && req.user.default_group_id)
@@ -280,6 +283,11 @@ router.put(
     if (!err.isEmpty()) {
       res.status(400).json(err.errors);
     } else {
+      if (req.body.date) {
+        const date = new Date(req.body.date);
+        const serverTimezonOffset = date.getTimezoneOffset() * 60000;
+        req.body.date = new Date(date.getTime() - serverTimezonOffset);
+      }
       Expense.findOneAndUpdate(
         { _id: req.params.expense_id },
         req.body,
