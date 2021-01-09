@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import NavBar from './components/navBar';
 import LandingPage from './containers/home/landingPage';
@@ -24,11 +25,29 @@ class App extends Component {
           <Route path='/expenses' component={Expenses} />
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
-          <Route render={() => <Redirect to={{ pathname: '/' }} />} />
+          <Route
+            render={() => {
+              return (
+                <Redirect
+                  to={this.props.isAuthenticated ? '/dashboard' : '/'}
+                />
+              );
+            }}
+          />
         </div>
       </Router>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.users.isAuthenticated,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
