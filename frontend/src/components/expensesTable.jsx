@@ -347,8 +347,8 @@ class ExpensesTable extends Component {
             >
               <span>{moment(expense.date).utc().format('MM/DD/YYYY')}</span>
             </td>
-            <td className='expense-action text-center'>
-              <div className='expense-normal h-100 d-flex align-items-center'>
+            <td className='expense-action'>
+              <div className='expense-normal'>
                 <FontAwesomeIcon
                   className='mr-1'
                   icon={faPen}
@@ -405,8 +405,8 @@ class ExpensesTable extends Component {
                 <Form.Label>Title</Form.Label>
                 <Form.Control
                   name='title'
-                  value={this.state.editExpense.title || ''}
-                  onChange={this.onEditChange}
+                  defaultValue={this.state.editExpense.title || ''}
+                  onBlur={this.onEditChange}
                 />
               </Form.Group>
               <Form.Group as={Col}>
@@ -414,8 +414,8 @@ class ExpensesTable extends Component {
                 <Form.Control
                   name='amount'
                   type='number'
-                  value={this.state.editExpense.amount || ''}
-                  onChange={this.onEditChange}
+                  defaultValue={this.state.editExpense.amount || ''}
+                  onBlur={this.onEditChange}
                 />
               </Form.Group>
             </Form.Row>
@@ -434,8 +434,8 @@ class ExpensesTable extends Component {
                 <Form.Control
                   name='date'
                   type='date'
-                  value={this.state.editExpense.date || ''}
-                  onChange={this.onEditChange}
+                  defaultValue={this.state.editExpense.date || ''}
+                  onBlur={this.onEditChange}
                 />
               </Form.Group>
             </Form.Row>
@@ -445,7 +445,7 @@ class ExpensesTable extends Component {
                 <Form.Control
                   name='group_id'
                   as='select'
-                  value={this.state.editExpense.group_id || ''}
+                  defaultValue={this.state.editExpense.group_id || ''}
                   onChange={this.onEditChange}
                   disabled={!this.props.groups || !this.props.groups.length > 0}
                 >
@@ -466,8 +466,8 @@ class ExpensesTable extends Component {
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                   name='description'
-                  value={this.state.editExpense.description || ''}
-                  onChange={this.onEditChange}
+                  defaultValue={this.state.editExpense.description || ''}
+                  onBlur={this.onEditChange}
                 />
               </Form.Group>
             </Form.Row>

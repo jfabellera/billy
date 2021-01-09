@@ -31,27 +31,21 @@
 }
 
 .expenses-table tbody tr:hover svg:hover {
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 .expenses-table tbody tr:hover td:not(.expense-action) {
   cursor: pointer;
 }
 
-.expense-normal,
-.expense-confirm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+.expense-normal {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .expense-normal svg {
   visibility: hidden;
-}
-
-.expense-confirm svg {
-  visibility: visibile;
 }
 
 .expense-delete {
