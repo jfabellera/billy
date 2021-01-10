@@ -25,7 +25,7 @@ h1 {
 }
 
 .drawer:hover, .user-buttons:hover {
-  color: #1890ff;
+  color: #1890ff !important;
 }
 
 .logo {
