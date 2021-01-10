@@ -1,40 +1,48 @@
-html {
-  /* Disable user select */
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
+.ant-layout-header {
+  line-height: inherit !important;
 }
 
-.flex-fill {
-  flex: 1;
+.navbar-icon {
+  font-size: 20px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
 }
 
-input[type='date']::-webkit-calendar-picker-indicator {
-  position: absolute;
+.user-buttons {
+  font-size: 18px;
+  padding: 0 24px;
+}
+
+.navbar-icon:hover, .user-buttons:hover {
+  color: #1890ff;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo h2,
+.logo {
+  color: white;
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.dim-overlay {
+  position: fixed;
+  z-index: 50;
   top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  color: transparent;
-  border: 0;
-  background: transparent;
-}
-
-input[type='date']::-webkit-calendar-picker-indicator:active {
-  border: 0;
-}
-
-/* Hide number input spinners */
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-/* Firefox */
-input[type='number'] {
-  -moz-appearance: textfield;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  background-color: black;
+  transition: all 0.15s linear;
 }
