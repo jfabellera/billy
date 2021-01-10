@@ -5,7 +5,7 @@ import axiosAPI from '../../helpers/axiosAPI';
 
 export const userRegisterRequest = (userInfo) => {
   return (dispatch) => {
-    axiosAPI
+    return axiosAPI
       .post('/users', userInfo)
       .then((res) => {
         // log user in
@@ -32,7 +32,7 @@ export const userRegisterRequest = (userInfo) => {
 
 export const userLoginRequest = (userLogin) => {
   return (dispatch) => {
-    axiosAuth
+    return axiosAuth
       .post('/login', userLogin)
       .then((res) => {
         // logged in
@@ -59,7 +59,7 @@ export const userLoginRequest = (userLogin) => {
 
 export const userLogoutRequest = () => {
   return (dispatch) => {
-    axiosAuth
+    return axiosAuth
       .delete('/logout', {
         data: { token: localStorage.getItem('refreshToken') },
       })

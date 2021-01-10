@@ -6,7 +6,23 @@ class LandingPage extends Component {
   render() {
     if (this.props.isAuthenticated) {
       return <Redirect to='/dashboard' />;
-    } else return 'hi bro';
+    } else
+      return (
+        <>
+          <div
+            style={{
+              display: 'flex',
+              flex: 1,
+              height: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontSize: '10vmax',
+            }}
+          >
+            Billy
+          </div>
+        </>
+      );
   }
 }
 

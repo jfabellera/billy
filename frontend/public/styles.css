@@ -1,20 +1,30 @@
+h1 {
+  font-size: 2.5em;
+}
+
 .ant-layout-header {
   line-height: inherit !important;
 }
 
-.navbar-icon {
+.ant-layout-content {
+  margin: 0 !important;
+}
+
+.drawer {
   font-size: 20px;
   padding: 0 24px;
   cursor: pointer;
   transition: color 0.3s;
+  color: white !important;
 }
 
 .user-buttons {
-  font-size: 18px;
+  font-size: 16px;
   padding: 0 24px;
+  color: white;
 }
 
-.navbar-icon:hover, .user-buttons:hover {
+.drawer:hover, .user-buttons:hover {
   color: #1890ff;
 }
 
@@ -31,7 +41,7 @@
   color: white;
 }
 
-.site-layout .site-layout-background {
+.site-layout{
   background: #fff;
 }
 
