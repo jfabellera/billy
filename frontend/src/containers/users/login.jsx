@@ -7,11 +7,14 @@ import { Form, Input, Button, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 class Login extends Component {
-  state = {
-    username: '',
-    password: '',
-    submitted: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: '',
+      submitted: false,
+    };
+  }
 
   displayInvalid = () => {
     if (this.state.submitted && this.props.invalidUser) {

@@ -25,6 +25,8 @@ export const getUserExpenses = (options) => {
     if (!token) return;
     const username = jwt.decode(token).user.username;
 
+    if (!options.group_id) delete options['group_id'];
+
     // construct query params from options
     let query = '';
     if (options) {

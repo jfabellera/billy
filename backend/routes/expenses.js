@@ -25,6 +25,7 @@ const validateGetExpenses = [
   check(['start_date', 'end_date'], 'Invalid date format').optional(),
   check('search').optional().isString(),
   check('group_id').optional().isMongoId(),
+  check('category').optional(),
   check('per_page', 'Invalid number').optional().isInt({ min: 1, max: 100 }),
   check('page', 'Invalid number').optional().isInt({ min: 1 }),
 ];
@@ -83,6 +84,11 @@ getExpenses = async (req, res) => {
     // Group
     if (req.query.group_id) {
       query.group_id = req.query.group_id;
+    }
+
+    // Category
+    if (req.query.category) {
+      query.category = req.query.category;
     }
 
     // handle username

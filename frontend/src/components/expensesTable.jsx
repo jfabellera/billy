@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   getUserExpenses,
-  editExpense,
-  deleteExpense,
   getUserCategories,
 } from '../store/actions/expensesActions';
 import moment from 'moment';
@@ -12,38 +10,6 @@ import './expensesTable.css';
 
 import { Card, Table, Row, Col, Typography, Input } from 'antd';
 const { Title } = Typography;
-const columns = [
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    sorter: true,
-    ellipsis: true,
-    showSorterTooltip: false,
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'amount',
-    sorter: true,
-    ellipsis: true,
-    showSorterTooltip: false,
-  },
-  {
-    title: 'Category',
-    dataIndex: 'category',
-    sorter: true,
-    responsive: ['lg'],
-    ellipsis: true,
-    showSorterTooltip: false,
-  },
-  {
-    title: 'Date',
-    dataIndex: 'date',
-    sorter: true,
-    defaultSortOrder: 'descend',
-    render: (date) => moment(date).format('MM/DD/YY'),
-    showSorterTooltip: false,
-  },
-];
 
 class ExpensesTable extends Component {
   constructor(props) {
@@ -59,6 +25,8 @@ class ExpensesTable extends Component {
         per_page: 100,
         page: 1,
         search: '',
+        category: '',
+        group_id: '',
       },
     };
   }
@@ -74,8 +42,52 @@ class ExpensesTable extends Component {
     }
   }
 
+  getColumns = () => {
+    return [
+      {
+        title: 'Title',
+        dataIndex: 'title',
+        sorter: true,
+        ellipsis: true,
+        showSorterTooltip: false,
+      },
+      {
+        title: 'Amount',
+        dataIndex: 'amount',
+        sorter: true,
+        ellipsis: true,
+        showSorterTooltip: false,
+      },
+      {
+        title: 'Category',
+        dataIndex: 'category',
+        sorter: true,
+        responsive: ['lg'],
+        ellipsis: true,
+        showSorterTooltip: false,
+        filters: this.props.categories
+          ? this.props.categories.map((cat) => {
+              return { text: cat, value: cat };
+            })
+          : [],
+      },
+      {
+        title: 'Date',
+        dataIndex: 'date',
+        sorter: true,
+        defaultSortOrder: 'descend',
+        render: (date) => moment(date).format('MM/DD/YY'),
+        showSorterTooltip: false,
+      },
+    ];
+  };
+
   handleTableChange = (pagination, filters, sorter) => {
-    let query = { ...this.state.query, page: pagination.current };
+    let query = {
+      ...this.state.query,
+      page: pagination.current,
+      category: filters.category,
+    };
     if (sorter.order) {
       query.sort = sorter.field;
       query.direction = sorter.order === 'ascend' ? 'asc' : 'dsc';
@@ -131,7 +143,7 @@ class ExpensesTable extends Component {
         <Row style={{ display: 'flex', flex: 1 }}>
           <Table
             dataSource={this.state.expenses}
-            columns={columns}
+            columns={this.getColumns()}
             pagination={{
               current: this.state.query.page,
               total: this.state.totalExpenses,
@@ -143,6 +155,7 @@ class ExpensesTable extends Component {
             scroll={{ x: false, y: true }}
             onChange={this.handleTableChange}
             loading={this.state.loading}
+            rowKey='_id'
           />
         </Row>
       </Card>
