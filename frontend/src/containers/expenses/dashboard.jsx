@@ -11,7 +11,7 @@ import {
 import { getGroups } from '../../store/actions/groupsActions';
 import moment from 'moment';
 
-// import ExpensesTable from '../../components/expensesTable';
+import ExpensesTable from '../../components/expensesTable';
 import Totals from '../../components/totals';
 // import CategoriesPieChart from '../../components/categoriesPieChart';
 import NewExpense from '../../components/newExpense';
@@ -29,10 +29,6 @@ class Dashboard extends Component {
     };
 
     this.props.getGroups();
-    this.props.getUserExpenses({
-      start_date: this.state.start_date,
-      end_date: this.state.end_date,
-    });
     this.update();
   }
 
@@ -59,29 +55,38 @@ class Dashboard extends Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to='/' />;
     }
-    if (this.props.expenses !== null && this.props.groups !== null)
-      return (
-        <>
-          <Row gutter={[16, 16]}>
+    return (
+      <>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+          <Row gutter={[16, 16]} style={{}}>
             <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 0 }}>
-              <NewExpense categories={this.props.categories} groups={this.props.groups} />
+              <NewExpense
+                categories={this.props.categories}
+                groups={this.props.groups}
+              />
             </Col>
             <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 1 }}>
               <Totals />
             </Col>
           </Row>
-          <Row gutter={16}>
-            <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 0 }}>
-              Table
+          <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
+            <Col
+              xs={{ span: 24, order: 0 }}
+              md={{ span: 12, order: 0 }}
+              style={{ height: '100%' }}
+            >
+              <ExpensesTable />
             </Col>
             <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
               Graphs n stuff
               {/* <CategoriesPieChart /> */}
             </Col>
           </Row>
-        </>
-      );
-    else return null;
+        </div>
+      </>
+    );
   }
 }
 

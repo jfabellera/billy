@@ -35,14 +35,10 @@ export const getUserExpenses = (options) => {
     return axiosAPI
       .get('/users/' + username + '/expenses' + query)
       .then((res) => {
-        const per_page = options.per_page ? options.per_page : 100;
-        const total = Math.ceil(res.data.total / per_page);
         dispatch({
           type: actionTypes.GET_USER_EXPENSES,
-          expenses: res.data.expenses,
-          totalExpenses: res.data.total,
-          totalPages: total > 0 ? total : 1,
         });
+        return res.data;
       })
       .catch((err) => {
         // TODO
@@ -65,7 +61,7 @@ export const addNewExpense = (expense) => {
       .get('/users/' + username)
       .then((res) => {
         expense.user_id = res.data._id;
-        expense.date = moment(expense.date).format('YYYY/MM/DD')
+        expense.date = moment(expense.date).format('YYYY/MM/DD');
         expense.category = expense.category || 'Other';
         axiosAPI
           .post('/expenses', expense)
