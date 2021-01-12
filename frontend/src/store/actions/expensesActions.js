@@ -65,6 +65,8 @@ export const addNewExpense = (expense) => {
       .get('/users/' + username)
       .then((res) => {
         expense.user_id = res.data._id;
+        expense.date = moment(expense.date).format('YYYY/MM/DD')
+        expense.category = expense.category || 'Other';
         axiosAPI
           .post('/expenses', expense)
           .then((res) => {

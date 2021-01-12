@@ -1,6 +1,9 @@
-h1 {
-  font-size: 2.5em;
+.card-hover:hover {
+  background-color: rgb(228, 228, 228);
+  cursor: pointer;
 }
+
+
 
 .ant-layout-header {
   line-height: inherit !important;

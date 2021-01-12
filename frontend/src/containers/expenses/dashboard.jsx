@@ -11,12 +11,12 @@ import {
 import { getGroups } from '../../store/actions/groupsActions';
 import moment from 'moment';
 
-import ExpensesTable from '../../components/expensesTable';
-import NewExpenseForm from '../../components/newExpenseForm';
+// import ExpensesTable from '../../components/expensesTable';
 import Totals from '../../components/totals';
-import CategoriesPieChart from '../../components/categoriesPieChart';
+// import CategoriesPieChart from '../../components/categoriesPieChart';
+import NewExpense from '../../components/newExpense';
 
-import { Col } from 'react-bootstrap';
+import { Row, Col } from 'antd';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -59,29 +59,27 @@ class Dashboard extends Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to='/' />;
     }
-    if (
-      this.props.monthlyTotal !== null &&
-      this.props.yearlyTotal !== null &&
-      this.props.expenses !== null &&
-      this.props.groups !== null
-    )
+    if (this.props.expenses !== null && this.props.groups !== null)
       return (
-        <div className='d-flex flex-fill overflow-hidden'>
-          <Col className='d-flex flex-column w-100'>
-            <div className='py-3'>
-              <NewExpenseForm />
-            </div>
-            <div className='d-flex flex-fill pb-3'>
-              <ExpensesTable title='Monthly expenses' variant='currentMonth' />
-            </div>
-          </Col>
-          <Col className='w-100'>
-            <Totals />
-            <div className='mx-auto' style={{ width: '50%' }}>
-              <CategoriesPieChart />
-            </div>
-          </Col>
-        </div>
+        <>
+          <Row gutter={[16, 16]}>
+            <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 0 }}>
+              <NewExpense categories={this.props.categories} groups={this.props.groups} />
+            </Col>
+            <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 1 }}>
+              <Totals />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 0 }}>
+              Table
+            </Col>
+            <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
+              Graphs n stuff
+              {/* <CategoriesPieChart /> */}
+            </Col>
+          </Row>
+        </>
       );
     else return null;
   }
