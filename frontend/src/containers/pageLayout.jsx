@@ -26,9 +26,11 @@ class PageLayout extends Component {
       collapsed: true,
       broken: false,
       sidebarKey: 1,
+      userMenuVisible: false,
     };
     this.sidebar = React.createRef();
   }
+
   onClickOutside = (event) => {
     if (
       this.sidebar &&
@@ -38,6 +40,7 @@ class PageLayout extends Component {
       this.setState({ collapsed: true });
     }
   };
+
   componentDidMount() {
     document.addEventListener('mousedown', this.onClickOutside);
   }
@@ -45,6 +48,7 @@ class PageLayout extends Component {
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.onClickOutside);
   }
+
   // Sidebar links for logged in users
   userLinks = () => {
     return (
@@ -76,15 +80,35 @@ class PageLayout extends Component {
     );
   };
 
+  // To prevent memory leak when dropdown is unmounted
+  handleMenuClick = (e) => {
+    if (e.key !== '/logout') {
+      this.setState({ userMenuVisible: false });
+    }
+  };
+
+  handleVisibleChange = (flag) => {
+    this.setState({ userMenuVisible: flag });
+  };
+
   // Account drop down for logged in user
   userMenu = () => {
     return (
-      <Menu style={{ float: 'right' }}>
-        <Menu.Item key='1'>
+      <Menu style={{ float: 'right' }} onClick={this.handleMenuClick}>
+        <Menu.Item key='/account'>
           <Link to='/account'>Account</Link>
         </Menu.Item>
-        <Menu.Item key='2' onClick={this.props.userLogoutRequest}>
-          <Link to='/'>Logout</Link>
+        <Menu.Item key='/logout'>
+          <Link
+            to='/'
+            onClick={() => {
+              this.props
+                .userLogoutRequest()
+                .then(() => this.setState({ userMenuVisible: false }));
+            }}
+          >
+            Logout
+          </Link>
         </Menu.Item>
       </Menu>
     );
@@ -98,6 +122,8 @@ class PageLayout extends Component {
           overlay={this.userMenu()}
           trigger={['click']}
           placement='bottomRight'
+          onVisibleChange={this.handleVisibleChange}
+          visible={this.state.userMenuVisible}
           arrow
           align='right'
         >

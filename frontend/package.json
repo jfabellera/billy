@@ -10,7 +10,6 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.5.0",
-    "animated-number-react": "^0.1.1",
     "antd": "^4.10.0",
     "apexcharts": "^3.23.1",
     "axios": "^0.21.1",
@@ -32,6 +31,7 @@
     "react-scroll": "^1.8.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "sa-animated-number-react": "^0.1.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

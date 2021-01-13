@@ -3,34 +3,49 @@ import { connect } from 'react-redux';
 import { userLoginRequest } from '../../store/actions/usersActions';
 import { Redirect } from 'react-router-dom';
 
-import { Form, Input, Button, Card } from 'antd';
+import { Form, Input, Button, Card, Typography } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
 
 class Login extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false;
     this.state = {
       username: '',
       password: '',
-      submitted: false,
+      invalid: false,
+      loading: false,
     };
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   displayInvalid = () => {
-    if (this.state.submitted && this.props.invalidUser) {
+    if (this.state.invalid) {
       return (
         <p style={{ color: 'red', textAlign: 'center' }}>
           Invalid username or password
         </p>
       );
-    }
-    return null;
+    } else return null;
   };
 
   onSubmit = (user) => {
-    this.props.userLoginRequest(user).then(() => {
-      this.setState({ submitted: true });
-    });
+    if (this._isMounted)
+      this.setState({ loading: true }, () => {
+        this.props.userLoginRequest(user).then((valid) => {
+          if (this._isMounted && !valid)
+            this.setState({ invalid: true, loading: false });
+        });
+      });
   };
 
   render() {
@@ -48,7 +63,7 @@ class Login extends Component {
         }}
       >
         <Card style={{ width: '400px' }} bordered>
-          <h1 style={{ textAlign: 'center' }}>Login</h1>
+          <Title level={2} style={{ textAlign: 'center' }}>Login</Title>
           <Form
             name='normal_login'
             initialValues={{
@@ -84,7 +99,11 @@ class Login extends Component {
             </Form.Item>
 
             <Form.Item style={{ textAlign: 'center' }}>
-              <Button type='primary' htmlType='submit'>
+              <Button
+                type='primary'
+                htmlType='submit'
+                loading={this.state.loading}
+              >
                 Log in
               </Button>
             </Form.Item>
@@ -99,7 +118,6 @@ class Login extends Component {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.users.isAuthenticated,
-    invalidUser: state.users.invalidUser,
   };
 };
 

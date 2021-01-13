@@ -14,7 +14,7 @@ const { Title } = Typography;
 class ExpensesTable extends Component {
   constructor(props) {
     super(props);
-
+    this._isMounted = false;
     this.state = {
       loading: true,
       expenses: [],
@@ -32,11 +32,16 @@ class ExpensesTable extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.fetchExpenses();
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidUpdate() {
-    if (this.state.update !== this.props.update) {
+    if (this._isMounted && this.state.update !== this.props.update) {
       this.setState({ update: this.props.update });
       this.fetchExpenses();
     }
@@ -95,26 +100,29 @@ class ExpensesTable extends Component {
       query.sort = 'date';
       query.direction = 'dsc';
     }
-    this.setState({ query: query }, this.fetchExpenses);
+    if (this._isMounted) this.setState({ query: query }, this.fetchExpenses);
   };
 
   handleSearchChange = (e) => {
-    this.setState(
-      { query: { ...this.state.query, search: e.target.value, page: 1 } },
-      this.fetchExpenses
-    );
+    if (this._isMounted)
+      this.setState(
+        { query: { ...this.state.query, search: e.target.value, page: 1 } },
+        this.fetchExpenses
+      );
   };
 
   fetchExpenses = () => {
-    this.setState({ loading: true }, () => {
-      this.props.getUserExpenses(this.state.query).then((data) => {
-        this.setState({
-          loading: false,
-          expenses: data.expenses,
-          totalExpenses: data.total,
+    if (this._isMounted)
+      this.setState({ loading: true }, () => {
+        this.props.getUserExpenses(this.state.query).then((data) => {
+          if (this._isMounted)
+            this.setState({
+              loading: false,
+              expenses: data.expenses,
+              totalExpenses: data.total,
+            });
         });
       });
-    });
   };
 
   render() {

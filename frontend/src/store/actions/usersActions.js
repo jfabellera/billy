@@ -44,6 +44,7 @@ export const userLoginRequest = (userLogin) => {
           type: actionTypes.LOGIN_SUCCESSFUL,
           authenticatedUser: jwt.decode(res.data.refreshToken).user,
         });
+        return true;
       })
       .catch((err) => {
         if (err.response) {
@@ -51,6 +52,7 @@ export const userLoginRequest = (userLogin) => {
             dispatch({
               type: actionTypes.LOGIN_UNSUCCESSFUL,
             });
+            return false;
           }
         }
       });

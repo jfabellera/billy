@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import AnimatedNumber from 'animated-number-react';
+import AnimatedNumber from 'sa-animated-number-react';
 import { Row, Col, Card, Skeleton } from 'antd';
 
 import './totals.css';
@@ -12,6 +12,7 @@ const totalSkeleton = (
 class Totals extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false;
     this.state = {
       cardWidth: '50',
     };
@@ -19,16 +20,19 @@ class Totals extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.setState({ cardWidth: this.card.current.offsetWidth });
     window.addEventListener('resize', this.onResize);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     window.removeEventListener('resize', this.onResize);
   }
 
   onResize = () => {
-    this.setState({ cardWidth: this.card.current.offsetWidth });
+    if (this._isMounted)
+      this.setState({ cardWidth: this.card.current.offsetWidth });
   };
 
   totalCard = (title, total, color, visible) => {
@@ -36,7 +40,7 @@ class Totals extends Component {
       <Col span={12}>
         <div ref={this.card} style={{ height: '100%' }}>
           <Card
-          className='card-hover'
+            className='card-hover'
             style={{ height: '100%' }}
             bodyStyle={{
               height: '100%',
@@ -65,6 +69,7 @@ class Totals extends Component {
   };
 
   formatValue = (value) => `$ ${Number(value).toFixed(2)}`;
+
   render() {
     return (
       <Row gutter={[16]} style={{ height: '100%' }}>
