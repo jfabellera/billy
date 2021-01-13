@@ -91,9 +91,8 @@ class Login extends Component {
                 },
               ]}
             >
-              <Input
+              <Input.Password
                 prefix={<LockOutlined />}
-                type='password'
                 placeholder='Password'
               />
             </Form.Item>

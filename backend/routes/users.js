@@ -109,7 +109,7 @@ router.get(
 router.post(
   '/',
   [
-    check('username', 'Username is required').exists(),
+    check('username', 'Username is required').exists().isAlphanumeric(),
     check('password', 'Password is required').exists(),
     check('name').customSanitizer((name) => {
       let newName = { first: '', last: '' };

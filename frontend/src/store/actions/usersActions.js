@@ -15,16 +15,11 @@ export const userRegisterRequest = (userInfo) => {
             password: userInfo.password,
           })
         );
+        return Promise.resolve();
       })
       .catch((err) => {
         if (err.response) {
-          // Username is taken
-          if (err.response.status === 409) {
-            dispatch({
-              type: actionTypes.REGISTER_USERNAME_TAKEN,
-              usernameTaken: true,
-            });
-          }
+          return Promise.reject();
         }
       });
   };

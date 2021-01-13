@@ -39,16 +39,6 @@ const reducer = (state = initialState, action) => {
         authenticatedUser: null,
       };
     }
-    case actionTypes.REGISTER_SUCCESSFUL: {
-      return {
-        ...state,
-      };
-    }
-    case actionTypes.REGISTER_USERNAME_TAKEN: {
-      return {
-        ...state,
-      };
-    }
     default:
       return state;
   }

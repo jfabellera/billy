@@ -77,13 +77,13 @@ class Totals extends Component {
           'Monthly total',
           this.props.monthlyTotal,
           'green',
-          this.props.monthlyTotal & this.props.yearlyTotal
+          !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
         )}
         {this.totalCard(
           'Yearly total',
           this.props.yearlyTotal,
           'gold',
-          this.props.monthlyTotal & this.props.yearlyTotal
+          !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
         )}
       </Row>
     );
