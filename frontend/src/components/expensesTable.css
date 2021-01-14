@@ -13,19 +13,50 @@
   flex: auto;
   overflow: hidden;
 }
-.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table .ant-table-container {
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table
+  .ant-table-container {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
 }
-.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table .ant-table-container .ant-table-header {
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table
+  .ant-table-container
+  .ant-table-header {
   flex: none;
 }
-.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table .ant-table-container .ant-table-body {
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table
+  .ant-table-container
+  .ant-table-body {
   height: 0px;
   flex: auto;
   overflow: scroll;
 }
-.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table-pagination {
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table-pagination {
   flex: none;
+}
+
+.table-row:hover {
+  cursor: pointer;
+}
+
+.sub-table-row .ant-table-cell {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+
 }

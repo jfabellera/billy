@@ -42,7 +42,7 @@ const ExpenseForm = (props) => {
   return (
     <Modal
       visible={props.visible}
-      title='New expense'
+      title={props.title}
       onOk={null}
       onCancel={onCancel}
       footer={[

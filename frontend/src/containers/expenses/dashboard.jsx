@@ -80,7 +80,6 @@ class Dashboard extends Component {
               <ExpensesTable />
             </Col>
             <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
-              Graphs n stuff
               {/* <CategoriesPieChart /> */}
             </Col>
           </Row>

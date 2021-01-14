@@ -6,9 +6,11 @@ import {
 } from '../store/actions/expensesActions';
 import moment from 'moment';
 
-import './expensesTable.css';
+import ExpandedRow from './expenseTableExpandedRow';
+import ExpenseForm from './expenseForm';
 
-import { Card, Table, Row, Col, Typography, Input } from 'antd';
+import './expensesTable.css';
+import { Card, Table, Row, Col, Typography, Input, Form } from 'antd';
 const { Title } = Typography;
 
 class ExpensesTable extends Component {
@@ -28,7 +30,9 @@ class ExpensesTable extends Component {
         category: '',
         group_id: '',
       },
+      expandedRowId: null,
     };
+    this.form = React.createRef();
   }
 
   componentDidMount() {
@@ -100,7 +104,8 @@ class ExpensesTable extends Component {
       query.sort = 'date';
       query.direction = 'dsc';
     }
-    if (this._isMounted) this.setState({ query: query }, this.fetchExpenses);
+    if (this._isMounted)
+      this.setState({ query: query, expandedRowId: null }, this.fetchExpenses);
   };
 
   handleSearchChange = (e) => {
@@ -125,48 +130,75 @@ class ExpensesTable extends Component {
       });
   };
 
+  onRowExpand = (e) => {
+    this.setState({ expandedRowId: e[1] }, () => {
+      if (e[1]) {
+        // this.form.setFields([{ name: 'test', value: 'hi' }]);
+        // console.log(this.form);
+      }
+    });
+  };
+
   render() {
     return (
-      <Card
-        style={{ height: '100%' }}
-        bodyStyle={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          paddingBottom: '6px',
-        }}
-      >
-        <Row>
-          <Col span={12}>
-            <Title level={3}>Expenses</Title>
-          </Col>
-          <Col span={12}>
-            <Input
-              style={{ float: 'right', maxWidth: '300px' }}
-              placeholder='Search...'
-              onChange={this.handleSearchChange}
+      <>
+        <Card
+          style={{ height: '100%' }}
+          bodyStyle={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            paddingBottom: '6px',
+          }}
+        >
+          <Row>
+            <Col span={12}>
+              <Title level={3}>Expenses</Title>
+            </Col>
+            <Col span={12}>
+              <Input
+                style={{ float: 'right', maxWidth: '300px' }}
+                placeholder='Search...'
+                onChange={this.handleSearchChange}
+              />
+            </Col>
+          </Row>
+          <Row style={{ display: 'flex', flex: 1 }}>
+            <Table
+              dataSource={this.state.expenses}
+              columns={this.getColumns()}
+              pagination={{
+                current: this.state.query.page,
+                total: this.state.totalExpenses,
+                pageSize: this.state.query.per_page,
+                responsive: true,
+                showSizeChanger: false,
+                position: ['bottomCenter'],
+              }}
+              scroll={{ x: false, y: true }}
+              onChange={this.handleTableChange}
+              loading={this.state.loading}
+              rowKey='_id'
+              expandable={{
+                expandedRowKeys: [this.state.expandedRowId],
+                expandIconColumnIndex: -1,
+                expandRowByClick: true,
+                expandedRowRender: (expense) => (
+                  <ExpandedRow expense={expense} />
+                ),
+                onExpandedRowsChange: this.onRowExpand,
+              }}
+              rowClassName='table-row'
             />
-          </Col>
-        </Row>
-        <Row style={{ display: 'flex', flex: 1 }}>
-          <Table
-            dataSource={this.state.expenses}
-            columns={this.getColumns()}
-            pagination={{
-              current: this.state.query.page,
-              total: this.state.totalExpenses,
-              pageSize: this.state.query.per_page,
-              responsive: true,
-              showSizeChanger: false,
-              position: ['bottomCenter'],
-            }}
-            scroll={{ x: false, y: true }}
-            onChange={this.handleTableChange}
-            loading={this.state.loading}
-            rowKey='_id'
-          />
-        </Row>
-      </Card>
+          </Row>
+        </Card>
+        <ExpenseForm
+          title='Edit expense'
+          form={this.form}
+          visible={false}
+          optionsVisibile={true}
+        />
+      </>
     );
   }
 }

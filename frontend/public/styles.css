@@ -3,7 +3,11 @@
   cursor: pointer;
 }
 
-
+.text-overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .ant-layout-header {
   line-height: inherit !important;

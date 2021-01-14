@@ -162,6 +162,7 @@ const NewExpense = (props) => {
       )}
       <ExpenseForm
         form={form}
+        title='New expense'
         visible={visible}
         optionsVisible={optionsVisible}
         onCancel={() => {
