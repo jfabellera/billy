@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Input,
@@ -12,6 +12,7 @@ import {
   InputNumber,
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -27,11 +28,47 @@ const ExpenseForm = (props) => {
   const [newlyOpened, setNewlyOpened] = useState(true);
   const [form] = Form.useForm(props.form);
 
-  // override optionsVisible when opened
-  if (props.visible && newlyOpened) {
-    setOptionsVisible(props.optionsVisible);
-    setNewlyOpened(false);
-  }
+  const categories = props.categories
+    ? props.categories.map((cat) => {
+        return { label: cat, value: cat };
+      })
+    : [];
+
+  useEffect(() => {
+    // override optionsVisible when opened
+    if (props.visible && newlyOpened) {
+      setOptionsVisible(props.optionsVisible);
+      setNewlyOpened(false);
+      if (props.editExpense) {
+        let expense = {
+          _id: props.editExpense._id,
+          title: props.editExpense.title,
+          amount: props.editExpense.amount,
+          category: props.editExpense.category,
+          date: moment(props.editExpense.date).utc(),
+          group_id: props.groups
+            .map((group) => group._id)
+            .includes(props.editExpense.group_id)
+            ? props.editExpense.group_id
+            : null,
+          description: props.editExpense.description || null,
+        };
+        form.setFields(
+          Object.keys(expense).map((key) => ({
+            name: key,
+            value: expense[key],
+          }))
+        );
+      }
+    }
+  }, [
+    props.visible,
+    props.optionsVisible,
+    props.editExpense,
+    props.groups,
+    newlyOpened,
+    form,
+  ]);
 
   const onCancel = () => {
     props.onCancel();
@@ -50,7 +87,7 @@ const ExpenseForm = (props) => {
           Cancel
         </Button>,
         <Button
-          form='expense-form'
+          form={props.formId}
           key='submit'
           type='primary'
           htmlType='submit'
@@ -60,16 +97,22 @@ const ExpenseForm = (props) => {
       ]}
     >
       <Form
+        name='expense-form'
         form={form}
-        id='expense-form'
+        id={props.formId}
         layout='vertical'
-        onFinish={props.onSubmit}
+        onFinish={(expense) => {
+          if (props.editExpense) {
+            expense = { ...expense, _id: props.editExpense._id };
+          }
+          props.onSubmit(expense);
+        }}
         requiredMark={false}
       >
         <Row gutter={16}>
           <Col xs={12} md={12}>
-            <Form.Item label='Title' name='title' rules={rules}>
-              <Input placeholder='Title' />
+            <Form.Item label='Title' name='title' rules={rules} >
+              <Input placeholder='Title' suffix={null} />
             </Form.Item>
           </Col>
           <Col xs={12} md={12}>
@@ -90,7 +133,7 @@ const ExpenseForm = (props) => {
           <Col xs={12} md={12}>
             <Form.Item label='Category' name='category'>
               <AutoComplete
-                options={props.categories}
+                options={categories}
                 style={{ width: '100%' }}
                 placeholder='Category'
                 allowClear

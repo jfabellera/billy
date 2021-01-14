@@ -3,14 +3,17 @@ import { connect } from 'react-redux';
 import {
   getUserExpenses,
   getUserCategories,
+  editExpense,
+  deleteExpense,
 } from '../store/actions/expensesActions';
 import moment from 'moment';
 
 import ExpandedRow from './expenseTableExpandedRow';
 import ExpenseForm from './expenseForm';
+import DeleteForm from './deleteForm';
 
 import './expensesTable.css';
-import { Card, Table, Row, Col, Typography, Input, Form } from 'antd';
+import { Card, Table, Row, Col, Typography, Input } from 'antd';
 const { Title } = Typography;
 
 class ExpensesTable extends Component {
@@ -31,6 +34,10 @@ class ExpensesTable extends Component {
         group_id: '',
       },
       expandedRowId: null,
+      editFormVisible: false,
+      editExpense: null,
+      deleteFormVisible: false,
+      deleteExpense: null,
     };
     this.form = React.createRef();
   }
@@ -85,7 +92,7 @@ class ExpensesTable extends Component {
         dataIndex: 'date',
         sorter: true,
         defaultSortOrder: 'descend',
-        render: (date) => moment(date).format('MM/DD/YY'),
+        render: (date) => moment(date).utc().format('MM/DD/YY'),
         showSorterTooltip: false,
       },
     ];
@@ -131,12 +138,15 @@ class ExpensesTable extends Component {
   };
 
   onRowExpand = (e) => {
-    this.setState({ expandedRowId: e[1] }, () => {
-      if (e[1]) {
-        // this.form.setFields([{ name: 'test', value: 'hi' }]);
-        // console.log(this.form);
-      }
-    });
+    this.setState({ expandedRowId: e[1] });
+  };
+
+  onClickEdit = (expense) => {
+    this.setState({ editFormVisible: true, editExpense: expense });
+  };
+
+  onClickDelete = (expense) => {
+    this.setState({ deleteFormVisible: true, deleteExpense: expense });
   };
 
   render() {
@@ -184,7 +194,11 @@ class ExpensesTable extends Component {
                 expandIconColumnIndex: -1,
                 expandRowByClick: true,
                 expandedRowRender: (expense) => (
-                  <ExpandedRow expense={expense} />
+                  <ExpandedRow
+                    expense={expense}
+                    onClickEdit={this.onClickEdit}
+                    onClickDelete={this.onClickDelete}
+                  />
                 ),
                 onExpandedRowsChange: this.onRowExpand,
               }}
@@ -194,9 +208,35 @@ class ExpensesTable extends Component {
         </Card>
         <ExpenseForm
           title='Edit expense'
-          form={this.form}
-          visible={false}
-          optionsVisibile={true}
+          formId='edit-expense'
+          visible={this.state.editFormVisible}
+          optionsVisible={true}
+          onCancel={() =>
+            this.setState({ editFormVisible: false, editExpense: null })
+          }
+          editExpense={this.state.editExpense}
+          categories={this.props.categories}
+          groups={this.props.groups}
+          onSubmit={(expense) => {
+            this.props.editExpense(expense).then(() => {
+              this.setState({ editFormVisible: false, editExpense: null });
+            });
+          }}
+        />
+        <DeleteForm
+          title='Delete expense'
+          visible={this.state.deleteFormVisible}
+          onCancel={() =>
+            this.setState({ deleteFormVisible: false, deleteExpense: null })
+          }
+          onSubmit={() => {
+            this.props.deleteExpense(this.state.deleteExpense._id).then(() => {
+              this.setState({ deleteFormVisible: false, deleteExpense: null });
+            });
+          }}
+          itemName={
+            this.state.deleteExpense ? this.state.deleteExpense.title : ''
+          }
         />
       </>
     );
@@ -216,6 +256,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserExpenses: (options) => dispatch(getUserExpenses(options)),
     getUserCategories: () => dispatch(getUserCategories()),
+    editExpense: (expense) => dispatch(editExpense(expense)),
+    deleteExpense: (expense_id) => dispatch(deleteExpense(expense_id)),
   };
 };
 

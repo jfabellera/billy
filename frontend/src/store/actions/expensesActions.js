@@ -91,6 +91,11 @@ export const editExpense = (expense) => {
     const token = localStorage.getItem('accessToken');
     if (!token) return;
 
+    if (!expense.group_id) delete expense['group_id'];
+    if (!expense.description) delete expense['description'];
+    expense.date = moment(expense.date).format('YYYY/MM/DD');
+    expense.category = expense.category || 'Other';
+
     return axiosAPI
       .put('/expenses/' + expense._id, expense)
       .then((res) => {

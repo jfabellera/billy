@@ -33,11 +33,13 @@ const NewExpense = (props) => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
   const [optionsVisible, setOptionsVisible] = useState(false);
+
   const categories = props.categories
     ? props.categories.map((cat) => {
         return { label: cat, value: cat };
       })
     : [];
+
   const defaultGroup =
     props.groups && props.groups.length > 0
       ? props.groups[props.groups.findIndex((obj) => obj.default === true)]._id
@@ -55,7 +57,7 @@ const NewExpense = (props) => {
       {screens.md ? (
         <Card bodyStyle={{ paddingTop: '16px' }}>
           <Title level={3}>New expense</Title>
-          <Form form={form} onFinish={onSubmit}>
+          <Form form={form} onFinish={onSubmit} name='new-expense-form'>
             <Row gutter={[8, 8]}>
               <Col md={6}>
                 <Form.Item
@@ -162,13 +164,14 @@ const NewExpense = (props) => {
       )}
       <ExpenseForm
         form={form}
+        formId='new-expense'
         title='New expense'
         visible={visible}
         optionsVisible={optionsVisible}
         onCancel={() => {
           setVisible(false);
         }}
-        categories={categories}
+        categories={props.categories}
         groups={props.groups}
         onSubmit={onSubmit}
       />

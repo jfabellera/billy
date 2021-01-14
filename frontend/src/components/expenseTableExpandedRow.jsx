@@ -55,8 +55,20 @@ const ExpandedRow = (props) => {
         direction={!screens.md ? 'vertical' : 'horizontal'}
         style={{ marginLeft: '6px' }}
       >
-        <Button type='secondary' shape='circle' icon={<EditOutlined />} />
-        <Button type='secondary' shape='circle' icon={<DeleteOutlined />} />
+        <Button
+          type='secondary'
+          shape='circle'
+          icon={<EditOutlined />}
+          onClick={() => props.onClickEdit(props.expense)}
+        />
+        <Button
+          type='secondary'
+          shape='circle'
+          icon={<DeleteOutlined />}
+          onClick={() => {
+            props.onClickDelete(props.expense);
+          }}
+        />
       </Space>
     </div>
   );

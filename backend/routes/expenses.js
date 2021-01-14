@@ -263,6 +263,7 @@ router.post(
         date: removeTimeZoneOffset(req.body.date),
         category: req.body.category,
       };
+      console.log(query);
       if (!req.body.group_id && req.user.default_group_id)
         query.group_id = req.user.default_group_id;
       else if (req.body.group_id) query.group_id = req.body.group_id;
