@@ -9,8 +9,7 @@ import { getGroups } from '../../store/actions/groupsActions';
 import GroupManager from '../../components/groupManager';
 import ExpensesTable from '../../components/expensesTable';
 
-import './expenses.css';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'antd';
 
 class Expenses extends Component {
   constructor(props) {
@@ -37,20 +36,23 @@ class Expenses extends Component {
     }
     return (
       <>
-        <Row className='manage'>
-          <Col className='sidebar overflow-scroll' md='3'>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+        <Row gutter={16} style={{height: '100%'}}>
+          <Col xs={24} md={6}>
             <GroupManager onChange={this.onGroupChange} />
           </Col>
-          <Col md='9'>
+          <Col xs={24} md={18}>
             <ExpensesTable
               title={this.state.group_name}
-              style={{ border: 0 }}
               options={
                 this.state.group_id ? { group_id: this.state.group_id } : {}
               }
             />
           </Col>
         </Row>
+        </div>
       </>
     );
   }

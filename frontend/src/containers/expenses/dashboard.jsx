@@ -77,7 +77,13 @@ class Dashboard extends Component {
               md={{ span: 12, order: 0 }}
               style={{ height: '100%' }}
             >
-              <ExpensesTable />
+              <ExpensesTable
+                title={moment(new Date(this.state.start_date)).format('MMMM')}
+                options={{
+                  start_date: this.state.start_date,
+                  end_date: this.state.end_date,
+                }}
+              />
             </Col>
             <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
               {/* <CategoriesPieChart /> */}

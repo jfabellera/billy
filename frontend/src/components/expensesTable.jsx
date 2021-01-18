@@ -126,14 +126,16 @@ class ExpensesTable extends Component {
   fetchExpenses = () => {
     if (this._isMounted)
       this.setState({ loading: true }, () => {
-        this.props.getUserExpenses(this.state.query).then((data) => {
-          if (this._isMounted)
-            this.setState({
-              loading: false,
-              expenses: data.expenses,
-              totalExpenses: data.total,
-            });
-        });
+        this.props
+          .getUserExpenses({ ...this.state.query, ...this.props.options })
+          .then((data) => {
+            if (this._isMounted)
+              this.setState({
+                loading: false,
+                expenses: data.expenses,
+                totalExpenses: data.total,
+              });
+          });
       });
   };
 
@@ -163,7 +165,7 @@ class ExpensesTable extends Component {
         >
           <Row>
             <Col span={12}>
-              <Title level={3}>Expenses</Title>
+              <Title level={4}>{this.props.title || 'Expenses'}</Title>
             </Col>
             <Col span={12}>
               <Input
