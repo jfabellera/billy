@@ -6,7 +6,7 @@ import {
   refreshExpenses,
 } from '../../store/actions/expensesActions';
 import { getGroups } from '../../store/actions/groupsActions';
-import GroupManager from '../../components/groupManager';
+import GroupManager from '../../components/filterPanel';
 import ExpensesTable from '../../components/expensesTable';
 
 import { Row, Col } from 'antd';
@@ -32,26 +32,31 @@ class Expenses extends Component {
 
   render() {
     if (!this.props.isAuthenticated) {
-      return <Redirect to='/' />;
+      return <Redirect to="/" />;
     }
     return (
       <>
         <div
           style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
         >
-        <Row gutter={16} style={{height: '100%'}}>
-          <Col xs={24} md={6}>
-            <GroupManager onChange={this.onGroupChange} />
-          </Col>
-          <Col xs={24} md={18}>
-            <ExpensesTable
-              title={this.state.group_name}
-              options={
-                this.state.group_id ? { group_id: this.state.group_id } : {}
-              }
-            />
-          </Col>
-        </Row>
+          <Row gutter={[16, 16]} style={{ maxHeight: '33%'}}>
+            <Col xs={24} md={0} style={{}}>
+              <GroupManager onChange={this.onGroupChange} />
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} style={{ display: 'flex', flex: 1 }}>
+            <Col xs={0} md={8} style={{}}>
+              <GroupManager onChange={this.onGroupChange} />
+            </Col>
+            <Col xs={24} md={16} style={{}}>
+              <ExpensesTable
+                title={this.state.group_name}
+                options={
+                  this.state.group_id ? { group_id: this.state.group_id } : {}
+                }
+              />
+            </Col>
+          </Row>
         </div>
       </>
     );

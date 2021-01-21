@@ -9,13 +9,21 @@ import {
   setDefaultGroup,
 } from '../store/actions/groupsActions';
 
-import { Card } from 'antd';
+import { Card, Grid, Button, Typography } from 'antd';
+import Modal from 'antd/lib/modal/Modal';
+const { useBreakpoint } = Grid;
+const { Title } = Typography;
 
-const GroupManager = (props) => {
-  return (
-      <Card>
-        Hi bro
-      </Card>
+const FilterPanel = (props) => {
+  const screens = useBreakpoint();
+
+  return screens.md ? (
+    <Card>'hi bro'</Card>
+  ) : (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Button style={{ marginLeft: 'auto' }}>Filters</Button>
+      <Modal></Modal>
+    </div>
   );
 };
 
@@ -35,4 +43,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupManager);
+export default connect(mapStateToProps, mapDispatchToProps)(FilterPanel);

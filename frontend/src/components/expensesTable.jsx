@@ -73,6 +73,7 @@ class ExpensesTable extends Component {
         sorter: true,
         ellipsis: true,
         showSorterTooltip: false,
+        render: (amount) => `$${Number(amount).toFixed(2)}`
       },
       {
         title: 'Category',

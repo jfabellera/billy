@@ -53,14 +53,14 @@ class PageLayout extends Component {
   userLinks = () => {
     return (
       <>
-        <Menu.Item key='/dashboard' icon={<DashboardOutlined />}>
-          <Link to='/dashboard'>Dashboard</Link>
+        <Menu.Item key="/dashboard" icon={<DashboardOutlined />}>
+          <Link to="/dashboard">Dashboard</Link>
         </Menu.Item>
-        <Menu.Item key='/expenses' icon={<DollarOutlined />}>
-          <Link to='/expenses'>Expenses</Link>
+        <Menu.Item key="/expenses" icon={<DollarOutlined />}>
+          <Link to="/expenses">Expenses</Link>
         </Menu.Item>
-        <Menu.Item key='/statistics' icon={<BarChartOutlined />}>
-          <Link to='/statistics'>Statistics</Link>
+        <Menu.Item key="/statistics" icon={<BarChartOutlined />}>
+          <Link to="/statistics">Statistics</Link>
         </Menu.Item>
       </>
     );
@@ -70,11 +70,11 @@ class PageLayout extends Component {
   guestLinks = () => {
     return (
       <>
-        <Menu.Item key='/' icon={<HomeOutlined />}>
-          <Link to='/'>Home</Link>
+        <Menu.Item key="/" icon={<HomeOutlined />}>
+          <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key='/about' icon={<QuestionCircleOutlined />}>
-          <Link to='/about'>About</Link>
+        <Menu.Item key="/about" icon={<QuestionCircleOutlined />}>
+          <Link to="/about">About</Link>
         </Menu.Item>
       </>
     );
@@ -95,12 +95,12 @@ class PageLayout extends Component {
   userMenu = () => {
     return (
       <Menu style={{ float: 'right' }} onClick={this.handleMenuClick}>
-        <Menu.Item key='/account'>
-          <Link to='/account'>Account</Link>
+        <Menu.Item key="/account">
+          <Link to="/account">Account</Link>
         </Menu.Item>
-        <Menu.Item key='/logout'>
+        <Menu.Item key="/logout">
           <Link
-            to='/'
+            to="/"
             onClick={() => {
               this.props
                 .userLogoutRequest()
@@ -117,15 +117,15 @@ class PageLayout extends Component {
   // Navbar buttons for logged in users
   user = () => {
     return (
-      <div className='user-buttons' style={{ cursor: 'pointer' }}>
+      <div className="user-buttons" style={{ cursor: 'pointer' }}>
         <Dropdown
           overlay={this.userMenu()}
           trigger={['click']}
-          placement='bottomRight'
+          placement="bottomRight"
           onVisibleChange={this.handleVisibleChange}
           visible={this.state.userMenuVisible}
           arrow
-          align='right'
+          align="right"
         >
           <div>
             <span style={{ marginRight: '8px' }}>
@@ -142,12 +142,12 @@ class PageLayout extends Component {
   // Navbar buttons for guests
   guest = () => {
     return (
-      <div className='user-buttons'>
-        <Button type='link'>
-          <Link to='/login'>Sign in</Link>
+      <div className="user-buttons">
+        <Button type="link">
+          <Link to="/login">Sign in</Link>
         </Button>
-        <Button type='primary' shape='round'>
-          <Link to='/register'>Sign up</Link>
+        <Button type="primary" shape="round">
+          <Link to="/register">Sign up</Link>
         </Button>
       </div>
     );
@@ -167,14 +167,14 @@ class PageLayout extends Component {
             trigger={null}
             collapsible
             collapsed={this.state.collapsed}
-            breakpoint='md'
+            breakpoint="md"
             collapsedWidth={this.state.broken ? 0 : 80}
             onBreakpoint={(e) => {
               this.setState({ broken: e });
             }}
             style={{ zIndex: 100, position: 'fixed', height: '100vh' }}
           >
-            <div className='logo'>
+            <div className="logo">
               <h2>Billy</h2>
               {!this.state.collapsed ? (
                 <CloseOutlined
@@ -184,8 +184,8 @@ class PageLayout extends Component {
             </div>
 
             <Menu
-              theme='dark'
-              mode='inline'
+              theme="dark"
+              mode="inline"
               selectedKeys={[this.props.location.pathname]}
               onClick={() => {
                 if (!this.state.collapsed) this.setState({ collapsed: true });
@@ -198,18 +198,18 @@ class PageLayout extends Component {
           </Sider>
         </div>
         <Layout
-          className='site-layout'
+          className="site-layout"
           style={{ marginLeft: this.state.broken ? 0 : 80, height: '100vh' }}
         >
           <div
-            className='dim-overlay'
+            className="dim-overlay"
             style={{
               visibility: this.state.collapsed ? 'hidden' : 'visible',
               opacity: this.state.collapsed ? 0 : 0.5,
             }}
           />
           <Header
-            className='site-layout-background'
+            className="site-layout-background"
             style={{
               padding: 0,
               display: 'flex',
@@ -227,13 +227,12 @@ class PageLayout extends Component {
             {this.props.isAuthenticated ? this.user() : this.guest()}
           </Header>
           <Content
-            className='site-layout-background'
+            className="site-layout-background"
             style={{
               margin: '24px 16px',
               padding: 24,
               minHeight: 280,
-              // display: 'flex',
-              // flexDirection: 'column'
+              height: '100%',
             }}
           >
             {this.props.children}
