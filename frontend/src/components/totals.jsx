@@ -92,8 +92,8 @@ class Totals extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    monthlyTotal: state.expenses.monthlyTotal,
-    yearlyTotal: state.expenses.yearlyTotal,
+    // monthlyTotal: state.expenses.monthlyTotal,
+    // yearlyTotal: state.expenses.yearlyTotal,
   };
 };
 

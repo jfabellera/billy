@@ -172,7 +172,7 @@ export const getCategoryAmounts = (options) => {
   };
 };
 
-const getTotal = (dispatch, period) => {
+const getTotal = (dispatch, period, date) => {
   if (period !== 'month' && period !== 'year') return;
   const token = localStorage.getItem('accessToken');
   if (!token) return;
@@ -181,8 +181,8 @@ const getTotal = (dispatch, period) => {
   let dateQuery =
     '?' +
     querystring.stringify({
-      start_date: moment().clone().startOf(period).format('YYYY/MM/DD'),
-      end_date: moment().clone().endOf(period).format('YYYY/MM/DD'),
+      start_date: moment(date).startOf(period).format('YYYY/MM/DD'),
+      end_date: moment(date).endOf(period).format('YYYY/MM/DD'),
     });
 
   let type = actionTypes.GET_MONTHLY_TOTAL;
@@ -195,20 +195,19 @@ const getTotal = (dispatch, period) => {
         type: type,
         [period + 'lyTotal']: res.data.totalAmount,
       });
+      return res.data.totalAmount;
     })
     .catch((err) => {
       // TODO
     });
 };
 
-export const getMonthlyTotal = () => {
+export const getMonthlyTotal = (date) => {
   return (dispatch) => {
-    getTotal(dispatch, 'month');
+    return getTotal(dispatch, 'month', date);
   };
 };
 
-export const getYearlyTotal = () => {
-  return (dispatch) => {
-    getTotal(dispatch, 'year');
-  };
+export const getYearlyTotal = (date) => {
+  return (dispatch) => getTotal(dispatch, 'year', date);
 };

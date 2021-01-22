@@ -26,13 +26,15 @@ class Dashboard extends Component {
       update: this.props.update,
       start_date: moment().clone().startOf('month').format('YYYY/MM/DD'),
       end_date: moment().clone().endOf('month').format('YYYY/MM/DD'),
+      monthlyTotal: 0,
+      yearlyTotal: 0,
     };
-
-    this.props.getGroups();
-    this.update();
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.update();
+    this.props.getGroups();
+  }
 
   componentDidUpdate() {
     if (this.state.update !== this.props.update) {
@@ -42,8 +44,12 @@ class Dashboard extends Component {
   }
 
   update = () => {
-    this.props.getMonthlyTotal();
-    this.props.getYearlyTotal();
+    this.props.getMonthlyTotal(this.state.start_date).then((total) => {
+      this.setState({ monthlyTotal: total });
+    });
+    this.props.getYearlyTotal(this.state.start_date).then((total) => {
+      this.setState({ yearlyTotal: total });
+    });
     this.props.getUserCategories();
     this.props.getCategoryAmounts({
       start_date: this.state.start_date,
@@ -53,7 +59,7 @@ class Dashboard extends Component {
 
   render() {
     if (!this.props.isAuthenticated) {
-      return <Redirect to='/' />;
+      return <Redirect to="/" />;
     }
     return (
       <>
@@ -68,7 +74,10 @@ class Dashboard extends Component {
               />
             </Col>
             <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 1 }}>
-              <Totals />
+              <Totals
+                monthlyTotal={this.state.monthlyTotal}
+                yearlyTotal={this.state.yearlyTotal}
+              />
             </Col>
           </Row>
           <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
@@ -112,8 +121,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserExpenses: (options) => dispatch(getUserExpenses(options)),
     getUserCategories: () => dispatch(getUserCategories()),
-    getMonthlyTotal: () => dispatch(getMonthlyTotal()),
-    getYearlyTotal: () => dispatch(getYearlyTotal()),
+    getMonthlyTotal: (date) => dispatch(getMonthlyTotal(date)),
+    getYearlyTotal: (date) => dispatch(getYearlyTotal(date)),
     getCategoryAmounts: (options) => dispatch(getCategoryAmounts(options)),
     getGroups: () => dispatch(getGroups()),
   };

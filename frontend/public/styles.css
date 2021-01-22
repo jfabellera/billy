@@ -1,3 +1,7 @@
+input, select {
+  font-size: 16px !important;
+}
+
 .card-hover:hover {
   background-color: rgb(228, 228, 228);
   cursor: pointer;
