@@ -1,5 +1,12 @@
+/* For mobiel input tap screen resizing */
 input, select {
   font-size: 16px !important;
+}
+
+/* Resize certain fields to match the other ones not affected by font-size */
+.ant-input, .ant-picker {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
 }
 
 .card-hover:hover {
@@ -56,6 +63,7 @@ input, select {
   background: #fff;
 }
 
+/* When sidebar/drawers are opened */
 .dim-overlay {
   position: fixed;
   z-index: 50;

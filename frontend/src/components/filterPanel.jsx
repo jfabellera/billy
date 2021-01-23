@@ -12,7 +12,6 @@ import {
 import { Card, Grid, Button, Typography } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 const { useBreakpoint } = Grid;
-const { Title } = Typography;
 
 const FilterPanel = (props) => {
   const screens = useBreakpoint();

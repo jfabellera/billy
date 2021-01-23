@@ -81,12 +81,7 @@ class ExpensesTable extends Component {
         sorter: true,
         responsive: ['lg'],
         ellipsis: true,
-        showSorterTooltip: false,
-        filters: this.props.categories
-          ? this.props.categories.map((cat) => {
-              return { text: cat, value: cat };
-            })
-          : [],
+        showSorterTooltip: false
       },
       {
         title: 'Date',

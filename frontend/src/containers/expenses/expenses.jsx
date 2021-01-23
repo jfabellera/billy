@@ -6,8 +6,9 @@ import {
   refreshExpenses,
 } from '../../store/actions/expensesActions';
 import { getGroups } from '../../store/actions/groupsActions';
-import GroupManager from '../../components/filterPanel';
+import FilterPanel from '../../components/filterPanel';
 import ExpensesTable from '../../components/expensesTable';
+import Totals from '../../components/totals';
 
 import { Row, Col } from 'antd';
 
@@ -36,25 +37,39 @@ class Expenses extends Component {
     }
     return (
       <>
-        <div
-          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-        >
-          <Row gutter={[16, 16]} style={{ maxHeight: '33%'}}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%'}}>
+          <Row gutter={[16, 16]} style={{ maxHeight: '33%' }}>
             <Col xs={24} md={0} style={{}}>
-              <GroupManager onChange={this.onGroupChange} />
+              <FilterPanel onChange={this.onGroupChange} />
             </Col>
           </Row>
-          <Row gutter={[16, 16]} style={{ display: 'flex', flex: 1 }}>
-            <Col xs={0} md={8} style={{}}>
-              <GroupManager onChange={this.onGroupChange} />
+          <Row gutter={[16, 16]} style={{height: '100%'}}>
+            <Col xs={0} md={8}>
+              <FilterPanel onChange={this.onGroupChange} />
             </Col>
-            <Col xs={24} md={16} style={{}}>
-              <ExpensesTable
-                title={this.state.group_name}
-                options={
-                  this.state.group_id ? { group_id: this.state.group_id } : {}
-                }
-              />
+            <Col
+              xs={24}
+              md={16}
+              style={{ display: 'flex', flexDirection: 'column', }}
+            >
+              <Row gutter={[16, 16]}>
+                <Col span={24}>
+                  <Totals />
+                </Col>
+              </Row>
+
+              <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
+                <Col>
+                  <ExpensesTable
+                    title={this.state.group_name}
+                    options={
+                      this.state.group_id
+                        ? { group_id: this.state.group_id }
+                        : {}
+                    }
+                  />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </div>
