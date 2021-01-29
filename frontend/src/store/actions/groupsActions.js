@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import jwt from 'jsonwebtoken';
 import axiosAPI from '../../helpers/axiosAPI';
+import querystring from 'querystring';
 
 export const getGroups = () => {
   return (dispatch) => {
@@ -103,6 +104,28 @@ export const setDefaultGroup = (group_id) => {
           .catch((err) => {
             // TODO
           });
+      })
+      .catch((err) => {
+        // TODO
+      });
+  };
+};
+
+export const getGroupAmounts = (options) => {
+  return (dispatch) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+    const username = jwt.decode(token).user.username;
+
+    let query = '';
+    if (options) {
+      query = '&' + querystring.stringify(options);
+    }
+
+    return axiosAPI
+      .get('/users/' + username + '/expenses/groups?amounts=true' + query)
+      .then((res) => {
+        
       })
       .catch((err) => {
         // TODO

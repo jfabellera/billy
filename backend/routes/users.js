@@ -10,7 +10,11 @@ const {
   validateGetExpenseCategories,
   getExpenseCategories,
 } = require('./expenses');
-const { getGroups } = require('./groups');
+const {
+  getGroups,
+  validateGetExpenseGroups,
+  getExpenseGroups,
+} = require('./groups');
 
 const config = require('../config');
 
@@ -254,6 +258,13 @@ router.get(
   auth,
   [check('username').isAlphanumeric()],
   getGroups
+);
+
+router.get(
+  '/:username/expenses/groups',
+  auth,
+  validateGetExpenseGroups,
+  getExpenseGroups
 );
 
 module.exports = router;

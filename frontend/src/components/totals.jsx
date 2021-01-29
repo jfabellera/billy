@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AnimatedNumber from 'sa-animated-number-react';
-import { Row, Col, Card, Skeleton } from 'antd';
+import { Row, Col, Card, Skeleton, Popover } from 'antd';
+import { getGroupAmounts } from '../store/actions/groupsActions';
 
 import './totals.css';
 
@@ -14,6 +15,7 @@ class Totals extends Component {
     super(props);
     this._isMounted = false;
     this.state = {
+      monthlyPopoverVisible: false,
       cardWidth: '50',
     };
     this.card = React.createRef();
@@ -40,7 +42,7 @@ class Totals extends Component {
       <Col span={12}>
         <div ref={this.card} style={{ height: '100%' }}>
           <Card
-            className='card-hover'
+            className="card-hover"
             style={{ height: '100%' }}
             bodyStyle={{
               height: '100%',
@@ -73,12 +75,21 @@ class Totals extends Component {
   render() {
     return (
       <Row gutter={[16]} style={{ height: '100%' }}>
+        <Popover 
+          content={<p>hi bro</p>}
+          title={'Groups'}
+          trigger='click'
+          visible={this.state.monthlyPopoverVisible}
+          onVisibleChange={visible => this.setState({ monthlyPopoverVisible: visible })}
+        >
         {this.totalCard(
           'Monthly total',
           this.props.monthlyTotal,
           'green',
           !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
         )}
+
+        </Popover>
         {this.totalCard(
           'Yearly total',
           this.props.yearlyTotal,
@@ -92,13 +103,13 @@ class Totals extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    // monthlyTotal: state.expenses.monthlyTotal,
-    // yearlyTotal: state.expenses.yearlyTotal,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    getGroupAmounts: () => dispatch(getGroupAmounts())
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Totals);
