@@ -72,11 +72,22 @@ class Totals extends Component {
 
   formatValue = (value) => `$ ${Number(value).toFixed(2)}`;
 
-  renderGroups = () => {
-    if (this.props.monthlyGroups) {
+  renderMonthlyGroups = () => {
+    if (this.props.monthlyGroups && this.props.monthlyGroups.length > 0) {
       return this.props.monthlyGroups.map((group, i) => (
         <p key={i}>{group.name}: {group.total}</p>
       ));
+    } else {
+      return <p>No groups</p>
+    }
+  };
+  renderYearlyGroups = () => {
+    if (this.props.yearlyGroups && this.props.yearlyGroups.length > 0) {
+      return this.props.yearlyGroups.map((group, i) => (
+        <p key={i}>{group.name}: {group.total}</p>
+      ));
+    } else {
+      return <p>No groups</p>
     }
   };
 
@@ -84,7 +95,7 @@ class Totals extends Component {
     return (
       <Row gutter={[16]} style={{ height: '100%' }}>
         <Popover
-          content={this.renderGroups()}
+          content={this.renderMonthlyGroups()}
           title={'Groups'}
           trigger="click"
           visible={this.state.monthlyPopoverVisible}
@@ -101,7 +112,7 @@ class Totals extends Component {
         </Popover>
 
         <Popover
-          content={<p>hi bro</p>}
+          content={this.renderYearlyGroups()}
           title={'Groups'}
           trigger="click"
           visible={this.state.yearlyPopoverVisible}
