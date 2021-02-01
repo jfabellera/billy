@@ -91,23 +91,27 @@ getExpenseGroups = async (req, res) => {
       }
 
       Group.find({ user_id: req.user._id }, (err, groups) => {
-        if(err) throw err;
+        if (err) throw err;
         Promise.all(queries).then((results) => {
           let groupObjArray;
           if (results.length > 0)
-            groupObjArray = results.map((result) => {
-              return {
-                _id: result[0]._id,
-                name: groups.filter(group => group._id.equals(result[0]._id))[0].name,
-                total: result[0].total,
-              };
-            });
+            groupObjArray = results
+              .map((result) => {
+                const group = groups.filter((group) =>
+                  group._id.equals(result[0]._id)
+                )[0];
+
+                return {
+                  _id: result[0]._id,
+                  name: group ? group.name : '',
+                  total: result[0].total,
+                };
+              })
+              .filter((result) => result.name);
           else
             groupObjArray = group_ids.map((group_id) => {
               return { _id: group_id };
             });
-
-            console.log(groupObjArray)
           res.status(200).json({ groups: groupObjArray });
         });
       });
