@@ -72,30 +72,50 @@ class Totals extends Component {
 
   formatValue = (value) => `$ ${Number(value).toFixed(2)}`;
 
+  renderGroups = () => {
+    if (this.props.monthlyGroups) {
+      return this.props.monthlyGroups.map((group, i) => (
+        <p key={i}>{group.name}: {group.total}</p>
+      ));
+    }
+  };
+
   render() {
     return (
       <Row gutter={[16]} style={{ height: '100%' }}>
-        <Popover 
+        <Popover
+          content={this.renderGroups()}
+          title={'Groups'}
+          trigger="click"
+          visible={this.state.monthlyPopoverVisible}
+          onVisibleChange={(visible) => {
+            this.setState({ monthlyPopoverVisible: visible });
+          }}
+        >
+          {this.totalCard(
+            'Monthly total',
+            this.props.monthlyTotal,
+            'green',
+            !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
+          )}
+        </Popover>
+
+        <Popover
           content={<p>hi bro</p>}
           title={'Groups'}
-          trigger='click'
-          visible={this.state.monthlyPopoverVisible}
-          onVisibleChange={visible => this.setState({ monthlyPopoverVisible: visible })}
+          trigger="click"
+          visible={this.state.yearlyPopoverVisible}
+          onVisibleChange={(visible) => {
+            this.setState({ yearlyPopoverVisible: visible });
+          }}
         >
-        {this.totalCard(
-          'Monthly total',
-          this.props.monthlyTotal,
-          'green',
-          !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
-        )}
-
+          {this.totalCard(
+            'Yearly total',
+            this.props.yearlyTotal,
+            'gold',
+            !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
+          )}
         </Popover>
-        {this.totalCard(
-          'Yearly total',
-          this.props.yearlyTotal,
-          'gold',
-          !isNaN(this.props.monthlyTotal) & !isNaN(this.props.yearlyTotal)
-        )}
       </Row>
     );
   }
@@ -103,13 +123,13 @@ class Totals extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    monthlyGroups: state.groups.monthlyGroups,
+    yearlyGroups: state.groups.yearlyGroups,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    getGroupAmounts: () => dispatch(getGroupAmounts())
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Totals);

@@ -2,6 +2,8 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
   groups: null,
+  monthlyGroups: null,
+  yearlGroups: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -23,6 +25,14 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.DELETE_GROUP: {
       return state;
+    }
+    case actionTypes.GET_GROUP_AMOUNTS: {
+      console.log(action.monthlyGroups)
+      return {
+        ...state,
+        monthlyGroups: action.monthlyGroups,
+        yearlyGroups: action.yearlyGroups,
+      };
     }
     case actionTypes.LOGOUT_USER: {
       return initialState;

@@ -23,3 +23,4 @@ export const ADD_GROUP = 'ADD_GROUP';
 export const EDIT_GROUP = 'EDIT_GROUP';
 export const DELETE_GROUP = 'DELETE_GROUP';
 export const SET_DEFAULT_GROUP = 'SET_DEFAULT_GROUP';
+export const GET_GROUP_AMOUNTS = 'GET_GROUP_AMOUNTS';

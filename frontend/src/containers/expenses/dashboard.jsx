@@ -8,7 +8,7 @@ import {
   getMonthlyTotal,
   getYearlyTotal,
 } from '../../store/actions/expensesActions';
-import { getGroups } from '../../store/actions/groupsActions';
+import { getGroups, getGroupAmounts } from '../../store/actions/groupsActions';
 import moment from 'moment';
 
 import ExpensesTable from '../../components/expensesTable';
@@ -55,6 +55,7 @@ class Dashboard extends Component {
       start_date: this.state.start_date,
       end_date: this.state.end_date,
     });
+    this.props.getGroupAmounts(this.state.start_date);
   };
 
   render() {
@@ -77,6 +78,8 @@ class Dashboard extends Component {
               <Totals
                 monthlyTotal={this.state.monthlyTotal}
                 yearlyTotal={this.state.yearlyTotal}
+                month={this.state.start_date}
+                year={this.state.start_date}
               />
             </Col>
           </Row>
@@ -125,6 +128,7 @@ const mapDispatchToProps = (dispatch) => {
     getYearlyTotal: (date) => dispatch(getYearlyTotal(date)),
     getCategoryAmounts: (options) => dispatch(getCategoryAmounts(options)),
     getGroups: () => dispatch(getGroups()),
+    getGroupAmounts: (date) => dispatch(getGroupAmounts(date))
   };
 };
 

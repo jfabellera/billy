@@ -78,7 +78,7 @@ getExpenseGroups = async (req, res) => {
                 $match: { ...query, group_id: group_id },
               },
               {
-                $group_id: {
+                $group: {
                   _id: group_id,
                   total: {
                     $sum: '$amount',
@@ -89,21 +89,27 @@ getExpenseGroups = async (req, res) => {
           );
         });
       }
-      Promise.all(queries).then((results) => {
-        let groupObjArray;
-        if (results.length > 0)
-          groupObjArray = results.map((result) => {
-            return {
-              _id: result[0]._id,
-              total: result[0].total,
-            };
-          });
-        else
-          groupObjArray = group_ids.map((group_id) => {
-            return { name: group_id };
-          });
 
-        res.status(200).json({ groups: groupObjArray });
+      Group.find({ user_id: req.user._id }, (err, groups) => {
+        if(err) throw err;
+        Promise.all(queries).then((results) => {
+          let groupObjArray;
+          if (results.length > 0)
+            groupObjArray = results.map((result) => {
+              return {
+                _id: result[0]._id,
+                name: groups.filter(group => group._id.equals(result[0]._id))[0].name,
+                total: result[0].total,
+              };
+            });
+          else
+            groupObjArray = group_ids.map((group_id) => {
+              return { _id: group_id };
+            });
+
+            console.log(groupObjArray)
+          res.status(200).json({ groups: groupObjArray });
+        });
       });
     });
   }
