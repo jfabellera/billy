@@ -36,7 +36,7 @@
   .ant-table
   .ant-table-container
   .ant-table-body {
-  height: 500px;
+  height: 0;
   flex: auto;
   overflow: scroll;
 }

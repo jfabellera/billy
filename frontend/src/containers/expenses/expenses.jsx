@@ -52,12 +52,6 @@ class Expenses extends Component {
               md={16}
               style={{ display: 'flex', flexDirection: 'column', }}
             >
-              <Row gutter={[16, 16]}>
-                <Col span={24}>
-                  <Totals />
-                </Col>
-              </Row>
-
               <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
                 <Col>
                   <ExpensesTable

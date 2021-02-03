@@ -7,7 +7,7 @@ import {
   MenuFoldOutlined,
   DashboardOutlined,
   DollarOutlined,
-  BarChartOutlined,
+  // BarChartOutlined,
   UserOutlined,
   CloseOutlined,
   QuestionCircleOutlined,
@@ -59,9 +59,9 @@ class PageLayout extends Component {
         <Menu.Item key="/expenses" icon={<DollarOutlined />}>
           <Link to="/expenses">Expenses</Link>
         </Menu.Item>
-        <Menu.Item key="/statistics" icon={<BarChartOutlined />}>
+        {/* <Menu.Item key="/statistics" icon={<BarChartOutlined />}>
           <Link to="/statistics">Statistics</Link>
-        </Menu.Item>
+        </Menu.Item> */}
       </>
     );
   };
@@ -94,10 +94,14 @@ class PageLayout extends Component {
   // Account drop down for logged in user
   userMenu = () => {
     return (
-      <Menu style={{ float: 'right' }} onClick={this.handleMenuClick}>
-        <Menu.Item key="/account">
-          <Link to="/account">Account</Link>
+      <Menu style={{ float: 'right', minWidth: '150px', textAlign: 'start' }} onClick={this.handleMenuClick}>
+        <Menu.Item key="/groups">
+          <Link to="/groups">My Groups</Link>
         </Menu.Item>
+        <Menu.Divider />
+        {/* <Menu.Item key="/account">
+          <Link to="/account">Account</Link>
+        </Menu.Item> */}
         <Menu.Item key="/logout">
           <Link
             to="/"

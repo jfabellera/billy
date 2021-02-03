@@ -8,6 +8,7 @@ import Login from './containers/users/login';
 import Register from './containers/users/register';
 import Dashboard from './containers/expenses/dashboard';
 import Expenses from './containers/expenses/expenses';
+import Groups from './containers/expenses/groups'
 
 class App extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class App extends Component {
               <Route path='/expenses' component={Expenses} />
               <Route path='/login' component={Login} />
               <Route path='/register' component={Register} />
+              <Route path='/groups' component={Groups} />
             </>
           }
         />
