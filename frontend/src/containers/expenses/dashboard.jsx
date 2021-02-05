@@ -21,7 +21,7 @@ import { Row, Col } from 'antd';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
+    this._isMounted = false;
     this.state = {
       update: this.props.update,
       start_date: moment().clone().startOf('month').format('YYYY/MM/DD'),
@@ -32,12 +32,17 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.update();
     this.props.getGroups();
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidUpdate() {
-    if (this.state.update !== this.props.update) {
+    if (this.state.update !== this.props.update && this._isMounted) {
       this.setState({ update: this.props.update });
       this.update();
     }
@@ -45,10 +50,10 @@ class Dashboard extends Component {
 
   update = () => {
     this.props.getMonthlyTotal(this.state.start_date).then((total) => {
-      this.setState({ monthlyTotal: total });
+      if (this._isMounted) this.setState({ monthlyTotal: total });
     });
     this.props.getYearlyTotal(this.state.start_date).then((total) => {
-      this.setState({ yearlyTotal: total });
+      if (this._isMounted) this.setState({ yearlyTotal: total });
     });
     this.props.getUserCategories();
     this.props.getCategoryAmounts({
@@ -60,7 +65,7 @@ class Dashboard extends Component {
 
   render() {
     if (!this.props.isAuthenticated) {
-      return <Redirect to="/" />;
+      return <Redirect to='/' />;
     }
     return (
       <>
@@ -128,7 +133,7 @@ const mapDispatchToProps = (dispatch) => {
     getYearlyTotal: (date) => dispatch(getYearlyTotal(date)),
     getCategoryAmounts: (options) => dispatch(getCategoryAmounts(options)),
     getGroups: () => dispatch(getGroups()),
-    getGroupAmounts: (date) => dispatch(getGroupAmounts(date))
+    getGroupAmounts: (date) => dispatch(getGroupAmounts(date)),
   };
 };
 

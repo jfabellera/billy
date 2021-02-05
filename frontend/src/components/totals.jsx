@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AnimatedNumber from 'sa-animated-number-react';
 import { Row, Col, Card, Skeleton, Popover } from 'antd';
-import { getGroupAmounts } from '../store/actions/groupsActions';
 
 import './totals.css';
 

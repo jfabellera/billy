@@ -103,6 +103,8 @@ const Groups = (props) => {
   useEffect(() => {
     setLoading(true);
     props.getGroups().then(() => setLoading(false));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Groups updated
@@ -341,11 +343,8 @@ const Groups = (props) => {
         visible={deleteModalVisible}
         title={'Delete group'}
         onOk={() => {
-          const group_index = groups.findIndex(
-            (obj) => obj._id === deleteGroupId
-          );
           setGroups((oldGroups) =>
-            oldGroups.filter((group) => group._id != deleteGroupId)
+            oldGroups.filter((group) => group._id !== deleteGroupId)
           );
           setDeleteGroupId(null);
           setDeleteModalVisible(false);

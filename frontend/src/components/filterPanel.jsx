@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-// import update from 'immutability-helper';
 import {
   getGroups,
   addGroup,
@@ -9,7 +8,7 @@ import {
   setDefaultGroup,
 } from '../store/actions/groupsActions';
 
-import { Card, Grid, Button, Typography } from 'antd';
+import { Card, Grid, Button } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 const { useBreakpoint } = Grid;
 
@@ -17,7 +16,7 @@ const FilterPanel = (props) => {
   const screens = useBreakpoint();
 
   return screens.md ? (
-    <Card>'hi bro'</Card>
+    <Card>'Filter panel coming soon'</Card>
   ) : (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <Button style={{ marginLeft: 'auto' }}>Filters</Button>

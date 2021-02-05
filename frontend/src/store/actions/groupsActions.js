@@ -119,8 +119,6 @@ export const getGroupAmounts = (date) => {
     const token = localStorage.getItem('accessToken');
     if (!token) return;
     const username = jwt.decode(token).user.username;
-
-    let query = '';
     const month_dates = {
       start_date: moment(new Date(date)).startOf('month').format('YYYY/MM/DD'),
       end_date: moment(new Date(date)).endOf('month').format('YYYY/MM/DD'),

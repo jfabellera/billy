@@ -181,8 +181,8 @@ const getTotal = (dispatch, period, date) => {
   let dateQuery =
     '?' +
     querystring.stringify({
-      start_date: moment(date).startOf(period).format('YYYY/MM/DD'),
-      end_date: moment(date).endOf(period).format('YYYY/MM/DD'),
+      start_date: moment(new Date(date)).startOf(period).format('YYYY/MM/DD'),
+      end_date: moment(new Date(date)).endOf(period).format('YYYY/MM/DD'),
     });
 
   let type = actionTypes.GET_MONTHLY_TOTAL;
