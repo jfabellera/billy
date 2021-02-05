@@ -39,36 +39,36 @@ const ExpenseForm = (props) => {
     if (props.visible && newlyOpened) {
       setOptionsVisible(props.optionsVisible);
       setNewlyOpened(false);
-      if (props.editExpense) {
-        let expense = {
-          _id: props.editExpense._id,
-          title: props.editExpense.title,
-          amount: props.editExpense.amount,
-          category: props.editExpense.category,
-          date: moment(props.editExpense.date).utc(),
-          group_id: props.groups
-            .map((group) => group._id)
-            .includes(props.editExpense.group_id)
-            ? props.editExpense.group_id
-            : null,
-          description: props.editExpense.description || null,
-        };
-        form.setFields(
-          Object.keys(expense).map((key) => ({
-            name: key,
-            value: expense[key],
-          }))
-        );
-      }
     }
   }, [
     props.visible,
     props.optionsVisible,
-    props.editExpense,
-    props.groups,
     newlyOpened,
-    form,
   ]);
+
+  useEffect(() => {
+    if (props.editExpense) {
+      let expense = {
+        _id: props.editExpense._id,
+        title: props.editExpense.title,
+        amount: props.editExpense.amount,
+        category: props.editExpense.category,
+        date: moment(props.editExpense.date).utc(),
+        group_id: props.groups
+          .map((group) => group._id)
+          .includes(props.editExpense.group_id)
+          ? props.editExpense.group_id
+          : null,
+        description: props.editExpense.description || null,
+      };
+      form.setFields(
+        Object.keys(expense).map((key) => ({
+          name: key,
+          value: expense[key],
+        }))
+      );
+    }
+  }, [props.editExpense, form, props.groups]);
 
   const onCancel = () => {
     props.onCancel();
@@ -111,7 +111,7 @@ const ExpenseForm = (props) => {
       >
         <Row gutter={16}>
           <Col xs={12} md={12}>
-            <Form.Item label='Title' name='title' rules={rules} >
+            <Form.Item label='Title' name='title' rules={rules}>
               <Input placeholder='Title' suffix={null} />
             </Form.Item>
           </Col>
