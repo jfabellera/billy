@@ -10,7 +10,11 @@ const {
   validateGetExpenseCategories,
   getExpenseCategories,
 } = require('./expenses');
-const { getGroups } = require('./groups');
+const {
+  getGroups,
+  validateGetExpenseGroups,
+  getExpenseGroups,
+} = require('./groups');
 
 const config = require('../config');
 
@@ -109,7 +113,7 @@ router.get(
 router.post(
   '/',
   [
-    check('username', 'Username is required').exists(),
+    check('username', 'Username is required').exists().isAlphanumeric(),
     check('password', 'Password is required').exists(),
     check('name').customSanitizer((name) => {
       let newName = { first: '', last: '' };
@@ -254,6 +258,13 @@ router.get(
   auth,
   [check('username').isAlphanumeric()],
   getGroups
+);
+
+router.get(
+  '/:username/expenses/groups',
+  auth,
+  validateGetExpenseGroups,
+  getExpenseGroups
 );
 
 module.exports = router;

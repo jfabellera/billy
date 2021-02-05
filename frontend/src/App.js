@@ -1,53 +1,41 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import NavBar from './components/navBar';
+import PageLayout from './containers/pageLayout';
 import LandingPage from './containers/home/landingPage';
 import Terms from './containers/home/terms';
 import Login from './containers/users/login';
 import Register from './containers/users/register';
 import Dashboard from './containers/expenses/dashboard';
 import Expenses from './containers/expenses/expenses';
+import Groups from './containers/expenses/groups'
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
     return (
-      <Router>
-        <div
-          className='d-flex flex-column'
-          style={{ height: '100vh', overflow: 'hidden' }}
-        >
-          <NavBar />
-          <Route exact path='/' component={LandingPage} />
-          <Route exact path='/about/terms' component={Terms} />
-          <Route path='/dashboard' component={Dashboard} />
-          <Route path='/expenses' component={Expenses} />
-          <Route path='/login' component={Login} />
-          <Route path='/register' component={Register} />
-          <Route
-            render={() => {
-              return (
-                <Redirect
-                  to={this.props.isAuthenticated ? '/dashboard' : '/'}
-                />
-              );
-            }}
-          />
-        </div>
+      <Router basename={process.env.PUBLIC_URL}>
+        <PageLayout
+          children={
+            <>
+              {' '}
+              <Route exact path='/' component={LandingPage} />
+              <Route exact path='/about/terms' component={Terms} />
+              <Route path='/dashboard' component={Dashboard} />
+              <Route path='/expenses' component={Expenses} />
+              <Route path='/login' component={Login} />
+              <Route path='/register' component={Register} />
+              <Route path='/groups' component={Groups} />
+            </>
+          }
+        />
       </Router>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isAuthenticated: state.users.isAuthenticated,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

@@ -1,10 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  expenses: null,
-  totalPages: null,
   categories: null,
-  totalExpenses: null,
   monthlyTotal: null,
   yearlyTotal: null,
   categoryAmounts: null,
@@ -17,9 +14,6 @@ const reducer = (state = initialState, action) => {
     case actionTypes.GET_USER_EXPENSES: {
       return {
         ...state,
-        expenses: action.expenses,
-        totalExpenses: action.totalExpenses,
-        totalPages: action.totalPages,
       };
     }
     case actionTypes.REFRESH_EXPENSES: {

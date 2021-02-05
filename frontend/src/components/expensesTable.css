@@ -1,70 +1,62 @@
-.expenses-table table {
-  table-layout: fixed;
-  z-index: 1;
+.ant-table-wrapper {
+  height: 100%;
+}
+.ant-table-wrapper .ant-spin-nested-loading {
+  height: 100%;
+}
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table {
+  flex: auto;
+  overflow: hidden;
+}
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table
+  .ant-table-container {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table
+  .ant-table-container
+  .ant-table-header {
+  flex: none;
+}
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table
+  .ant-table-container
+  .ant-table-body {
+  height: 0;
+  flex: auto;
+  overflow: scroll;
+}
+.ant-table-wrapper
+  .ant-spin-nested-loading
+  .ant-spin-container
+  .ant-table-pagination {
+  flex: none;
 }
 
-.expenses-table td span {
-  display: block;
-  white-space: nowrap;
+.table-row:hover {
+  cursor: pointer;
+}
+
+.sub-table-row .ant-table-cell {
+  padding-top: 2px;
+  padding-bottom: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+  white-space: nowrap;
 
-.fixed-width {
-  width: 4rem;
-}
 
-.expenses-table table thead th {
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 3;
-}
-
-.expenses-table td svg,
-.expenses-table table thead th span {
-  cursor: pointer;
-}
-
-.expenses-table tbody tr:hover svg {
-  visibility: visible;
-}
-
-.expenses-table tbody tr:hover svg:hover {
-  opacity: 0.5;
-}
-
-.expenses-table tbody tr:hover td:not(.expense-action) {
-  cursor: pointer;
-}
-
-.expense-normal {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.expense-normal svg {
-  visibility: hidden;
-}
-
-.expense-delete {
-  background-color: rgb(255, 93, 93);
-}
-
-.expense-edit {
-  background-color: rgb(235, 192, 0);
-}
-
-.expenses-table tbody tr:hover:not(.expense-delete),
-.expenses-table .expense-select {
-  background-color: lightgray;
-}
-
-.expenses-table table tbody tr td {
-  position: relative;
-}
-
-.expenses-table .fade {
-  transition: 0;
 }

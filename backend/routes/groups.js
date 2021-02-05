@@ -8,6 +8,13 @@ const Group = require('../models/groupModel');
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
 
+removeTimeZoneOffset = (inputDate) => {
+  const date = new Date(inputDate);
+  const serverTimezonOffset = date.getTimezoneOffset() * 60000;
+  const utcDate = new Date(date.getTime() - serverTimezonOffset);
+  return utcDate;
+};
+
 getGroups = (req, res) => {
   let err = validationResult(req);
   if (!err.isEmpty()) return res.status(400).json(err.errors);
@@ -24,8 +31,93 @@ getGroups = (req, res) => {
           default: String(group._id) === String(req.user.default_group_id),
         };
       }),
+      default_group_id: req.user.default_group_id,
     });
   });
+};
+
+const validateGetExpenseGroups = [
+  check('start_date').optional().isDate(),
+  check('end_date').optional().isDate(),
+  check('amounts').optional().isBoolean(),
+];
+
+getExpenseGroups = async (req, res) => {
+  let err = validationResult(req);
+  if (!err.isEmpty()) {
+    res.status(400).json(err.errors);
+  } else {
+    let query = {};
+    if (req.params.username) {
+      query.user_id = req.user._id;
+    }
+
+    // Date range
+    if (req.query.start_date) {
+      if (!query.date) query.date = {};
+      query.date.$gte = removeTimeZoneOffset(
+        new Date(req.query.start_date).setHours(00, 00, 00)
+      );
+    }
+
+    if (req.query.end_date) {
+      if (!query.date) query.date = {};
+      query.date.$lte = removeTimeZoneOffset(
+        new Date(req.query.end_date).setHours(23, 59, 59)
+      );
+    }
+
+    Expense.find(query).distinct('group_id', (err, group_ids) => {
+      if (err) throw err;
+
+      let queries = [];
+      if (req.query.amounts && req.query.amounts === 'true') {
+        group_ids.forEach((group_id) => {
+          queries.push(
+            Expense.aggregate([
+              {
+                $match: { ...query, group_id: group_id },
+              },
+              {
+                $group: {
+                  _id: group_id,
+                  total: {
+                    $sum: '$amount',
+                  },
+                },
+              },
+            ]).exec()
+          );
+        });
+      }
+
+      Group.find({ user_id: req.user._id }, (err, groups) => {
+        if (err) throw err;
+        Promise.all(queries).then((results) => {
+          let groupObjArray;
+          if (results.length > 0)
+            groupObjArray = results
+              .map((result) => {
+                const group = groups.filter((group) =>
+                  group._id.equals(result[0]._id)
+                )[0];
+
+                return {
+                  _id: result[0]._id,
+                  name: group ? group.name : '',
+                  total: result[0].total,
+                };
+              })
+              .filter((result) => result.name);
+          else
+            groupObjArray = group_ids.map((group_id) => {
+              return { _id: group_id };
+            });
+          res.status(200).json({ groups: groupObjArray });
+        });
+      });
+    });
+  }
 };
 
 /**
@@ -62,11 +154,11 @@ router.post(
             { default_group_id: group._id },
             (err, user) => {
               if (err) throw err;
-              res.sendStatus(200);
+              res.status(200).json({ _id: group._id });
             }
           );
         } else {
-          res.sendStatus(200);
+          res.status(200).json({ _id: group._id });
         }
       }
     );
@@ -145,4 +237,9 @@ router.delete(
   }
 );
 
-module.exports = { router: router, getGroups: getGroups };
+module.exports = {
+  router: router,
+  getGroups: getGroups,
+  validateGetExpenseGroups: validateGetExpenseGroups,
+  getExpenseGroups: getExpenseGroups,
+};

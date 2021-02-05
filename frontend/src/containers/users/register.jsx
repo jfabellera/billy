@@ -3,69 +3,51 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { userRegisterRequest } from '../../store/actions/usersActions';
 
-import { Container, Card, Form, Button, Col, Row } from 'react-bootstrap';
+import { Form, Input, Button, Card, Typography } from 'antd';
+const { Title } = Typography;
+
+const rule = [
+  {
+    required: true,
+    message: 'Required',
+  },
+];
 
 class Register extends Component {
-  state = {
-    firstName: '',
-    lastName: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    passwordMismatch: null,
-  };
-
-  onChangeUsername = (e) => {
-    this.setState({ username: e.target.value });
-  };
-
-  onChangefirstName = (e) => {
-    this.setState({ firstName: e.target.value });
-  };
-
-  onChangeLastName = (e) => {
-    this.setState({ lastName: e.target.value });
-  };
-
-  onChangePassword = (e) => {
-    this.setState({ password: e.target.value }, () => {
-      this.confirmPasswords();
-    });
-  };
-
-  onChangeConfirmPassword = (e) => {
-    this.setState({ confirmPassword: e.target.value }, () => {
-      this.confirmPasswords();
-    });
-  };
-
-  onSubmit = (e) => {
-    e.preventDefault();
-
-    const user = {
-      username: this.state.username,
-      name: {
-        first: this.state.firstName,
-        last: this.state.lastName,
-      },
-      password: this.state.password,
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+    this.state = {
+      loading: false,
+      usernameTaken: false,
     };
+  }
 
-    this.props.userRegisterRequest(user);
-  };
-  /**
-   * Checks that the two password fields match.
-   */
-  confirmPasswords = (callback) => {
-    this.setState(
-      {
-        passwordMismatch:
-          this.state.password &&
-          this.state.confirmPassword &&
-          this.state.password !== this.state.confirmPassword,
-      },
-      callback
-    );
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  onSubmit = (newUser) => {
+    this.setState({ loading: true }, () => {
+      this.props
+        .userRegisterRequest({
+          username: newUser.username,
+          password: newUser.password,
+          name: {
+            first: newUser.first,
+            last: newUser.last,
+          },
+        })
+        .then(() => {
+          if (this._isMounted)
+            this.setState({ loading: false, usernameTaken: false });
+        })
+        .catch(() => this.setState({ loading: false, usernameTaken: true }));
+    });
   };
 
   render() {
@@ -75,69 +57,80 @@ class Register extends Component {
 
     return (
       <>
-        <div className='d-flex flex-fill align-items-center overflow-auto'>
-          <Container as={Card} style={{ maxWidth: '500px' }}>
-            <Form className='m-3' onSubmit={this.onSubmit}>
-              <h1 className='mb-3 text-center'>Register</h1>
-              <Row>
-                <Form.Group as={Col}>
-                  <Form.Label>First Name</Form.Label>
-                  <Form.Control
-                    type='text'
-                    onChange={this.onChangefirstName}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>Last Name</Form.Label>
-                  <Form.Control
-                    type='text'
-                    onChange={this.onChangeLastName}
-                  ></Form.Control>
-                </Form.Group>
-              </Row>
-              <Row>
-                <Form.Group as={Col} lg='6'>
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control
-                    type='text'
-                    isInvalid={this.props.usernameTaken}
-                    required
-                    onChange={this.onChangeUsername}
-                  ></Form.Control>
-                  <Form.Control.Feedback type='invalid'>
-                    Username is taken
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Row>
-              <Row>
-                <Form.Group as={Col}>
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type='password'
-                    required
-                    onChange={this.onChangePassword}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Form.Control
-                    type='password'
-                    isInvalid={this.state.passwordMismatch}
-                    required
-                    onChange={this.onChangeConfirmPassword}
-                  ></Form.Control>
-                  <Form.Control.Feedback type='invalid'>
-                    Passwords do not match
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Row>
-              <Row className='justify-content-md-center'>
-                <Button variant='success' type='submit' className='mt-4'>
+        <div
+          style={{
+            display: 'flex',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Card style={{ width: '400px' }} bordered>
+            <Title level={2} style={{ textAlign: 'center' }}>
+              Register
+            </Title>
+            <Form
+              name='normal_login'
+              layout='vertical'
+              initialValues={{
+                remember: true,
+              }}
+              onFinish={this.onSubmit}
+            >
+              <Form.Item label='First name' name='first' rules={rule}>
+                <Input placeholder='First' />
+              </Form.Item>
+
+              <Form.Item label='Last name' name='last' rules={rule}>
+                <Input placeholder='Last' />
+              </Form.Item>
+              <Form.Item
+                label='Username'
+                name='username'
+                rules={rule}
+                validateStatus={this.state.usernameTaken ? 'error' : ''}
+                help={this.state.usernameTaken ? 'Username unavailable' : null}
+              >
+                <Input placeholder='Username' />
+              </Form.Item>
+              <Form.Item name='password' label='Password' rules={rule}>
+                <Input.Password placeholder='Password' />
+              </Form.Item>
+
+              <Form.Item
+                name='confirm'
+                label='Confirm Password'
+                dependencies={['password']}
+                hasFeedback
+                rules={[
+                  ...rule,
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+
+                      return Promise.reject(
+                        'The two passwords that you entered do not match!'
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password placeholder='Confirm password' />
+              </Form.Item>
+
+              <Form.Item style={{ textAlign: 'center' }}>
+                <Button
+                  type='primary'
+                  htmlType='submit'
+                  loading={this.state.loading}
+                >
                   Register
                 </Button>
-              </Row>
+              </Form.Item>
             </Form>
-          </Container>
+          </Card>
         </div>
       </>
     );
@@ -147,7 +140,6 @@ class Register extends Component {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.users.isAuthenticated,
-    usernameTaken: state.users.usernameTaken,
   };
 };
 

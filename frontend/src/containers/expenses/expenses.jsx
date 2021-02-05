@@ -6,11 +6,10 @@ import {
   refreshExpenses,
 } from '../../store/actions/expensesActions';
 import { getGroups } from '../../store/actions/groupsActions';
-import GroupManager from '../../components/groupManager';
+import FilterPanel from '../../components/filterPanel';
 import ExpensesTable from '../../components/expensesTable';
 
-import './expenses.css';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'antd';
 
 class Expenses extends Component {
   constructor(props) {
@@ -37,20 +36,38 @@ class Expenses extends Component {
     }
     return (
       <>
-        <Row className='manage'>
-          <Col className='sidebar overflow-scroll' md='3'>
-            <GroupManager onChange={this.onGroupChange} />
-          </Col>
-          <Col md='9'>
-            <ExpensesTable
-              title={this.state.group_name}
-              style={{ border: 0 }}
-              options={
-                this.state.group_id ? { group_id: this.state.group_id } : {}
-              }
-            />
-          </Col>
-        </Row>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+          <Row gutter={[16, 16]} style={{ maxHeight: '33%' }}>
+            <Col xs={24} md={0} style={{}}>
+              <FilterPanel onChange={this.onGroupChange} />
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} style={{ height: '100%' }}>
+            <Col xs={0} md={8}>
+              <FilterPanel onChange={this.onGroupChange} />
+            </Col>
+            <Col
+              xs={24}
+              md={16}
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
+                <Col>
+                  <ExpensesTable
+                    title={this.state.group_name}
+                    options={
+                      this.state.group_id
+                        ? { group_id: this.state.group_id }
+                        : {}
+                    }
+                  />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
       </>
     );
   }

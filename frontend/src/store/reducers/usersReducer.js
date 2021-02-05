@@ -17,8 +17,6 @@ const initialState = {
   authenticatedUser: !validCredentials()
     ? null
     : jwt.decode(localStorage.getItem('refreshToken')).user,
-  usernameTaken: false,
-  invalidUser: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -27,36 +25,18 @@ const reducer = (state = initialState, action) => {
       return {
         isAuthenticated: true,
         authenticatedUser: action.authenticatedUser,
-        usernameTaken: false,
-        invalidUser: false,
       };
     }
     case actionTypes.LOGIN_UNSUCCESSFUL: {
       return {
         isAuthenticated: false,
         authenticatedUser: null,
-        usernameTaken: false,
-        invalidUser: true,
       };
     }
     case actionTypes.LOGOUT_USER: {
       return {
         isAuthenticated: false,
         authenticatedUser: null,
-        usernameTaken: false,
-        invalidUser: false,
-      };
-    }
-    case actionTypes.REGISTER_SUCCESSFUL: {
-      return {
-        ...state,
-        usernameTaken: false,
-      };
-    }
-    case actionTypes.REGISTER_USERNAME_TAKEN: {
-      return {
-        ...state,
-        usernameTaken: true,
       };
     }
     default:

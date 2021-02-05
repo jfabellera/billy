@@ -5,7 +5,7 @@ import axiosAPI from '../../helpers/axiosAPI';
 
 export const userRegisterRequest = (userInfo) => {
   return (dispatch) => {
-    axiosAPI
+    return axiosAPI
       .post('/users', userInfo)
       .then((res) => {
         // log user in
@@ -15,16 +15,11 @@ export const userRegisterRequest = (userInfo) => {
             password: userInfo.password,
           })
         );
+        return Promise.resolve();
       })
       .catch((err) => {
         if (err.response) {
-          // Username is taken
-          if (err.response.status === 409) {
-            dispatch({
-              type: actionTypes.REGISTER_USERNAME_TAKEN,
-              usernameTaken: true,
-            });
-          }
+          return Promise.reject();
         }
       });
   };
@@ -32,7 +27,7 @@ export const userRegisterRequest = (userInfo) => {
 
 export const userLoginRequest = (userLogin) => {
   return (dispatch) => {
-    axiosAuth
+    return axiosAuth
       .post('/login', userLogin)
       .then((res) => {
         // logged in
@@ -44,6 +39,7 @@ export const userLoginRequest = (userLogin) => {
           type: actionTypes.LOGIN_SUCCESSFUL,
           authenticatedUser: jwt.decode(res.data.refreshToken).user,
         });
+        return true;
       })
       .catch((err) => {
         if (err.response) {
@@ -51,6 +47,7 @@ export const userLoginRequest = (userLogin) => {
             dispatch({
               type: actionTypes.LOGIN_UNSUCCESSFUL,
             });
+            return false;
           }
         }
       });
@@ -59,7 +56,7 @@ export const userLoginRequest = (userLogin) => {
 
 export const userLogoutRequest = () => {
   return (dispatch) => {
-    axiosAuth
+    return axiosAuth
       .delete('/logout', {
         data: { token: localStorage.getItem('refreshToken') },
       })
