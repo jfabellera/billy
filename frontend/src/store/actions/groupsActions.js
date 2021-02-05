@@ -16,6 +16,7 @@ export const getGroups = () => {
         dispatch({
           type: actionTypes.GET_GROUPS,
           groups: res.data.groups,
+          default_group_id: res.data.default_group_id,
         });
       })
       .catch((err) => {
@@ -39,6 +40,7 @@ export const addGroup = (group_name) => {
             dispatch({
               type: actionTypes.ADD_GROUP,
             });
+            return res.data._id;
           })
           .catch((err) => {
             // TODO
@@ -151,12 +153,11 @@ export const getGroupAmounts = (date) => {
       });
 
     return Promise.all([monthly, yearly]).then((res) => {
-      console.log(res);
       dispatch({
         type: actionTypes.GET_GROUP_AMOUNTS,
         monthlyGroups: res[0],
         yearlyGroups: res[1],
-      })
-    })
+      });
+    });
   };
 };

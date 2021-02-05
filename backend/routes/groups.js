@@ -31,6 +31,7 @@ getGroups = (req, res) => {
           default: String(group._id) === String(req.user.default_group_id),
         };
       }),
+      default_group_id: req.user.default_group_id,
     });
   });
 };
@@ -153,11 +154,11 @@ router.post(
             { default_group_id: group._id },
             (err, user) => {
               if (err) throw err;
-              res.sendStatus(200);
+              res.status(200).json({ _id: group._id });
             }
           );
         } else {
-          res.sendStatus(200);
+          res.status(200).json({ _id: group._id });
         }
       }
     );

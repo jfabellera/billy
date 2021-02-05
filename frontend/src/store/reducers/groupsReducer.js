@@ -3,7 +3,7 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
   groups: null,
   monthlyGroups: null,
-  yearlGroups: null
+  yearlGroups: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,6 +12,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         groups: action.groups,
+        default_group_id: action.default_group_id,
       };
     }
     case actionTypes.EDIT_GROUP: {
@@ -27,7 +28,6 @@ const reducer = (state = initialState, action) => {
       return state;
     }
     case actionTypes.GET_GROUP_AMOUNTS: {
-      console.log(action.monthlyGroups)
       return {
         ...state,
         monthlyGroups: action.monthlyGroups,
