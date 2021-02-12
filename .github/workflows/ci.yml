@@ -1,0 +1,90 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Backend
+        run: |
+          cd backend
+          npm ci
+          npm run build --if-present
+
+      - name: Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build --if-present
+
+  release:
+    needs: [build]
+    if: github.ref == 'refs/heads/main' &&
+      (contains(github.event.head_commit.message, '[major]') ||
+      contains(github.event.head_commit.message, '[minor]') ||
+      contains(github.event.head_commit.message, '[patch]'))
+    runs-on: ubuntu-latest
+    steps:
+      # Determine bump type (major, minor, or patch)
+      - name: Set bump type to major
+        run: echo "BUMP_TYPE=major" >> $GITHUB_ENV
+        if: ${{ contains(github.event.head_commit.message, '[major]') }}
+
+      - name: Set bump type to minor
+        run: echo "BUMP_TYPE=minor" >> $GITHUB_ENV
+        if: ${{ contains(github.event.head_commit.message, '[minor]') }}
+
+      - name: Set bump type to patch
+        run: echo "BUMP_TYPE=patch" >> $GITHUB_ENV
+        if: ${{ contains(github.event.head_commit.message, '[patch]') }}
+
+      # Bump version
+      - name: Bump version
+        id: bump
+        uses: mathieudutour/github-tag-action@v5.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: ${{ env.BUMP_TYPE }}
+          dry_run: false
+
+      # Create a draft of a release
+      - name: Create release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump.outputs.new_tag }}
+          release_name: Release ${{ steps.bump.outputs.new_tag }}
+          body: |
+            ${{ steps.bump.outputs.changelog }}
+          draft: true
+          prerelease: false
+ 
+  deploy:
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: start ssh-agent and add private key
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.BILLY_PRIVATE_KEY }}
+        
+      - name: ssh in and run script
+        run: |
+          ssh billytracking.co
+          /opt/build.sh
