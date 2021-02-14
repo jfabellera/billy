@@ -27,10 +27,7 @@ After cloning the repository, perform the following steps:
    - MONGODB_URI=[_mongodb uri_]
    - JWT_ACCESS_SECRET=[_secret for access tokens_]
    - JWT_REFRESH_SECRET=[_secret for refresh tokens_]
-2. If you wish to change the endpoints between the backend and frontend, do so at:
-   - `backend/config.js`
-   - `frontend/src/config.json`
-3. Run `yarn install`.
+2. Run `yarn install`.
 
 ## Running
 
@@ -40,6 +37,9 @@ To start up both the backend and the frontend, run the following:
 yarn start
 ```
 
+If you wish to change the endpoints between the backend and frontend, do so at:
+   - `backend/config.js`
+   - `frontend/src/config.json`
 
 ### Production
 1. Open the terminal
