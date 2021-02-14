@@ -52,7 +52,7 @@ class Register extends Component {
 
   render() {
     if (this.props.isAuthenticated) {
-      return <Redirect to='/' />;
+      return <Redirect to="/" />;
     }
 
     return (
@@ -70,36 +70,36 @@ class Register extends Component {
               Register
             </Title>
             <Form
-              name='normal_login'
-              layout='vertical'
+              name="normal_login"
+              layout="vertical"
               initialValues={{
                 remember: true,
               }}
               onFinish={this.onSubmit}
             >
-              <Form.Item label='First name' name='first' rules={rule}>
-                <Input placeholder='First' />
+              <Form.Item label="First name" name="first" rules={rule}>
+                <Input placeholder="First" />
               </Form.Item>
 
-              <Form.Item label='Last name' name='last' rules={rule}>
-                <Input placeholder='Last' />
+              <Form.Item label="Last name" name="last" rules={rule}>
+                <Input placeholder="Last" />
               </Form.Item>
               <Form.Item
-                label='Username'
-                name='username'
+                label="Username"
+                name="username"
                 rules={rule}
                 validateStatus={this.state.usernameTaken ? 'error' : ''}
                 help={this.state.usernameTaken ? 'Username unavailable' : null}
               >
-                <Input placeholder='Username' />
+                <Input placeholder="Username" />
               </Form.Item>
-              <Form.Item name='password' label='Password' rules={rule}>
-                <Input.Password placeholder='Password' />
+              <Form.Item name="password" label="Password" rules={rule}>
+                <Input.Password placeholder="Password" />
               </Form.Item>
 
               <Form.Item
-                name='confirm'
-                label='Confirm Password'
+                name="confirm"
+                label="Confirm Password"
                 dependencies={['password']}
                 hasFeedback
                 rules={[
@@ -117,13 +117,13 @@ class Register extends Component {
                   }),
                 ]}
               >
-                <Input.Password placeholder='Confirm password' />
+                <Input.Password placeholder="Confirm password" />
               </Form.Item>
 
               <Form.Item style={{ textAlign: 'center' }}>
                 <Button
-                  type='primary'
-                  htmlType='submit'
+                  type="primary"
+                  htmlType="submit"
                   loading={this.state.loading}
                 >
                   Register

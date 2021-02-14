@@ -22,10 +22,10 @@ const DeleteForm = (props) => {
       onOk={null}
       onCancel={onCancel}
       footer={[
-        <Button key='cancel' onClick={onCancel}>
+        <Button key="cancel" onClick={onCancel}>
           Cancel
         </Button>,
-        <Button key='delete' type='danger' onClick={props.onSubmit}>
+        <Button key="delete" type="danger" onClick={props.onSubmit}>
           Delete
         </Button>,
       ]}

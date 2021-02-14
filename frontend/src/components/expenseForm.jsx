@@ -40,11 +40,7 @@ const ExpenseForm = (props) => {
       setOptionsVisible(props.optionsVisible);
       setNewlyOpened(false);
     }
-  }, [
-    props.visible,
-    props.optionsVisible,
-    newlyOpened,
-  ]);
+  }, [props.visible, props.optionsVisible, newlyOpened]);
 
   useEffect(() => {
     if (props.editExpense) {
@@ -83,24 +79,24 @@ const ExpenseForm = (props) => {
       onOk={null}
       onCancel={onCancel}
       footer={[
-        <Button key='back' onClick={onCancel}>
+        <Button key="back" onClick={onCancel}>
           Cancel
         </Button>,
         <Button
           form={props.formId}
-          key='submit'
-          type='primary'
-          htmlType='submit'
+          key="submit"
+          type="primary"
+          htmlType="submit"
         >
           Submit
         </Button>,
       ]}
     >
       <Form
-        name='expense-form'
+        name="expense-form"
         form={form}
         id={props.formId}
-        layout='vertical'
+        layout="vertical"
         onFinish={(expense) => {
           if (props.editExpense) {
             expense = { ...expense, _id: props.editExpense._id };
@@ -111,14 +107,14 @@ const ExpenseForm = (props) => {
       >
         <Row gutter={16}>
           <Col xs={12} md={12}>
-            <Form.Item label='Title' name='title' rules={rules}>
-              <Input placeholder='Title' suffix={null} />
+            <Form.Item label="Title" name="title" rules={rules}>
+              <Input placeholder="Title" suffix={null} />
             </Form.Item>
           </Col>
           <Col xs={12} md={12}>
-            <Form.Item label='Amount' name='amount' rules={rules}>
+            <Form.Item label="Amount" name="amount" rules={rules}>
               <InputNumber
-                placeholder='Amount'
+                placeholder="Amount"
                 formatter={(value) =>
                   !value
                     ? ''
@@ -131,11 +127,11 @@ const ExpenseForm = (props) => {
         </Row>
         <Row gutter={16}>
           <Col xs={12} md={12}>
-            <Form.Item label='Category' name='category'>
+            <Form.Item label="Category" name="category">
               <AutoComplete
                 options={categories}
                 style={{ width: '100%' }}
-                placeholder='Category'
+                placeholder="Category"
                 allowClear
                 filterOption={(inputValue, option) =>
                   option.value
@@ -148,17 +144,17 @@ const ExpenseForm = (props) => {
             </Form.Item>
           </Col>
           <Col xs={12} md={12}>
-            <Form.Item label='Date' name='date' rules={rules}>
+            <Form.Item label="Date" name="date" rules={rules}>
               <DatePicker
-                format='MM/DD/YY'
-                placeholder='Date'
+                format="MM/DD/YY"
+                placeholder="Date"
                 style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>
         </Row>
         <Button
-          type='link'
+          type="link"
           style={{ paddingLeft: '0px' }}
           onClick={() => setOptionsVisible(!optionsVisible)}
         >
@@ -169,13 +165,13 @@ const ExpenseForm = (props) => {
             <Row style={{ marginTop: '16px' }}>
               <Col span={24}>
                 <Form.Item
-                  label='Group'
-                  name='group_id'
+                  label="Group"
+                  name="group_id"
                   initialValue={props.defaultGroup}
                 >
                   <Select
                     style={{ width: '100%' }}
-                    placeholder='Please create a group'
+                    placeholder="Please create a group"
                   >
                     {props.groups && props.groups.length > 0
                       ? props.groups.map((group, i) => (
@@ -190,8 +186,8 @@ const ExpenseForm = (props) => {
             </Row>
             <Row>
               <Col span={24}>
-                <Form.Item label='Description' name='description'>
-                  <Input placeholder='Optional' />
+                <Form.Item label="Description" name="description">
+                  <Input placeholder="Optional" />
                 </Form.Item>
               </Col>
             </Row>

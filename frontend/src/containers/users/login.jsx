@@ -50,7 +50,7 @@ class Login extends Component {
 
   render() {
     if (this.props.isAuthenticated) {
-      return <Redirect to='/' />;
+      return <Redirect to="/" />;
     }
 
     return (
@@ -63,16 +63,18 @@ class Login extends Component {
         }}
       >
         <Card style={{ width: '400px' }} bordered>
-          <Title level={2} style={{ textAlign: 'center' }}>Login</Title>
+          <Title level={2} style={{ textAlign: 'center' }}>
+            Login
+          </Title>
           <Form
-            name='normal_login'
+            name="normal_login"
             initialValues={{
               remember: true,
             }}
             onFinish={this.onSubmit}
           >
             <Form.Item
-              name='username'
+              name="username"
               rules={[
                 {
                   required: true,
@@ -80,10 +82,10 @@ class Login extends Component {
                 },
               ]}
             >
-              <Input prefix={<UserOutlined />} placeholder='Username' />
+              <Input prefix={<UserOutlined />} placeholder="Username" />
             </Form.Item>
             <Form.Item
-              name='password'
+              name="password"
               rules={[
                 {
                   required: true,
@@ -93,14 +95,14 @@ class Login extends Component {
             >
               <Input.Password
                 prefix={<LockOutlined />}
-                placeholder='Password'
+                placeholder="Password"
               />
             </Form.Item>
 
             <Form.Item style={{ textAlign: 'center' }}>
               <Button
-                type='primary'
-                htmlType='submit'
+                type="primary"
+                htmlType="submit"
                 loading={this.state.loading}
               >
                 Log in

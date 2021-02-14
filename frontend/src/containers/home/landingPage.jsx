@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 class LandingPage extends Component {
   render() {
     if (this.props.isAuthenticated) {
-      return <Redirect to='/dashboard' />;
+      return <Redirect to="/dashboard" />;
     } else
       return (
         <>

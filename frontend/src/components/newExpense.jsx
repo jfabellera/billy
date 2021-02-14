@@ -57,25 +57,25 @@ const NewExpense = (props) => {
       {screens.md ? (
         <Card bodyStyle={{ paddingTop: '16px' }}>
           <Title level={3}>New expense</Title>
-          <Form form={form} onFinish={onSubmit} name='new-expense-form'>
+          <Form form={form} onFinish={onSubmit} name="new-expense-form">
             <Row gutter={[8, 8]}>
               <Col md={6}>
                 <Form.Item
-                  name='title'
+                  name="title"
                   rules={rules}
                   style={{ marginBottom: '0px' }}
                 >
-                  <Input placeholder='Title' />
+                  <Input placeholder="Title" />
                 </Form.Item>
               </Col>
               <Col md={6}>
                 <Form.Item
-                  name='amount'
+                  name="amount"
                   rules={rules}
                   style={{ marginBottom: '0px' }}
                 >
                   <InputNumber
-                    placeholder='Amount'
+                    placeholder="Amount"
                     formatter={(value) =>
                       !value
                         ? ''
@@ -86,11 +86,11 @@ const NewExpense = (props) => {
                 </Form.Item>
               </Col>
               <Col md={6}>
-                <Form.Item name='category' style={{ marginBottom: '0px' }}>
+                <Form.Item name="category" style={{ marginBottom: '0px' }}>
                   <AutoComplete
                     options={categories}
                     style={{ width: '100%' }}
-                    placeholder='Category'
+                    placeholder="Category"
                     allowClear
                     filterOption={(inputValue, option) =>
                       option.value
@@ -104,14 +104,14 @@ const NewExpense = (props) => {
               </Col>
               <Col md={6}>
                 <Form.Item
-                  name='date'
+                  name="date"
                   initialValue={moment()}
                   rules={rules}
                   style={{ marginBottom: '0px' }}
                 >
                   <DatePicker
-                    format='MM/DD/YY'
-                    placeholder='Date'
+                    format="MM/DD/YY"
+                    placeholder="Date"
                     style={{ width: '100%' }}
                   />
                 </Form.Item>
@@ -119,7 +119,7 @@ const NewExpense = (props) => {
             </Row>
             <Row>
               <Button
-                type='link'
+                type="link"
                 style={{ paddingLeft: '0px' }}
                 onClick={() => {
                   setOptionsVisible(true);
@@ -131,9 +131,9 @@ const NewExpense = (props) => {
                 More options
               </Button>
               <Button
-                type='primary'
+                type="primary"
                 style={{ marginLeft: 'auto' }}
-                htmlType='submit'
+                htmlType="submit"
               >
                 Add
               </Button>
@@ -142,7 +142,7 @@ const NewExpense = (props) => {
         </Card>
       ) : (
         <Card
-          className='card-hover'
+          className="card-hover"
           bodyStyle={{
             paddingTop: '12px',
             paddingBottom: '12px',
@@ -164,8 +164,8 @@ const NewExpense = (props) => {
       )}
       <ExpenseForm
         form={form}
-        formId='new-expense'
-        title='New expense'
+        formId="new-expense"
+        title="New expense"
         visible={visible}
         optionsVisible={optionsVisible}
         onCancel={() => {
