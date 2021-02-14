@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
 const { auth, authAdmin } = require('./middleware/auth');
 const { check, validationResult } = require('express-validator');
 const {
@@ -16,10 +15,7 @@ const {
   getExpenseGroups,
 } = require('./groups');
 
-const config = require('../config');
-
 const User = require('../models/userModel');
-const Expense = require('../models/expenseModel');
 
 // Get list of users
 router.get(
@@ -137,7 +133,7 @@ router.post(
             account_type: 'user',
             disabled: false,
           },
-          (err, user) => {
+          (err) => {
             // new user created
             if (err) {
               if (err.code === 11000)
