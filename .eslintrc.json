@@ -1,0 +1,15 @@
+{
+    "env": {
+        "commonjs": true,
+        "es2020": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "extends": [
+        "eslint:recommended",
+        "prettier",
+        "plugin:workspaces/recommended"
+    ]
+}
