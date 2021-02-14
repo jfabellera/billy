@@ -26,6 +26,17 @@ This project uses [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspac
 npm i -g yarn
 ```
 
+This project uses a combination of `eslint` and `prettier` to enforce code style. To ensure that all commits conform to the standard, perform the following steps:
+
+- [Install the Prettier extension for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- In VS Code Settings, search for `Prettier: Config Path` and edit its value to be
+
+```
+.prettierrc
+```
+
+- In VS Code Settings, search for `Editor: Default Formatter` and choose `esbenp.prettier-vscode` from the dropdown
+
 After cloning the repository, perform the following steps:
 
 1. Place a `.env` file in _backend/_ with the following secrets:
