@@ -79,12 +79,15 @@ jobs:
     needs: [release]
     runs-on: ubuntu-latest
     steps:
-      - name: start ssh-agent and add private key
-        uses: webfactory/ssh-agent@v0.4.1
-        with:
-          ssh-private-key: ${{ secrets.BILLY_PRIVATE_KEY }}
-        
       - name: ssh in and run script
         run: |
-          ssh billytracking.co
-          /opt/build.sh
+          eval "$(ssh-agent -s)"
+          ssh-add - <<< "${{ secrets.BILLY_PRIVATE_KEY }}"
+          mkdir ~/.ssh
+          cat <<'EOF' >> ~/.ssh/config
+          Host *
+            StrictHostKeyChecking no
+            UserKnownHostsFile=/dev/null
+          EOF
+          chmod 600 ~/.ssh/config
+          ssh ubuntu@billytracking.co "/opt/build.sh"
