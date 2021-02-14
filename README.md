@@ -1,6 +1,8 @@
 # Billy
 A MERN stack application created to maintain my expenses.
 
+Check it out [here](https://billytracking.co/).
+
 # Features
 - Expenses
    - Title, amount, category, date, group, and description attributes
