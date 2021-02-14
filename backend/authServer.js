@@ -110,4 +110,4 @@ function generateAccessToken(user) {
   return jwt.sign({ user }, config.jwt_access_secret, { expiresIn: '15m' });
 }
 
-app.listen(3000);
+app.listen(config.auth_port);

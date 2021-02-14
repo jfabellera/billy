@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { endpoints } from '../config.json';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_AUTH_URL,
+  baseURL: endpoints.auth,
 });
 
 export default axiosInstance;
