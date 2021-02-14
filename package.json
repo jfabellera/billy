@@ -10,7 +10,7 @@
         "backend-auth": "yarn workspace backend auth",
         "backend-express": "yarn workspace backend express",
         "frontend": "yarn workspace frontend start",
-        "lint:all": "npx eslint .",
+        "lint:all": "npx eslint --fix .",
         "style:all": "npx prettier --write ."
     },
     "dependencies": {

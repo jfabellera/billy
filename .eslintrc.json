@@ -9,7 +9,6 @@
     },
     "extends": [
         "eslint:recommended",
-        "prettier",
-        "plugin:workspaces/recommended"
+        "prettier"
     ]
 }
