@@ -1,0 +1,16 @@
+{
+    "name": "billy",
+    "private": true,
+    "workspaces": [
+        "backend",
+        "frontend"
+    ],
+    "scripts": {
+        "start": "run-p -cln backend frontend",
+        "backend": "yarn workspace backend start",
+        "frontend": "yarn workspace frontend start"
+    },
+    "dependencies": {
+        "npm-run-all": "^4.1.5"
+    }
+}

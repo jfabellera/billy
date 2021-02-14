@@ -14,22 +14,31 @@ Check it out [here](https://billytracking.co/).
 
 # Usage
 ## Installing
-1. Clone the repository
-2. Place a `.env` file in _backend/_ with the following secrets:
+This is a `Node.js` project. Get [nvm](https://github.com/nvm-sh/nvm) if you are on a UNIX system or [nvm-windows](https://github.com/coreybutler/nvm-windows) if on Windows, and then install `node` (and `npm`).
+
+This project uses [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/). Ensure you have `yarn` by running:
+```
+npm i -g yarn
+```
+
+After cloning the repository, perform the following steps:
+
+1. Place a `.env` file in _backend/_ with the following secrets:
    - MONGODB_URI=[_mongodb uri_]
    - JWT_ACCESS_SECRET=[_secret for access tokens_]
    - JWT_REFRESH_SECRET=[_secret for refresh tokens_]
-3. If you wish to change the endpoints between the backend and frontend, do so at:
+2. If you wish to change the endpoints between the backend and frontend, do so at:
    - `backend/config.js`
    - `frontend/src/config.json`
-4. Run `npm install` in the _backend/_.
-5. Run `npm install` in the _frontend/_.
+3. Run `yarn install`.
 
 ## Running
 
 ### Development
-1. Open a new terminal in _backend/_ and run `npm start`. This will launch both the auth server and Express app in parallel.
-2. Open a new terminal in _frontend/_ and run `npm start`.
+To start up both the backend and the frontend, run the following:
+```
+yarn start
+```
 
 
 ### Production
