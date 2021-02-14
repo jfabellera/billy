@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { endpoints } from '../config.json';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: endpoints.api,
 });
 
 // axiosInstance.defaults.headers.common['Authorization'] =
@@ -31,7 +32,7 @@ axiosInstance.interceptors.response.use(
       ) {
         originalRequest.__isRetryRequest = true;
 
-        const response = fetch(process.env.REACT_APP_AUTH_URL + '/refresh', {
+        const response = fetch(`${endpoints.auth}/refresh`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

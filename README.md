@@ -13,28 +13,21 @@ A MERN stack application created to maintain my expenses.
 # Usage
 ## Installing
 1. Clone the repository
-2. Place a `.env` file in _backend/_ with the following environment variables:
+2. Place a `.env` file in _backend/_ with the following secrets:
    - MONGODB_URI=[_mongodb uri_]
    - JWT_ACCESS_SECRET=[_secret for access tokens_]
    - JWT_REFRESH_SECRET=[_secret for refresh tokens_]
-3. Place a `.env` file in _backend/_ with the following environment variables:
-   - REACT_APP_AUTH_URL=[_url for auth server (e.g. http://localhost:3000)_]
-   - REACT_APP_API_URL=[_url for api server (e.g. http://localhost:4000)_]
+3. If you wish to change the endpoints between the backend and frontend, do so at:
+   - `backend/config.js`
+   - `frontend/src/config.json`
 4. Run `npm install` in the _backend/_.
 5. Run `npm install` in the _frontend/_.
 
 ## Running
 
 ### Development
-1. Open a new terminal in _backend/_ and run `npm run auth`.
-2. Open a new terminal in _backend/_ and run `npm run express`.
-3. If you are on Linux/MacOS:
-   - Open _frontend/package.json_ 
-   - Under `scripts`, edit `start` to be
-   ```
-   "start": "PORT=5000 react-script start",
-   ```
-3. Open a new terminal in _frontend/_ and run `npm start`.
+1. Open a new terminal in _backend/_ and run `npm start`. This will launch both the auth server and Express app in parallel.
+2. Open a new terminal in _frontend/_ and run `npm start`.
 
 
 ### Production

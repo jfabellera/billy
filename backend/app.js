@@ -34,4 +34,4 @@ app.use('/users', usersRouter);
 app.use('/expenses', expensesRouter.router);
 app.use('/groups', groupsRouter.router);
 
-app.listen(4000);
+app.listen(config.api_port);
