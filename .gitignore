@@ -117,3 +117,6 @@ dist
 
 # mongodb
 data
+
+# misc
+package-lock.json
