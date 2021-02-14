@@ -1,5 +1,5 @@
 # Billy
-A MERN stack application created to maintain my expenses.
+A MERN stack monorepo application created to maintain my expenses.
 
 Check it out [here](https://billytracking.co/).
 
@@ -16,7 +16,7 @@ Check it out [here](https://billytracking.co/).
 ## Installing
 This is a `Node.js` project. Get [nvm](https://github.com/nvm-sh/nvm) if you are on a UNIX system or [nvm-windows](https://github.com/coreybutler/nvm-windows) if on Windows, and then install `node` (and `npm`).
 
-This project uses [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/). Ensure you have `yarn` by running:
+This project uses [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) to manage aspects of being a monorepo. Ensure you have `yarn` by running:
 ```
 npm i -g yarn
 ```

@@ -6,8 +6,9 @@
         "frontend"
     ],
     "scripts": {
-        "start": "run-p -cln backend frontend",
-        "backend": "yarn workspace backend start",
+        "start": "run-p -cln backend-auth backend-express frontend",
+        "backend-auth": "yarn workspace backend auth",
+        "backend-express": "yarn workspace backend express",
         "frontend": "yarn workspace frontend start"
     },
     "dependencies": {
