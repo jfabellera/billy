@@ -27,13 +27,7 @@ A MERN stack application created to maintain my expenses.
 
 ### Development
 1. Open a new terminal in _backend/_ and run `npm start`. This will launch both the auth server and Express app in parallel.
-3. If you are on Linux/MacOS:
-   - Open _frontend/package.json_ 
-   - Under `scripts`, edit `start` to be
-   ```
-   "start": "PORT=5000 react-script start",
-   ```
-3. Open a new terminal in _frontend/_ and run `npm start`.
+2. Open a new terminal in _frontend/_ and run `npm start`.
 
 
 ### Production
