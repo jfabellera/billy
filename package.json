@@ -6,9 +6,9 @@
     "frontend"
   ],
   "scripts": {
-    "start": "run-p -cln backend-auth backend-express frontend",
+    "start": "run-p -cln backend-auth backend-api frontend",
     "backend-auth": "yarn workspace backend auth",
-    "backend-express": "yarn workspace backend express",
+    "backend-api": "yarn workspace backend api",
     "frontend": "yarn workspace frontend start",
     "lint:all": "npx eslint --fix .",
     "style:all": "npx prettier --write ."
