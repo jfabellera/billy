@@ -1,36 +1,71 @@
 # Billy
-A MERN stack application created to maintain my expenses.
+
+A MERN stack monorepo application created to maintain my expenses.
+
+Check it out [here](https://billytracking.co/).
 
 # Features
+
 - Expenses
-   - Title, amount, category, date, group, and description attributes
-   - Sort by attribute
-   - Search by title
+  - Title, amount, category, date, group, and description attributes
+  - Sort by attribute
+  - Search by title
 - Groups
-   - Group expenses together i.e. by card or bank account
-   - View group distributions for the month and year on the dashboard
+  - Group expenses together i.e. by card or bank account
+  - View group distributions for the month and year on the dashboard
 
 # Usage
+
 ## Installing
-1. Clone the repository
-2. Place a `.env` file in _backend/_ with the following secrets:
-   - MONGODB_URI=[_mongodb uri_]
-   - JWT_ACCESS_SECRET=[_secret for access tokens_]
-   - JWT_REFRESH_SECRET=[_secret for refresh tokens_]
-3. If you wish to change the endpoints between the backend and frontend, do so at:
-   - `backend/config.js`
-   - `frontend/src/config.json`
-4. Run `npm install` in the _backend/_.
-5. Run `npm install` in the _frontend/_.
+
+This is a `Node.js` project. Get [nvm](https://github.com/nvm-sh/nvm) if you are on a UNIX system or [nvm-windows](https://github.com/coreybutler/nvm-windows) if on Windows, and then install `node` (and `npm`).
+
+This project uses [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) to manage aspects of being a monorepo. Ensure you have `yarn` by running:
+
+```
+npm i -g yarn
+```
+
+This project uses a combination of `eslint` and `prettier` to enforce code style. To ensure that all commits conform to the standard, perform the following steps:
+
+- [Install the Prettier extension for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- In VS Code Settings, search for `Prettier: Config Path` and edit its value to be
+
+```
+.prettierrc
+```
+
+- In VS Code Settings, search for `Editor: Default Formatter` and choose `esbenp.prettier-vscode` from the dropdown
+
+After cloning the repository, perform the following steps:
+
+1. Place a `.env` file in _backend/_ with the following secrets:
+
+   ```
+   MONGODB_URI=[mongodb uri]
+   JWT_ACCESS_SECRET=[secret for access tokens]
+   JWT_REFRESH_SECRET=[secret for refresh tokens]
+   ```
+
+2. Run `yarn install`.
 
 ## Running
 
 ### Development
-1. Open a new terminal in _backend/_ and run `npm start`. This will launch both the auth server and Express app in parallel.
-2. Open a new terminal in _frontend/_ and run `npm start`.
 
+To start up both the backend and the frontend, run the following:
+
+```
+yarn start
+```
+
+If you wish to change the endpoints between the backend and frontend, do so at:
+
+- `backend/config.js`
+- `frontend/src/config.json`
 
 ### Production
+
 1. Open the terminal
 2. Install pm2 by running `npm install -g pm2`
 3. Navigate to _backend/_

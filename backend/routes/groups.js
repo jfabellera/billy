@@ -1,21 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const { auth, authAdmin } = require('./middleware/auth');
-const { check, validationResult, query } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 const Group = require('../models/groupModel');
 const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
 
-removeTimeZoneOffset = (inputDate) => {
+const removeTimeZoneOffset = (inputDate) => {
   const date = new Date(inputDate);
   const serverTimezonOffset = date.getTimezoneOffset() * 60000;
   const utcDate = new Date(date.getTime() - serverTimezonOffset);
   return utcDate;
 };
 
-getGroups = (req, res) => {
+const getGroups = (req, res) => {
   let err = validationResult(req);
   if (!err.isEmpty()) return res.status(400).json(err.errors);
 
@@ -42,7 +41,7 @@ const validateGetExpenseGroups = [
   check('amounts').optional().isBoolean(),
 ];
 
-getExpenseGroups = async (req, res) => {
+const getExpenseGroups = async (req, res) => {
   let err = validationResult(req);
   if (!err.isEmpty()) {
     res.status(400).json(err.errors);
@@ -56,7 +55,7 @@ getExpenseGroups = async (req, res) => {
     if (req.query.start_date) {
       if (!query.date) query.date = {};
       query.date.$gte = removeTimeZoneOffset(
-        new Date(req.query.start_date).setHours(00, 00, 00)
+        new Date(req.query.start_date).setHours(0, 0, 0)
       );
     }
 
@@ -152,7 +151,7 @@ router.post(
           User.findOneAndUpdate(
             { _id: group.user_id },
             { default_group_id: group._id },
-            (err, user) => {
+            (err) => {
               if (err) throw err;
               res.status(200).json({ _id: group._id });
             }
@@ -221,14 +220,10 @@ router.delete(
             defaultQuery = { $unset: { default_group_id: 1 } };
           }
 
-          User.findOneAndUpdate(
-            { _id: group.user_id },
-            defaultQuery,
-            (err, user) => {
-              if (err) throw err;
-              res.sendStatus(200);
-            }
-          );
+          User.findOneAndUpdate({ _id: group.user_id }, defaultQuery, (err) => {
+            if (err) throw err;
+            res.sendStatus(200);
+          });
         });
       } else {
         res.sendStatus(200);
@@ -238,8 +233,8 @@ router.delete(
 );
 
 module.exports = {
-  router: router,
-  getGroups: getGroups,
-  validateGetExpenseGroups: validateGetExpenseGroups,
-  getExpenseGroups: getExpenseGroups,
+  router,
+  getGroups,
+  validateGetExpenseGroups,
+  getExpenseGroups,
 };

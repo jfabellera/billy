@@ -73,7 +73,7 @@ class ExpensesTable extends Component {
         sorter: true,
         ellipsis: true,
         showSorterTooltip: false,
-        render: (amount) => `$${Number(amount).toFixed(2)}`
+        render: (amount) => `$${Number(amount).toFixed(2)}`,
       },
       {
         title: 'Category',
@@ -81,7 +81,7 @@ class ExpensesTable extends Component {
         sorter: true,
         responsive: ['lg'],
         ellipsis: true,
-        showSorterTooltip: false
+        showSorterTooltip: false,
       },
       {
         title: 'Date',
@@ -166,7 +166,7 @@ class ExpensesTable extends Component {
             <Col span={12}>
               <Input
                 style={{ float: 'right', maxWidth: '300px' }}
-                placeholder='Search...'
+                placeholder="Search..."
                 onChange={this.handleSearchChange}
               />
             </Col>
@@ -186,7 +186,7 @@ class ExpensesTable extends Component {
               scroll={{ x: false, y: '100%' }}
               onChange={this.handleTableChange}
               loading={this.state.loading}
-              rowKey='_id'
+              rowKey="_id"
               expandable={{
                 expandedRowKeys: [this.state.expandedRowId],
                 expandIconColumnIndex: -1,
@@ -200,13 +200,13 @@ class ExpensesTable extends Component {
                 ),
                 onExpandedRowsChange: this.onRowExpand,
               }}
-              rowClassName='table-row'
+              rowClassName="table-row"
             />
           </Row>
         </Card>
         <ExpenseForm
-          title='Edit expense'
-          formId='edit-expense'
+          title="Edit expense"
+          formId="edit-expense"
           visible={this.state.editFormVisible}
           optionsVisible={true}
           onCancel={() =>
@@ -222,7 +222,7 @@ class ExpensesTable extends Component {
           }}
         />
         <DeleteForm
-          title='Delete expense'
+          title="Delete expense"
           visible={this.state.deleteFormVisible}
           onCancel={() =>
             this.setState({ deleteFormVisible: false, deleteExpense: null })

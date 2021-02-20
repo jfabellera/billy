@@ -2,13 +2,11 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const { auth, authAdmin } = require('./middleware/auth');
-const { check, validationResult, query } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
-const User = require('../models/userModel');
 const Expense = require('../models/expenseModel');
-const Group = require('../models/groupModel');
 
-removeTimeZoneOffset = (inputDate) => {
+const removeTimeZoneOffset = (inputDate) => {
   const date = new Date(inputDate);
   const serverTimezonOffset = date.getTimezoneOffset() * 60000;
   const utcDate = new Date(date.getTime() - serverTimezonOffset);
@@ -30,7 +28,7 @@ const validateGetExpenses = [
   check('page', 'Invalid number').optional().isInt({ min: 1 }),
 ];
 
-getExpenses = async (req, res) => {
+const getExpenses = async (req, res) => {
   let err = validationResult(req);
   if (!err.isEmpty()) {
     res.status(400).json(err.errors);
@@ -61,7 +59,7 @@ getExpenses = async (req, res) => {
     if (req.query.start_date) {
       if (!query.date) query.date = {};
       query.date.$gte = removeTimeZoneOffset(
-        new Date(req.query.start_date).setHours(00, 00, 00)
+        new Date(req.query.start_date).setHours(0, 0, 0)
       );
     }
 
@@ -140,7 +138,7 @@ const validateGetExpenseCategories = [
   check('amounts').optional().isBoolean(),
 ];
 
-getExpenseCategories = async (req, res) => {
+const getExpenseCategories = async (req, res) => {
   let err = validationResult(req);
   if (!err.isEmpty()) {
     res.status(400).json(err.errors);
@@ -154,7 +152,7 @@ getExpenseCategories = async (req, res) => {
     if (req.query.start_date) {
       if (!query.date) query.date = {};
       query.date.$gte = removeTimeZoneOffset(
-        new Date(req.query.start_date).setHours(00, 00, 00)
+        new Date(req.query.start_date).setHours(0, 0, 0)
       );
     }
 
@@ -331,9 +329,9 @@ router.delete(
 );
 
 module.exports = {
-  router: router,
-  validateGetExpenses: validateGetExpenses,
-  getExpenses: getExpenses,
-  validateGetExpenseCategories: validateGetExpenseCategories,
-  getExpenseCategories: getExpenseCategories,
+  router,
+  validateGetExpenses,
+  getExpenses,
+  validateGetExpenseCategories,
+  getExpenseCategories,
 };

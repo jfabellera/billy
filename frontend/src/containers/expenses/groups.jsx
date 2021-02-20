@@ -137,8 +137,8 @@ const Groups = (props) => {
         }}
       >
         <Row
-          align='middle'
-          justify='space-between'
+          align="middle"
+          justify="space-between"
           style={{ marginBottom: '16px', display: 'flex' }}
         >
           <Col>
@@ -147,9 +147,9 @@ const Groups = (props) => {
             </Title>
           </Col>
           <Col>
-            <Space direction='horizontal'>
+            <Space direction="horizontal">
               {editable ? (
-                <Button type='primary' onClick={() => setAddModalVisible(true)}>
+                <Button type="primary" onClick={() => setAddModalVisible(true)}>
                   Add
                 </Button>
               ) : (
@@ -180,14 +180,14 @@ const Groups = (props) => {
               columns={getColumns()}
               dataSource={groups}
               pagination={false}
-              rowKey='_id'
+              rowKey="_id"
               scroll={{ x: false, y: '100%' }}
               loading={loading}
             />
           </Radio.Group>
         </Row>
         {!editable || (
-          <Row justify='end' style={{ marginTop: '16px' }}>
+          <Row justify="end" style={{ marginTop: '16px' }}>
             <Space>
               <Button
                 onClick={() => {
@@ -198,7 +198,7 @@ const Groups = (props) => {
                 Cancel
               </Button>
               <Button
-                type='primary'
+                type="primary"
                 onClick={() => {
                   setLoading(true);
                   // Go through groups and check for new, edited and deleted groups
@@ -289,8 +289,8 @@ const Groups = (props) => {
         }}
       >
         <Form
-          name='group-form'
-          layout='vertical'
+          name="group-form"
+          layout="vertical"
           onFinish={(data) => {
             setGroups([
               ...groups,
@@ -306,8 +306,8 @@ const Groups = (props) => {
           <Row>
             <Col span={24}>
               <Form.Item
-                label='Name'
-                name='name'
+                label="Name"
+                name="name"
                 rules={[
                   {
                     required: true,
@@ -324,13 +324,13 @@ const Groups = (props) => {
                   }),
                 ]}
               >
-                <Input placeholder='Name' />
+                <Input placeholder="Name" />
               </Form.Item>
             </Col>
           </Row>
           <Row>
             <Col span={24}>
-              <Form.Item name='default' valuePropName='checked'>
+              <Form.Item name="default" valuePropName="checked">
                 <Checkbox defaultChecked={false}>Make default</Checkbox>
               </Form.Item>
             </Col>

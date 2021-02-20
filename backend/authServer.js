@@ -47,7 +47,7 @@ app.post('/refresh', (req, res) => {
 
 app.delete('/logout', (req, res) => {
   // delete refresh token from database
-  Token.findOneAndDelete({ refresh_token: req.body.token }, (err, token) => {
+  Token.findOneAndDelete({ refresh_token: req.body.token }, (err) => {
     if (err) throw err;
   });
 
@@ -87,7 +87,7 @@ app.post('/login', [check(['username', 'password']).exists()], (req, res) => {
                 refresh_token: refreshToken,
                 user_id: user._id,
               },
-              (err, token) => {
+              (err) => {
                 if (err) throw err;
               }
             );

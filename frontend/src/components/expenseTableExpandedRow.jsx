@@ -31,21 +31,21 @@ const ExpandedRow = (props) => {
       }}
     >
       <div style={{ display: 'block', width: '100%', overflow: 'hidden' }}>
-        <div className='text-overflow-ellipsis'>
-          <Tooltip placement='right' title='Group'>
+        <div className="text-overflow-ellipsis">
+          <Tooltip placement="right" title="Group">
             <TeamOutlined />{' '}
             {getGroupName(props.expense.group_id) || <i>No group</i>}
           </Tooltip>
         </div>
         {!screens.lg ? (
-          <div className='text-overflow-ellipsis'>
-            <Tooltip placement='right' title='Category'>
+          <div className="text-overflow-ellipsis">
+            <Tooltip placement="right" title="Category">
               <FolderOutlined /> {props.expense.category}
             </Tooltip>
           </div>
         ) : null}
-        <div className='text-overflow-ellipsis'>
-          <Tooltip placement='right' title='Description'>
+        <div className="text-overflow-ellipsis">
+          <Tooltip placement="right" title="Description">
             <FileTextOutlined />{' '}
             {props.expense.description || <i>No description</i>}
           </Tooltip>
@@ -56,14 +56,14 @@ const ExpandedRow = (props) => {
         style={{ marginLeft: '6px' }}
       >
         <Button
-          type='secondary'
-          shape='circle'
+          type="secondary"
+          shape="circle"
           icon={<EditOutlined />}
           onClick={() => props.onClickEdit(props.expense)}
         />
         <Button
-          type='secondary'
-          shape='circle'
+          type="secondary"
+          shape="circle"
           icon={<DeleteOutlined />}
           onClick={() => {
             props.onClickDelete(props.expense);

@@ -5,7 +5,7 @@ const User = require('../../models/userModel');
 const Expense = require('../../models/expenseModel');
 const Group = require('../../models/groupModel');
 
-auth = (req, res, next) => {
+const auth = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (token == null) return res.sendStatus(401);
@@ -61,7 +61,7 @@ auth = (req, res, next) => {
   }
 };
 
-authAdmin = (req, res, next) => {
+const authAdmin = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (token == null) return res.sendStatus(401);
@@ -83,4 +83,4 @@ authAdmin = (req, res, next) => {
   }
 };
 
-module.exports = { auth: auth, authAdmin: authAdmin };
+module.exports = { auth, authAdmin };

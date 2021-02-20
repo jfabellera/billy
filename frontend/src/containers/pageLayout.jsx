@@ -94,7 +94,10 @@ class PageLayout extends Component {
   // Account drop down for logged in user
   userMenu = () => {
     return (
-      <Menu style={{ float: 'right', minWidth: '150px', textAlign: 'start' }} onClick={this.handleMenuClick}>
+      <Menu
+        style={{ float: 'right', minWidth: '150px', textAlign: 'start' }}
+        onClick={this.handleMenuClick}
+      >
         <Menu.Item key="/groups">
           <Link to="/groups">My Groups</Link>
         </Menu.Item>

@@ -39,14 +39,14 @@ class CategoriesPieChart extends Component {
 
   render() {
     return (
-        <Chart
-          options={{
-            ...this.state.options,
-            labels: this.props.categoryAmountLabels,
-          }}
-          series={this.props.categoryAmountTotals}
-          type='donut'
-        />
+      <Chart
+        options={{
+          ...this.state.options,
+          labels: this.props.categoryAmountLabels,
+        }}
+        series={this.props.categoryAmountTotals}
+        type="donut"
+      />
     );
   }
 }

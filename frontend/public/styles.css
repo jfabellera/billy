@@ -1,10 +1,12 @@
 /* For mobiel input tap screen resizing */
-input, select {
+input,
+select {
   font-size: 16px !important;
 }
 
 /* Resize certain fields to match the other ones not affected by font-size */
-.ant-input, .ant-picker {
+.ant-input,
+.ant-picker {
   padding-top: 2px !important;
   padding-bottom: 2px !important;
 }
@@ -42,7 +44,8 @@ input, select {
   color: white;
 }
 
-.drawer:hover, .user-buttons:hover {
+.drawer:hover,
+.user-buttons:hover {
   color: #1890ff !important;
 }
 
@@ -59,7 +62,7 @@ input, select {
   color: white;
 }
 
-.site-layout{
+.site-layout {
   background: #fff;
 }
 
