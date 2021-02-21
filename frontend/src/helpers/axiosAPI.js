@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { endpoints } from '../config.json';
+import { endpoints } from '../config.js';
 
 const axiosInstance = axios.create({
   baseURL: endpoints.api,

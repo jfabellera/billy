@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "express": "nodemon app.js",
+    "api": "nodemon app.js",
     "auth": "nodemon authServer.js",
-    "start": "run-p -cln auth express"
+    "start": "run-p -cln auth api"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
