@@ -88,11 +88,10 @@ class Dashboard extends Component {
               />
             </Col>
           </Row>
-          <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
+          <Row gutter={16}>
             <Col
               xs={{ span: 24, order: 0 }}
               md={{ span: 12, order: 0 }}
-              style={{ height: '100%' }}
             >
               <ExpensesTable
                 title={moment(new Date(this.state.start_date)).format('MMMM')}

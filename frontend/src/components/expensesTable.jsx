@@ -12,7 +12,6 @@ import ExpandedRow from './expenseTableExpandedRow';
 import ExpenseForm from './expenseForm';
 import DeleteForm from './deleteForm';
 
-import './expensesTable.css';
 import { Card, Table, Row, Col, Typography, Input } from 'antd';
 const { Title } = Typography;
 
@@ -150,15 +149,7 @@ class ExpensesTable extends Component {
   render() {
     return (
       <>
-        <Card
-          style={{ height: '100%' }}
-          bodyStyle={{
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            paddingBottom: '6px',
-          }}
-        >
+        <Card>
           <Row>
             <Col span={12}>
               <Title level={4}>{this.props.title || 'Expenses'}</Title>
@@ -171,7 +162,7 @@ class ExpensesTable extends Component {
               />
             </Col>
           </Row>
-          <Row style={{ display: 'flex', flex: 1 }}>
+          <Row>
             <Table
               dataSource={this.state.expenses}
               columns={this.getColumns()}
