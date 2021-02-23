@@ -72,14 +72,22 @@ class Dashboard extends Component {
         <div
           style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
         >
-          <Row gutter={[16, 16]} style={{}}>
-            <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 0 }}>
+          <Row ref={this.dashboardTopRowRef} gutter={[16, 16]} style={{}}>
+            <Col
+              id="new-expense-column"
+              xs={{ span: 24, order: 1 }}
+              md={{ span: 12, order: 0 }}
+            >
               <NewExpense
                 categories={this.props.categories}
                 groups={this.props.groups}
               />
             </Col>
-            <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 1 }}>
+            <Col
+              id="totals-column"
+              xs={{ span: 24, order: 0 }}
+              md={{ span: 12, order: 1 }}
+            >
               <Totals
                 monthlyTotal={this.state.monthlyTotal}
                 yearlyTotal={this.state.yearlyTotal}
@@ -90,6 +98,7 @@ class Dashboard extends Component {
           </Row>
           <Row gutter={16}>
             <Col
+              id="expenses-column"
               xs={{ span: 24, order: 0 }}
               md={{ span: 12, order: 0 }}
             >
@@ -101,9 +110,9 @@ class Dashboard extends Component {
                 }}
               />
             </Col>
-            <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
-              {/* <CategoriesPieChart /> */}
-            </Col>
+            {/* <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
+              <CategoriesPieChart />
+            </Col> */}
           </Row>
         </div>
       </>

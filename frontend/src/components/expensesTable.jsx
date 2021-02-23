@@ -152,10 +152,13 @@ class ExpensesTable extends Component {
         <Card>
           <Row>
             <Col span={12}>
-              <Title level={4}>{this.props.title || 'Expenses'}</Title>
+              <Title id="expenses-month" level={4}>
+                {this.props.title || 'Expenses'}
+              </Title>
             </Col>
             <Col span={12}>
               <Input
+                id="expenses-search"
                 style={{ float: 'right', maxWidth: '300px' }}
                 placeholder="Search..."
                 onChange={this.handleSearchChange}
@@ -164,6 +167,7 @@ class ExpensesTable extends Component {
           </Row>
           <Row>
             <Table
+              id="expenses-table"
               dataSource={this.state.expenses}
               columns={this.getColumns()}
               pagination={{
