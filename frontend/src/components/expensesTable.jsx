@@ -177,7 +177,6 @@ class ExpensesTable extends Component {
                 responsive: true,
                 showSizeChanger: false,
                 position: ['bottomCenter'],
-                hideOnSinglePage: true,
               }}
               scroll={{ y: this.props.tableHeight * 0.75 }}
               onChange={this.handleTableChange}
