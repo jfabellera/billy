@@ -178,7 +178,7 @@ class ExpensesTable extends Component {
                 showSizeChanger: false,
                 position: ['bottomCenter'],
               }}
-              scroll={{ y: this.props.tableHeight * 0.75 }}
+              scroll={{ y: this.props.tableHeight * 0.6 }}
               onChange={this.handleTableChange}
               loading={this.state.loading}
               rowKey="_id"
