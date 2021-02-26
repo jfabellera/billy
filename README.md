@@ -64,11 +64,11 @@ To manually check changes on a mobile device, please perform the following:
 1. Find your internal IP by running `ipconfig` (Windows) or `ifconfig` (UNIX)
 
 2. In `frontend/src/config.js`, manually replace `localhost` with your internal IP
-3. After running `yarn start` with the updated endpoints, on your mobile device, navigate to `http:{internal_ip}:{frontend_port}`
+3. After running `yarn start` with the updated endpoints, on your mobile device, navigate to `http://{internal_ip}:{frontend_port}`
 
 The reason this is necessary is because when your mobile device hits the frontend and attempts to perform any backend calls (logging in, fetching data), it would normally call `localhost`. Since your mobile device is not serving a backend locally, the calls fail. This modification to the endpoint ensures that the frontend hits the backend on your development machine, no matter where the frontend is being served.
 
-**HINT: Be sure not to commit these changes as the LAN_IP will not be the same between different machines.**
+**HINT: Be sure not to commit these changes as the internal IP will not be the same between different machines.**
 
 ### Production
 
