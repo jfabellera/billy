@@ -127,8 +127,8 @@ class ExpensesTable extends Component {
             if (this._isMounted)
               this.setState({
                 loading: false,
-                expenses: data.expenses,
-                totalExpenses: data.total,
+                expenses: data?.expenses,
+                totalExpenses: data?.total,
               });
           });
       });
