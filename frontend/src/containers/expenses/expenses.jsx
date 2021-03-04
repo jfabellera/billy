@@ -77,7 +77,7 @@ class Expenses extends Component {
                 options={
                   this.state.group_id ? { group_id: this.state.group_id } : {}
                 }
-                tableHeight={this.state.containerHeight * 1.1}
+                tableHeight={this.state.containerHeight * 1.1 || 350}
               />
             </Col>
           </Row>

@@ -129,7 +129,7 @@ class Dashboard extends Component {
                   end_date: this.state.end_date,
                 }}
                 tableHeight={
-                  this.state.dashboardHeight - this.state.topRowHeight
+                  this.state.dashboardHeight - this.state.topRowHeight || 350
                 }
               />
             </Col>
