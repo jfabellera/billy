@@ -15,12 +15,30 @@ class Expenses extends Component {
   constructor(props) {
     super(props);
 
+    this.containerRef = React.createRef();
     this.state = {
       group_id: null,
       group_name: 'All expenses',
     };
 
     this.props.getGroups();
+  }
+
+  componentDidMount() {
+    this.setState({ containerHeight: this.containerRef.current.clientHeight });
+    window.addEventListener('resize', () => {
+      this.setState({
+        containerHeight: this.containerRef?.current?.clientHeight,
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', () => {
+      this.setState({
+        containerHeight: this.containerRef?.current?.clientHeight,
+      });
+    });
   }
 
   onGroupChange = (value) => {
@@ -44,27 +62,23 @@ class Expenses extends Component {
               <FilterPanel onChange={this.onGroupChange} />
             </Col>
           </Row>
-          <Row gutter={[16, 16]} style={{ height: '100%' }}>
+          <Row
+            id="container"
+            ref={this.containerRef}
+            gutter={[16, 16]}
+            style={{ height: '100%' }}
+          >
             <Col xs={0} md={8}>
               <FilterPanel onChange={this.onGroupChange} />
             </Col>
-            <Col
-              xs={24}
-              md={16}
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
-                <Col>
-                  <ExpensesTable
-                    title={this.state.group_name}
-                    options={
-                      this.state.group_id
-                        ? { group_id: this.state.group_id }
-                        : {}
-                    }
-                  />
-                </Col>
-              </Row>
+            <Col id="expenses-column" xs={24} md={16}>
+              <ExpensesTable
+                title={this.state.group_name}
+                options={
+                  this.state.group_id ? { group_id: this.state.group_id } : {}
+                }
+                tableHeight={this.state.containerHeight * 1.1 || 350}
+              />
             </Col>
           </Row>
         </div>
