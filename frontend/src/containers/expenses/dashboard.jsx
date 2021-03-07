@@ -21,6 +21,8 @@ import { Row, Col } from 'antd';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+    this.dashboardRef = React.createRef();
+    this.dashboardTopRowRef = React.createRef();
     this._isMounted = false;
     this.state = {
       update: this.props.update,
@@ -35,10 +37,26 @@ class Dashboard extends Component {
     this._isMounted = true;
     this.update();
     this.props.getGroups();
+    this.setState({ dashboardHeight: this.dashboardRef.current.clientHeight });
+    this.setState({
+      topRowHeight: this.dashboardTopRowRef.current.clientHeight,
+    });
+    window.addEventListener('resize', () => {
+      this.setState({
+        dashboardHeight: this.dashboardRef?.current?.clientHeight,
+        topRowHeight: this.dashboardTopRowRef?.current?.clientHeight,
+      });
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+    window.removeEventListener('resize', () => {
+      this.setState({
+        dashboardHeight: this.dashboardRef?.current?.clientHeight,
+        topRowHeight: this.dashboardTopRowRef?.current?.clientHeight,
+      });
+    });
   }
 
   componentDidUpdate() {
@@ -70,16 +88,26 @@ class Dashboard extends Component {
     return (
       <>
         <div
+          id="dashboard"
+          ref={this.dashboardRef}
           style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
         >
-          <Row gutter={[16, 16]} style={{}}>
-            <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 0 }}>
+          <Row ref={this.dashboardTopRowRef} gutter={[16, 16]} style={{}}>
+            <Col
+              id="new-expense-column"
+              xs={{ span: 24, order: 1 }}
+              md={{ span: 12, order: 0 }}
+            >
               <NewExpense
                 categories={this.props.categories}
                 groups={this.props.groups}
               />
             </Col>
-            <Col xs={{ span: 24, order: 0 }} md={{ span: 12, order: 1 }}>
+            <Col
+              id="totals-column"
+              xs={{ span: 24, order: 0 }}
+              md={{ span: 12, order: 1 }}
+            >
               <Totals
                 monthlyTotal={this.state.monthlyTotal}
                 yearlyTotal={this.state.yearlyTotal}
@@ -88,11 +116,11 @@ class Dashboard extends Component {
               />
             </Col>
           </Row>
-          <Row gutter={16} style={{ display: 'flex', flex: 1 }}>
+          <Row gutter={16}>
             <Col
+              id="expenses-column"
               xs={{ span: 24, order: 0 }}
               md={{ span: 12, order: 0 }}
-              style={{ height: '100%' }}
             >
               <ExpensesTable
                 title={moment(new Date(this.state.start_date)).format('MMMM')}
@@ -100,11 +128,14 @@ class Dashboard extends Component {
                   start_date: this.state.start_date,
                   end_date: this.state.end_date,
                 }}
+                tableHeight={
+                  this.state.dashboardHeight - this.state.topRowHeight || 350
+                }
               />
             </Col>
-            <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
-              {/* <CategoriesPieChart /> */}
-            </Col>
+            {/* <Col xs={{ span: 24, order: 1 }} md={{ span: 12, order: 1 }}>
+              <CategoriesPieChart />
+            </Col> */}
           </Row>
         </div>
       </>
