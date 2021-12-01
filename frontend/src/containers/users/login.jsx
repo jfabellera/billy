@@ -18,10 +18,13 @@ class Login extends Component {
       invalid: false,
       loading: false,
     };
+
+    this.usernameInput = React.createRef();
   }
 
   componentDidMount() {
     this._isMounted = true;
+    this.usernameInput.current.focus();
   }
 
   componentWillUnmount() {
@@ -82,7 +85,11 @@ class Login extends Component {
                 },
               ]}
             >
-              <Input prefix={<UserOutlined />} placeholder="Username" />
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="Username"
+                ref={this.usernameInput}
+              />
             </Form.Item>
             <Form.Item
               name="password"
